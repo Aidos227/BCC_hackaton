@@ -189,3 +189,23 @@ class OwnerAnswers(unittest.TestCase):
         q = A.questions_file(d, r1, "test")
         sm = A.apply(run(FakeLLM(), d), q, d)
         self.assertEqual(sm["pending"], ["U-01"])
+
+
+class SkepticRejects(FakeLLM):
+    def json(self, system, user, stage, max_tokens=0):
+        if stage.startswith("6/8"):
+            data = json.loads(user.split("Черновые замечания:\n", 1)[1].split("\n\nДокумент:", 1)[0])
+            return {"verdicts": [{"id": d["id"], "verdict": "reject" if d["source"] == "oracle" else "confirm",
+                                  "severity": d["severity"], "reason": "скептик против",
+                                  "blocked_decision": "что ожидать"} for d in data]}
+        return super().json(system, user, stage, max_tokens)
+
+
+class SecondOpinion(unittest.TestCase):
+    def test_retrace_overrules_skeptic(self):
+        d = load(DOC)
+        res = run(SkepticRejects(), d)
+        crit = [f for f in res["confirmed"] if f["source"] == "oracle" and f["severity"] == "critical"]
+        self.assertTrue(crit)
+        self.assertEqual(crit[0]["second_opinion"], "подтвердила")
+        self.assertTrue(any("2 голоса из 3" in n for n in crit[0]["notes"]))

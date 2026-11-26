@@ -240,12 +240,14 @@ def oracle_findings(spec: Dict, reqs: List[Dict]) -> List[Dict]:
                            f"Критерий приёмки: «{sc.get('quote', '')}». "
                            f"Расхождение: {t.get('difference', '').rstrip('.')}.",
                            blocked or "Какой ожидаемый результат закладывать в тест и в реализацию.", ev))
+            out[-1]["kind"] = "mismatch"
         if t.get("conflict") and t.get("acceptance") != "mismatch":
             out.append(_of(sc, "set_consistent", "critical",
                            f"Правила требуют разного: {sc.get('title', sc['id'])}",
                            ([sc.get("quote", "")] if is_acc and sc.get("quote") else []) + rq, ids,
                            t.get("conflict_explanation") or "Применимые правила предписывают несовместимые результаты.",
                            blocked or "Какое из правил реализовать в этой ситуации.", ev))
+            out[-1]["kind"] = "conflict"
         if (t.get("undetermined") or "").strip() and t.get("acceptance") != "mismatch" and not t.get("conflict"):
             out.append(_of(sc, "complete", "critical" if is_acc else "major",
                            f"Документ не определяет исход: {sc.get('title', sc['id'])}",
@@ -548,6 +550,33 @@ def finalize(cand: List[Dict]) -> Dict[str, List[Dict]]:
     return {"confirmed": confirmed, "questions": questions, "rejected": rejected, "duplicates": dups}
 
 
+def second_opinion(llm: LLM, doc: Document, reqs: List[Dict], model: Dict, cand: List[Dict]) -> None:
+    """Скептик отклонил противоречие, найденное трассировкой? Решает большинство: повторная независимая
+    «слепая» трассировка того же сценария. Если она снова даёт расхождение — 2 голоса из 3 за дефект."""
+    disputed = [f for f in cand if f["source"] == "oracle" and f.get("verdict") == "reject"
+                and f.get("kind") in ("mismatch", "conflict")]
+    if not disputed or not model.get("scenarios"):
+        return
+    ids = {f["scenario"] for f in disputed}
+    scen = [sc for sc in model["scenarios"] if sc["id"] in ids]
+    say(f"    скептик оспорил {len(disputed)} находок трассировки — повторная слепая трассировка")
+    traces = oracle(llm, doc, _reqs_for_prompt(reqs), scen)
+    compare(llm, scen, traces)
+    for f in disputed:
+        t = traces.get(f["scenario"]) or {}
+        agree = (f["kind"] == "mismatch" and t.get("acceptance") == "mismatch") or \
+                (f["kind"] == "conflict" and bool(t.get("conflict")))
+        f["second_opinion"] = "подтвердила" if agree else "не подтвердила"
+        if agree:
+            f["notes"].append(f"скептик возражал («{(f.get('verify_reason') or '')[:160]}»), но повторная "
+                              "независимая слепая трассировка снова показала расхождение: 2 голоса из 3 за дефект")
+            f["verdict"] = "confirm"
+            f["verify_reason"] = "подтверждено повторной трассировкой (2 из 3)"
+            if not (f.get("blocked_decision") or "").strip():
+                f["blocked_decision"] = t.get("blocked_decision") or "Какой результат закладывать в реализацию и тест."
+            f["severity"] = "critical"
+
+
 # ---------------------------------------------------------------------------- 7. чек-лист
 def checklist(llm: LLM, doc: Document, confirmed: List[Dict]) -> Dict:
     short = [{"id": f["fid"], "severity": f["severity"], "criterion": f.get("criterion"), "title": f.get("title")}
@@ -627,6 +656,7 @@ def run(llm: LLM, doc: Document, use_model: bool = True) -> Dict[str, Any]:
     kept = gate(cand)
     say(f"    кандидатов: {total}, без подтверждённой цитаты отброшено: {len(no_ev)}")
     kept = verify(llm, doc, kept)
+    second_opinion(llm, doc, reqs, model, kept)
     fin = finalize(kept)
     say(f"    подтверждено: {len(fin['confirmed'])}, вопросов владельцу: {len(fin['questions'])}, "
         f"отклонено: {len(fin['rejected'])}, дублей: {len(fin['duplicates'])}")

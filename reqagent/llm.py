@@ -50,7 +50,7 @@ def detect_provider() -> str:
     explicit = os.environ.get("LLM_PROVIDER", "").strip().lower()
     if explicit:
         return explicit
-    if os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY"):
+    if os.environ.get("GEMINI_API_KEY") or os.environ.get("GEMINI_API_KEYS") or os.environ.get("GOOGLE_API_KEY"):
         return "gemini"
     if os.environ.get("ANTHROPIC_API_KEY"):
         return "anthropic"
@@ -82,6 +82,9 @@ class LLM:
         self.primary = self.model
         self.resolved_model = self.model   # реальная версия, которую вернул API
         self.models_used: List[str] = []
+        raw_keys = os.environ.get("GEMINI_API_KEYS") or os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY") or ""
+        self.keys = [k.strip() for k in raw_keys.replace(";", ",").split(",") if k.strip()] if self.provider == "gemini" else []
+        self.key_index = 0
         self.cooldown: Dict[str, float] = {}
         fb_env = {"gemini": "GEMINI_FALLBACK_MODELS", "anthropic": "ANTHROPIC_FALLBACK_MODELS",
                   "openai": "OPENAI_FALLBACK_MODELS"}[self.provider]
@@ -109,6 +112,12 @@ class LLM:
             except ValueError:
                 self._dump(stage + "-retry", text)
                 raise
+
+    def _slot(self, model: str, k: int) -> str:
+        """Имя слота «модель + ключ» для журнала остывания; сам ключ не пишется — только короткий хеш."""
+        if not self.keys:
+            return model
+        return model + "#" + hashlib.sha256(self.keys[k].encode()).hexdigest()[:8]
 
     def _cd_path(self) -> Path:
         return Path(os.environ.get("LLM_DEBUG_DIR", ".cache")) / "cooldown.json"
@@ -153,29 +162,40 @@ class LLM:
         self._say(f"  · {stage}: запрос к {self.provider} …")
         fn = {"gemini": self._gemini, "anthropic": self._anthropic, "openai": self._openai}[self.provider]
         chain = [self.primary] + [m for m in self.fallbacks if m != self.primary]
+        nkeys = max(1, len(self.keys))
+        slots = [(m, k) for m in chain for k in range(nkeys)]
         last_err: Optional[LLMError] = None
         now = time.time()
         self._load_cooldown()
-        live = [m for m in chain if self.cooldown.get(m, 0) <= now] or chain[-1:]
-        for i, m in enumerate(live):
-            self.model = m
-            # промежуточные запасные модели пробуем один раз, основную и последнюю — с повторами
+        live = [sl for sl in slots if self.cooldown.get(self._slot(*sl), 0) <= now] or slots[-1:]
+        for i, (m, k) in enumerate(live):
+            if self.cooldown.get(self._slot(m, k), 0) > time.time() and i < len(live) - 1:
+                continue   # слот уже «остужен» в этом же вызове (например, 503 для всей модели)
+            self.model, self.key_index = m, k
+            # основной слот и последний запасной — с повторами, промежуточные — по одному разу
             last = i == len(live) - 1
             self._attempts = (max(self.max_retries, 5) + 1) if last else (self.max_retries + 1 if i == 0 else 1)
             if i:
-                self._say(f"    переключаюсь на {m}")
+                self._say(f"    пробую {m}" + (f" (ключ №{k + 1})" if nkeys > 1 else ""))
                 t0 = time.time()
             try:
                 text, tin, tout = fn(system, user, max_tokens, want_json)
                 break
             except LLMError as e:
                 last_err = e
-                if getattr(e, "fatal", False):
+                if getattr(e, "fatal", False) and nkeys == 1:
                     raise
-                # исчерпанную квоту не трогаем час, перегруженную модель — 5 минут
-                self.cooldown[m] = time.time() + (3600 if "quota" in str(e).lower() else 300)
+                msg = str(e).lower()
+                if "quota" in msg or getattr(e, "fatal", False):
+                    # квота и отказ в доступе — свойство ключа: остужаем только этот ключ
+                    self.cooldown[self._slot(m, k)] = time.time() + 3600
+                else:
+                    # перегрузка (503) или нет модели (404) — свойство модели: остужаем её на всех ключах
+                    until = time.time() + (86400 if "не найдена" in msg else 300)
+                    for kk in range(nkeys):
+                        self.cooldown[self._slot(m, kk)] = until
                 self._save_cooldown()
-                self._say(f"    {m}: {' '.join(str(e).split())[:260]}")
+                self._say(f"    {m}" + (f" (ключ №{k + 1})" if nkeys > 1 else "") + f": {' '.join(str(e).split())[:200]}")
         else:
             raise last_err  # type: ignore[misc]
         if self.resolved_model not in self.models_used:
@@ -195,9 +215,9 @@ class LLM:
 
     # --------------------------------------------------------------- providers
     def _gemini(self, system, user, max_tokens, want_json):
-        key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
-        if not key:
+        if not self.keys:
             raise LLMError("GEMINI_API_KEY не задан")
+        key = self.keys[self.key_index % len(self.keys)]
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.model}:generateContent"
         cfg: Dict[str, Any] = {"temperature": self.temperature, "maxOutputTokens": max_tokens}
         if want_json:

@@ -37,12 +37,24 @@ def render(doc, res: Dict[str, Any], passport: Dict[str, str], log: List[Dict] =
     w = o.append
 
     w(f"# Отчёт о проверке требований: «{esc(doc.title)}»\n")
-    verdict_line = ("**Итог: начинать разработку и тестирование по документу нельзя** — "
-                    f"{len(crit)} критичных дефектов блокируют конкретные решения (см. раздел 7)."
-                    if crit else
-                    ("**Итог: разработку можно начинать с оговорками** — критичных дефектов нет, "
-                     f"но {len(major)} существенных нужно закрыть до приёмки." if major else
-                     "**Итог: документ готов к разработке и тестированию.**"))
+    intake = getattr(doc, "intake", None)
+    partial = bool(intake and intake.status == "partial")
+    if res.get("no_requirements"):
+        verdict_line = ("**Итог: проверка невозможна — в документе не найдено ни одного требования.** "
+                        "Похоже, передан не тот документ; разработку по нему начинать нельзя.")
+    elif crit:
+        verdict_line = ("**Итог: начинать разработку и тестирование по документу нельзя** — "
+                        f"критичных дефектов: {len(crit)}; каждый блокирует конкретное решение (см. раздел 7).")
+    elif partial:
+        verdict_line = ("**Итог: вывод ограничен — документ прочитан не полностью** (см. «Входной контроль»). "
+                        "Критичных дефектов в прочитанной части нет, но готовность документа подтвердить нельзя.")
+    elif major:
+        verdict_line = ("**Итог: разработку можно начинать с оговорками** — критичных дефектов нет, "
+                        f"но {len(major)} существенных нужно закрыть до приёмки.")
+    else:
+        verdict_line = "**Итог: документ готов к разработке и тестированию.**"
+    if partial and crit:
+        verdict_line += " Документ прочитан не полностью — см. «Входной контроль»."
     w(verdict_line + "\n")
     if crit:
         w("**Главное (критичные дефекты):**\n")
@@ -59,6 +71,8 @@ def render(doc, res: Dict[str, Any], passport: Dict[str, str], log: List[Dict] =
     for k, v in passport.items():
         w(f"| {esc(k)} | {esc(v)} |")
     w("")
+    if intake is not None:
+        w(intake_md(intake, kind))
     w("Как читать отчёт: каждое замечание содержит дословные цитаты; место (страница, строка) "
       "вычислено кодом поиском цитаты в исходном файле, а не указано моделью. Замечания, у которых "
       "не нашлось ни одной подлинной цитаты, в отчёт не попадают (см. приложение А).\n")
@@ -219,6 +233,41 @@ def render(doc, res: Dict[str, Any], passport: Dict[str, str], log: List[Dict] =
     w("| Этап | Модель | Токены вход | Токены выход | Секунды |\n|---|---|---|---|---|")
     for e in log:
         w(f"| {esc(e['stage'])} | {esc(e.get('model'))} | {e['in']} | {e['out']} | {e['sec']} |")
+    return "\n".join(o) + "\n"
+
+
+INTAKE_RU = {"ok": "годен", "partial": "прочитан частично", "unreadable": "не прочитан"}
+
+
+def intake_md(i, kind: str = "") -> str:
+    o = ["### Входной контроль\n", "| Проверка | Результат |\n|---|---|",
+         f"| Статус | **{INTAKE_RU.get(i.status, i.status)}** |",
+         f"| Тип по содержимому | {esc(i.detected)} |",
+         f"| Размер | {i.size} байт |"]
+    if i.encoding:
+        o.append(f"| Кодировка | {esc(i.encoding)} |")
+    if i.pages_declared is not None:
+        o.append(f"| Страниц в файле / с текстом | {i.pages_declared} / {i.pages_with_text} |")
+    o.append(f"| Извлечено символов | {i.chars}" + (f" (читаемых {round(100 * i.readable_ratio)}%)" if i.chars else "") + " |")
+    if i.problems:
+        o.append(f"| Замечания к файлу | {esc('; '.join(i.problems))} |")
+    if i.advice:
+        o.append(f"| Что сделать | {esc(' '.join(i.advice))} |")
+    return "\n".join(o) + "\n"
+
+
+def render_unreadable(path, intake, passport: Dict[str, str]) -> str:
+    """Отчёт-диагноз, когда документ нельзя проверить: файл отчёта создаётся всегда."""
+    o = [f"# Отчёт о проверке требований: файл «{esc(path.name)}» не прочитан\n",
+         "**Итог: проверка невозможна — документ не удалось прочитать.** Начинать разработку и тестирование по "
+         "этому файлу нельзя: агент не может подтвердить ни одного требования. Модель не вызывалась.\n",
+         "## 1. Паспорт прогона\n", "| Поле | Значение |\n|---|---|"]
+    o += [f"| {esc(k)} | {esc(v)} |" for k, v in passport.items()]
+    o.append("")
+    o.append(intake_md(intake))
+    o.append("## Что сделать\n")
+    for a in intake.advice or ["Прислать документ в формате PDF с текстовым слоем, DOCX или Markdown (UTF-8)."]:
+        o.append(f"- {esc(a)}")
     return "\n".join(o) + "\n"
 
 

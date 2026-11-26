@@ -11,10 +11,10 @@ import time
 from pathlib import Path
 
 from . import __version__
-from .ingest import load
+from .ingest import IntakeError, load
 from .llm import LLM, LLMError, load_dotenv
 from .pipeline import run, run_baseline
-from .report import delta_md, render
+from .report import delta_md, render, render_unreadable
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -82,15 +82,30 @@ def main(argv=None) -> int:
     load_dotenv(a.env)
     load_dotenv(".env")
     t0 = time.time()
-    try:
-        doc = load(a.input)
-        llm = LLM(a.provider, a.model, cache_dir=a.cache)
-    except (FileNotFoundError, ValueError, LLMError) as e:
-        print(f"Ошибка: {e}", file=sys.stderr)
-        return 2
     out = Path(a.output)
     out.parent.mkdir(parents=True, exist_ok=True)
-    print(f"Документ: {doc.path.name} ({doc.kind}, страниц: {doc.pages}, строк: {len(doc.lines)})", file=sys.stderr)
+    try:
+        doc = load(a.input)
+    except FileNotFoundError as e:
+        print(f"Ошибка: {e}", file=sys.stderr)
+        return 2
+    except IntakeError as e:
+        # Документ нельзя проверить — отчёт-диагноз всё равно пишется
+        src = Path(a.input)
+        passport = {"Файл": src.name, "Дата прогона": dt.datetime.now(dt.timezone(dt.timedelta(hours=5))).strftime(
+                        "%d.%m.%Y %H:%M (UTC+5, Алматы)"),
+                    "Модель": "не вызывалась (документ не прошёл входной контроль)", "Версия агента": agent_version()}
+        out.write_text(render_unreadable(src, e.intake, passport), encoding="utf-8")
+        print(f"Документ не прочитан: {e}. Отчёт-диагноз: {out}", file=sys.stderr)
+        return 4
+    try:
+        llm = LLM(a.provider, a.model, cache_dir=a.cache)
+    except LLMError as e:
+        print(f"Ошибка: {e}", file=sys.stderr)
+        return 2
+    print(f"Документ: {doc.path.name} ({doc.kind}, страниц: {doc.pages}, строк: {len(doc.lines)}); "
+          f"входной контроль: {doc.intake.status}" + (f" — {'; '.join(doc.intake.problems)}" if doc.intake.problems else ""),
+          file=sys.stderr)
     print(f"Модель: {llm.provider}/{llm.model}", file=sys.stderr)
 
     try:

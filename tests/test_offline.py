@@ -131,3 +131,26 @@ class Offline(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class EmptyLLM(FakeLLM):
+    def json(self, system, user, stage, max_tokens=0):
+        if stage.startswith("1/7"):
+            return {"requirements": []}
+        raise AssertionError("после пустой нарезки модель вызываться не должна: " + stage)
+
+
+class NotRequirements(unittest.TestCase):
+    def test_recipe_gives_impossible_verdict(self):
+        import subprocess
+        subprocess.run([sys.executable, str(ROOT / "eval" / "make_damaged.py")], check=True, capture_output=True)
+        d = load(ROOT / "eval" / "fixtures" / "damaged" / "recipe_not_requirements.md")
+        res = run(EmptyLLM(), d)
+        md = render(d, res, {"Документ": d.title})
+        self.assertIn("проверка невозможна", md)
+        self.assertNotIn("готов к разработке", md)
+
+    def test_injection_survives_without_requirements(self):
+        d = load(ROOT / "eval" / "fixtures" / "damaged" / "injection.md")
+        res = run(EmptyLLM(), d)
+        self.assertTrue(any(f["criterion"] == "injection" for f in res["confirmed"]))

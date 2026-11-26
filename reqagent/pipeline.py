@@ -453,6 +453,11 @@ def verify(llm: LLM, doc: Document, cand: List[Dict]) -> List[Dict]:
             if isinstance(v, dict):
                 verdicts[v.get("id")] = v
     for f in cand:
+        if f.get("pinned"):
+            # детерминированная находка (например, внедрённая инструкция) не отдаётся на суд модели:
+            # та же инструкция могла бы повлиять и на рецензента
+            f.update(verdict="confirm", verify_reason="закреплено правилом, перепроверка моделью не применяется")
+            continue
         v = verdicts.get(f["cid"])
         if v is None:
             # без вердикта замечание не может считаться подтверждённым
@@ -527,6 +532,16 @@ def checklist(llm: LLM, doc: Document, confirmed: List[Dict]) -> Dict:
 # ---------------------------------------------------------------------------- запуск целиком
 def run(llm: LLM, doc: Document, use_model: bool = True) -> Dict[str, Any]:
     reqs = segment(llm, doc)
+    if not reqs:
+        say("    требований не найдено — дальнейшая проверка невозможна")
+        rule_f = run_rules(doc)
+        cand = gate(collect({}, {}, {}, [f for f in rule_f if f.get("pinned")], doc))
+        for f in cand:
+            f.update(verdict="confirm", verify_reason="закреплено правилом")
+        fin = finalize(cand)
+        return {"requirements": [], "reviews": {}, "set": {}, "model": {"applicable": False, "skipped": True},
+                "candidates_total": len(cand), "no_evidence": [], **fin, "checklist": {"present": False},
+                "no_requirements": True}
     reviews = review(llm, doc, reqs)
     set_rv = review_set(llm, doc, reqs)
     model = executable_model(llm, doc, reqs) if use_model else {"applicable": False, "skipped": True}

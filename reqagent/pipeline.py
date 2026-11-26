@@ -496,7 +496,7 @@ def finalize(cand: List[Dict]) -> Dict[str, List[Dict]]:
             ids.add(f["cid"])
     dups = [f for f in dups if f["verdict"] == "duplicate"]
     # итоговая нумерация: по критичности, затем по силе доказательства
-    confirmed.sort(key=lambda f: (SEV_ORDER[f["severity"]], SRC_ORDER.get(f["source"], 9), f["cid"]))
+    confirmed.sort(key=lambda f: (SEV_ORDER[f["severity"]], -1 if f.get("pinned") else SRC_ORDER.get(f["source"], 9), f["cid"]))
     for n, f in enumerate(confirmed, start=1):
         f["fid"] = f"F-{n:02d}"
     for n, f in enumerate(questions, start=1):

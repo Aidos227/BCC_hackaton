@@ -93,6 +93,18 @@ def executable_model(llm: LLM, doc: Document, reqs: List[Dict]) -> Dict:
     spec["interpretations"] = interps
     for sc in scenarios:
         sc["lost_facts"] = lost_facts(sc)
+    broken = [sc for sc in scenarios if sc["lost_facts"]]
+    if broken:
+        say(f"    сценарии потеряли факты строк критериев: {', '.join(sc['id'] for sc in broken)} — исправление")
+        try:
+            fx = llm.json(P.SYSTEM, P.scenario_fix_prompt(_j(broken)), "4/7 исправление сценариев")
+            for new in (fx.get("scenarios", []) if isinstance(fx, dict) else []):
+                old = next((sc for sc in scenarios if sc["id"] == new.get("id")), None)
+                if old is not None and isinstance(new.get("input"), dict):
+                    old["input"], old["expected"] = new["input"], new.get("expected") or old.get("expected")
+                    old["lost_facts"] = lost_facts(old)
+        except ValueError:
+            pass
     # 4б «слепая» трассировка и сравнение с критериями приёмки
     spec["traces"] = oracle(llm, doc, rj, scenarios)
     compare(llm, scenarios, spec["traces"])
@@ -144,7 +156,17 @@ def lost_facts(sc: Dict) -> List[str]:
     facts = set(_re.findall(r"\d{1,2}:\d{2}", q))
     for n in _re.findall(r"\d[\d \u00a0]*\d|\d", _re.sub(r"\d{1,2}:\d{2}", " ", q)):
         facts.add(_re.sub(r"\s", "", n))
-    return sorted(f for f in facts if f not in blob)
+    lost = sorted(f for f in facts if f not in blob)
+    # Месяц в виде прилагательного («Февральский счётчик») описывает ожидаемый результат —
+    # он должен попасть именно в expected.
+    months = ["январ", "феврал", "март", "апрел", "ма", "июн", "июл", "август", "сентябр", "октябр", "ноябр", "декабр"]
+    exp_blob = json.dumps(sc.get("expected"), ensure_ascii=False).lower()
+    for i, stem in enumerate(months, start=1):
+        for m_ in _re.finditer(r"\b" + stem + r"\w*ск\w*", q.lower()):
+            if not (stem in exp_blob or f"-{i:02d}" in exp_blob or f'"{i:02d}"' in exp_blob
+                    or _re.search(r'"month[^"]*"\s*:\s*' + str(i) + r"\b", exp_blob)):
+                lost.append(m_.group(0))
+    return sorted(set(lost))
 
 
 def oracle(llm: LLM, doc: Document, rj: str, scenarios: List[Dict], batch: int = 4) -> Dict[str, Dict]:

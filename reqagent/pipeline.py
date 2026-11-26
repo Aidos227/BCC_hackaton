@@ -207,9 +207,9 @@ def oracle_findings(spec: Dict, reqs: List[Dict]) -> List[Dict]:
             out.append(_of(sc, "set_consistent", "critical",
                            f"Критерий приёмки противоречит правилам ({sc['id']})",
                            [sc.get("quote", "")] + rq, ids,
-                           f"По правилам документа (вывод без доступа к критерию): {t.get('derived', '')}. "
-                           f"Критерий приёмки ожидает: {json.dumps(sc.get('expected'), ensure_ascii=False)}. "
-                           f"Расхождение: {t.get('difference', '')}.",
+                           f"По правилам документа (вывод сделан без доступа к критерию): {t.get('derived', '').rstrip('.')}. "
+                           f"Критерий приёмки: «{sc.get('quote', '')}». "
+                           f"Расхождение: {t.get('difference', '').rstrip('.')}.",
                            blocked or "Какой ожидаемый результат закладывать в тест и в реализацию.", ev))
         if t.get("conflict") and t.get("acceptance") != "mismatch":
             out.append(_of(sc, "set_consistent", "critical",
@@ -417,7 +417,7 @@ def verify(llm: LLM, doc: Document, cand: List[Dict]) -> List[Dict]:
                 "quotes": [a["text"] for a in f["anchored"]], "problem": f.get("problem"),
                 **({"evidence": f["evidence"]} if f.get("evidence") else {})} for f in cand]
     verdicts: Dict[str, Dict] = {}
-    queue = [payload[i:i + 25] for i in range(0, len(payload), 25)]
+    queue = [payload[i:i + 35] for i in range(0, len(payload), 35)]
     while queue:
         part = queue.pop(0)
         try:

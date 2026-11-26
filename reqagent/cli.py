@@ -121,7 +121,7 @@ def main(argv=None) -> int:
     delta = ""
     if a.compare:
         prev = json.loads(Path(a.compare).read_text(encoding="utf-8"))
-        delta = delta_md(prev, res["confirmed"], Path(a.compare).name)
+        delta = delta_md(prev, res["confirmed"], Path(a.compare).name, doc)
     out.write_text(render(doc, res, passport, llm.usage.log, delta), encoding="utf-8")
     stem = out.with_suffix("")
     m = res.get("model") or {}

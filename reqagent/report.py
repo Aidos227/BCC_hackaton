@@ -47,7 +47,7 @@ def render(doc, res: Dict[str, Any], passport: Dict[str, str], log: List[Dict] =
     if crit:
         w("**Главное (критичные дефекты):**\n")
         for f in crit:
-            locs = "; ".join(where(a["anchor"], kind) for a in f["anchored"])
+            locs = "; ".join(dict.fromkeys(where(a["anchor"], kind) for a in f["anchored"]))
             w(f"- **{f['fid']}** — {esc(f.get('title'))} ({locs}). Нельзя решить: {esc(f.get('blocked_decision'))}")
         w("")
     if delta:
@@ -163,7 +163,7 @@ def render(doc, res: Dict[str, Any], passport: Dict[str, str], log: List[Dict] =
     w("**Критичные дефекты:**\n")
     if crit:
         for f in crit:
-            locs = "; ".join(where(a["anchor"], kind) for a in f["anchored"])
+            locs = "; ".join(dict.fromkeys(where(a["anchor"], kind) for a in f["anchored"]))
             w(f"- **{f['fid']}** ({CRIT_NAMES.get(f.get('criterion'), f.get('criterion'))}) — {esc(f.get('title'))}. "
               f"Место: {locs}.")
     else:
@@ -338,18 +338,32 @@ def _match(a: Dict, b: Dict) -> bool:
     return len(small) >= 2 and covered == len(small)
 
 
-def delta_md(prev: Dict, cur_confirmed: List[Dict], prev_name: str) -> str:
-    """Какие замечания прошлого прогона закрыты, какие остались, какие новые (сопоставление по цитатам)."""
+def delta_md(prev: Dict, cur_confirmed: List[Dict], prev_name: str, doc=None) -> str:
+    """Какие замечания прошлого прогона ушли, какие остались, какие новые (сопоставление по цитатам).
+    Ушедшие делятся честно на две группы: процитированный текст изменён (причина устранена) и
+    текст не менялся (замечание просто не воспроизвелось в этом прогоне)."""
     old = [f for f in prev.get("confirmed", []) if f.get("severity") in ("critical", "major")]
     new = [f for f in cur_confirmed if f.get("severity") in ("critical", "major")]
-    closed = [o for o in old if not any(_match(o, n) for n in new)]
+    gone = [o for o in old if not any(_match(o, n) for n in new)]
     added = [n for n in new if not any(_match(n, o) for o in old)]
     kept = len(new) - len(added)
+
+    def text_changed(f: Dict) -> bool:
+        if doc is None:
+            return True
+        return any(not doc.locate(a["text"]).found for a in f.get("anchored") or [])
+
+    fixed = [f for f in gone if text_changed(f)]
+    unstable = [f for f in gone if not text_changed(f)]
     o = [f"## 0. Изменения относительно прошлого прогона (`{esc(prev_name)}`)\n",
-         "Сопоставление по цитатам (критичные и существенные замечания).\n",
-         f"| Закрыто | Осталось | Новых |\n|---|---|---|\n| {len(closed)} | {kept} | {len(added)} |\n"]
-    for f in closed:
+         "Сопоставление по цитатам (критичные и существенные замечания). «Закрыто» — только если процитированный "
+         "в прошлом замечании текст в документе изменился.\n",
+         f"| Закрыто (текст исправлен) | Не воспроизвелось (текст тот же) | Осталось | Новых |\n|---|---|---|---|\n"
+         f"| {len(fixed)} | {len(unstable)} | {kept} | {len(added)} |\n"]
+    for f in fixed:
         o.append(f"- ✔ закрыто: {f.get('fid')} — {esc(f.get('title'))} (было: {SEV_RU.get(f.get('severity'), '')})")
+    for f in unstable:
+        o.append(f"- ? не воспроизвелось, текст не менялся: {f.get('fid')} — {esc(f.get('title'))}")
     for f in added:
         o.append(f"- ✚ новое: {f.get('fid')} — {esc(f.get('title'))} ({SEV_RU.get(f.get('severity'), '')})")
     return "\n".join(o) + "\n"

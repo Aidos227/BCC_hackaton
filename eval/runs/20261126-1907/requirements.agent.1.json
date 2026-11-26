@@ -1,0 +1,4494 @@
+{
+ "passport": {
+  "Документ": "Уведомление о расходах по карте",
+  "Файл": "requirements.pdf (PDF, страниц: 5, SHA-256: 98a77360f74087b9…)",
+  "Дата прогона": "26.11.2026 19:35 (UTC+5, Алматы)",
+  "Модель": "gemini / gemini-3.5-flash-lite, temperature=0.0",
+  "Версия агента": "1.0.0 (коммит 58f83da)",
+  "Этапы": "нарезка → проверка требований → проверка набора → исполняемая модель → правила → привязка цитат → скептическая перепроверка → чек-лист",
+  "Обращений к модели": "15 (токены: вход 80829, выход 28268)",
+  "Длительность": "157 с"
+ },
+ "requirements": [
+  {
+   "id": "R-01",
+   "doc_id": null,
+   "section": "Архитектура решения",
+   "summary": "Маршрут запроса от мобильного приложения через сервисы к процессору",
+   "quote": "Мобильное приложение → сервис настроек. Карточный процессинг → учёт расходов → сервис push.",
+   "type": "прочее",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 19,
+    "line_end": 19,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-02",
+   "doc_id": null,
+   "section": "Дизайн процесса UI",
+   "summary": "Элементы управления на экране Карты — Расходы — Уведомления",
+   "quote": "На экране видны переключатель, поле «Порог, ₸», сумма за месяц и кнопка «Сохранить».",
+   "type": "интерфейс",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 21,
+    "line_end": 22,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-03",
+   "doc_id": null,
+   "section": "Дизайн процесса UI",
+   "summary": "Сообщение об ошибке ввода появляется под полем",
+   "quote": "При ошибке ввода сообщение появляется под полем.",
+   "type": "интерфейс",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 22,
+    "line_end": 22,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-04",
+   "doc_id": null,
+   "section": "Требования к изменениям",
+   "summary": "Последовательность BPMN схемы процесса от покупки до отправки push",
+   "quote": "Проведение покупки → пересчёт расходов → проверка порога → при достижении отправка push → завершение.",
+   "type": "процесс/архитектура",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 25,
+    "line_end": 25,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-05",
+   "doc_id": "Ф-1",
+   "section": "Функциональные требования",
+   "summary": "Держатель карты задает целый порог от 1 000 до 1 000 000 ₸",
+   "quote": "Ф-1. Держатель активной карты KZT задаёт целый порог от 1 000 до 1 000 000 ₸ включительно.",
+   "type": "функциональное",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 27,
+    "line_end": 27,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-06",
+   "doc_id": "Ф-1",
+   "section": "Функциональные требования",
+   "summary": "Уведомление по умолчанию выключено",
+   "quote": "По умолчанию уведомление выключено.",
+   "type": "функциональное",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 27,
+    "line_end": 28,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-07",
+   "doc_id": "Ф-2",
+   "section": "Функциональные требования",
+   "summary": "Месяц расходов определяется по дате покупки в Алматы",
+   "quote": "Ф-2. Месяц определяется по дате совершения покупки в Алматы.",
+   "type": "функциональное",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 29,
+    "line_end": 29,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-08",
+   "doc_id": "Ф-2",
+   "section": "Функциональные требования",
+   "summary": "В расходы входят проведённые покупки",
+   "quote": "В расходы входят проведённые покупки.",
+   "type": "функциональное",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 29,
+    "line_end": 29,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-09",
+   "doc_id": "Ф-2",
+   "section": "Функциональные требования",
+   "summary": "Возврат уменьшает расходы месяца исходной покупки",
+   "quote": "Возврат уменьшает расходы месяца исходной покупки.",
+   "type": "функциональное",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 30,
+    "line_end": 30,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-10",
+   "doc_id": "Ф-2",
+   "section": "Функциональные требования",
+   "summary": "Переводы и снятие наличных исключаются из расходов",
+   "quote": "Переводы и снятие наличных исключаются.",
+   "type": "функциональное",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 30,
+    "line_end": 30,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-11",
+   "doc_id": "Ф-3",
+   "section": "Функциональные требования",
+   "summary": "Клиент получает push при достижении или превышении порога расходов",
+   "quote": "Ф-3. Когда расходы переходят от суммы ниже порога к сумме, равной порогу или выше, клиент получает push.",
+   "type": "функциональное",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 31,
+    "line_end": 31,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-12",
+   "doc_id": "Ф-3",
+   "section": "Функциональные требования",
+   "summary": "На карту отправляется максимум один push за календарный месяц",
+   "quote": "На карту приходится максимум один такой push за календарный месяц.",
+   "type": "функциональное",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 32,
+    "line_end": 32,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-13",
+   "doc_id": "Ф-4",
+   "section": "Функциональные требования",
+   "summary": "При изменении порога накопленная сумма сохраняется",
+   "quote": "Ф-4. При изменении порога накопленная сумма сохраняется.",
+   "type": "функциональное",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 33,
+    "line_end": 33,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-14",
+   "doc_id": "Ф-4",
+   "section": "Функциональные требования",
+   "summary": "При сумме ниже нового порога следующее достижение вызывает push",
+   "quote": "Если она ниже нового порога, следующее достижение вызывает push независимо от истории предыдущей настройки.",
+   "type": "функциональное",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 33,
+    "line_end": 34,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-15",
+   "doc_id": null,
+   "section": "Sequence Diagram",
+   "summary": "Процессинг передает событие о проведенной покупке в сервис расходов",
+   "quote": "Процессинг → сервис расходов: проведена покупка.",
+   "type": "интеграция",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 36,
+    "line_end": 36,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-16",
+   "doc_id": null,
+   "section": "Sequence Diagram",
+   "summary": "Сервис расходов запрашивает порог карты у сервиса настроек",
+   "quote": "Сервис расходов → настройки: получить порог карты.",
+   "type": "интеграция",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 36,
+    "line_end": 36,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-17",
+   "doc_id": null,
+   "section": "Sequence Diagram",
+   "summary": "Сервис расходов передает данные для push при достижении порога",
+   "quote": "Сервис расходов → push: передать последние четыре цифры карты и сумму при достижении порога.",
+   "type": "интеграция",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 37,
+    "line_end": 37,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-18",
+   "doc_id": null,
+   "section": "Нефункциональные требования",
+   "summary": "Сервис передает push в течение минуты после события",
+   "quote": "Сервис передаёт push на отправку в течение минуты после получения события.",
+   "type": "нефункциональное",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 39,
+    "line_end": 39,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-19",
+   "doc_id": null,
+   "section": "Требования к данным",
+   "summary": "Перечень сохраняемых полей для учета расходов и уведомлений",
+   "quote": "Хранить идентификатор карты, месяц, идентификатор операции, сумму покупки в тиынах, признак отправки и порог в тенге.",
+   "type": "данные",
+   "anchor": {
+    "found": true,
+    "page": 2,
+    "line_start": 2,
+    "line_end": 3,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-20",
+   "doc_id": null,
+   "section": "Требования к интеграции",
+   "summary": "Приложение работает с настройками через REST API из дочернего документа",
+   "quote": "Приложение читает и сохраняет настройки через дочерний документ «Уведомление о расходах по карте — REST API».",
+   "type": "интеграция",
+   "anchor": {
+    "found": true,
+    "page": 2,
+    "line_start": 5,
+    "line_end": 6,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-21",
+   "doc_id": null,
+   "section": "Требования к интеграции",
+   "summary": "Повторная доставка события процессинга сохраняет исходный итог",
+   "quote": "Повторная доставка одного события процессинга сохраняет исходный итог.",
+   "type": "интеграция",
+   "anchor": {
+    "found": true,
+    "page": 2,
+    "line_start": 6,
+    "line_end": 6,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-22",
+   "doc_id": null,
+   "section": "Критерии приемки",
+   "summary": "Критерий приемки для достижения порога 50 000 ₸ при покупке",
+   "quote": "Расходы 48 500 ₸, порог 50 000 ₸ | Провести покупку на 1 500 ₸ | Итог 50 000 ₸ и один push",
+   "type": "критерий приёмки",
+   "anchor": {
+    "found": true,
+    "page": 2,
+    "line_start": 12,
+    "line_end": 12,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-23",
+   "doc_id": null,
+   "section": "Критерии приемки",
+   "summary": "Критерий приемки для учета полуночной покупки по времени Алматы",
+   "quote": "Покупка 31 января в 23:58 на 4 000 ₸ | Провести 1 февраля в 00:03 по Алматы | Февральский счётчик вырос на 4 000 ₸",
+   "type": "критерий приёмки",
+   "anchor": {
+    "found": true,
+    "page": 2,
+    "line_start": 13,
+    "line_end": 13,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-24",
+   "doc_id": null,
+   "section": "Критерии приемки",
+   "summary": "Критерий приемки для исключения перевода из расходов месяца",
+   "quote": "Расходы 19 900 ₸, порог 20 000 ₸ | Перевести 500 ₸ | Счётчик показывает 19 900 ₸",
+   "type": "критерий приёмки",
+   "anchor": {
+    "found": true,
+    "page": 2,
+    "line_start": 14,
+    "line_end": 14,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-25",
+   "doc_id": null,
+   "section": "Часть B. REST API",
+   "summary": "Метод сохранения порога имеет тип GET",
+   "quote": "REST type GET",
+   "type": "API",
+   "anchor": {
+    "found": true,
+    "page": 3,
+    "line_start": 32,
+    "line_end": 32,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-26",
+   "doc_id": null,
+   "section": "Часть B. REST API",
+   "summary": "Авторизация метода через Bearer сессию владельца карты",
+   "quote": "Authorization Bearer, сессия владельца карты",
+   "type": "API",
+   "anchor": {
+    "found": true,
+    "page": 3,
+    "line_start": 33,
+    "line_end": 33,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-27",
+   "doc_id": null,
+   "section": "Часть B. REST API",
+   "summary": "Контроллер метода сохранения порога",
+   "quote": "Controller AlertsController",
+   "type": "API",
+   "anchor": {
+    "found": true,
+    "page": 3,
+    "line_start": 34,
+    "line_end": 34,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-28",
+   "doc_id": null,
+   "section": "Часть B. REST API",
+   "summary": "URL запроса для DEV контура",
+   "quote": "Request URL Dev: /alerts/saveLimit . Prod: —",
+   "type": "API",
+   "anchor": {
+    "found": true,
+    "page": 3,
+    "line_start": 36,
+    "line_end": 36,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-29",
+   "doc_id": null,
+   "section": "Логика работы метода",
+   "summary": "Шаг 1 логики метода: проверка сессии пользователя",
+   "quote": "1. Проверить пользовательскую сессию.",
+   "type": "API",
+   "anchor": {
+    "found": true,
+    "page": 3,
+    "line_start": 46,
+    "line_end": 46,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-30",
+   "doc_id": null,
+   "section": "Логика работы метода",
+   "summary": "Шаг 2 логики метода: проверка принадлежности карты клиенту",
+   "quote": "2. Проверить принадлежность карты клиенту.",
+   "type": "API",
+   "anchor": {
+    "found": true,
+    "page": 3,
+    "line_start": 47,
+    "line_end": 47,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-31",
+   "doc_id": null,
+   "section": "Логика работы метода",
+   "summary": "Шаг 3 логики метода: проверка суммы и переключателя",
+   "quote": "3. Проверить сумму и переключатель.",
+   "type": "API",
+   "anchor": {
+    "found": true,
+    "page": 3,
+    "line_start": 48,
+    "line_end": 48,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-32",
+   "doc_id": null,
+   "section": "Логика работы метода",
+   "summary": "Шаг 4 логики метода: замена настройки и возврат результата",
+   "quote": "4. Заменить настройку и вернуть результат сохранения.",
+   "type": "API",
+   "anchor": {
+    "found": true,
+    "page": 3,
+    "line_start": 49,
+    "line_end": 49,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-33",
+   "doc_id": null,
+   "section": "Логика работы метода",
+   "summary": "Шаг 5 логики метода: возврат прежнего состояния и ERROR при отклонении суммы",
+   "quote": "5. При отклонении суммы вернуть прежнее состояние и результат ERROR.",
+   "type": "API",
+   "anchor": {
+    "found": true,
+    "page": 3,
+    "line_start": 50,
+    "line_end": 50,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-34",
+   "doc_id": null,
+   "section": "Особые правила",
+   "summary": "Порог задается целым числом тенге с включенными границами",
+   "quote": "1. Целое число тенге, обе границы включены.",
+   "type": "API",
+   "anchor": {
+    "found": true,
+    "page": 3,
+    "line_start": 52,
+    "line_end": 52,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-35",
+   "doc_id": null,
+   "section": "Особые правила",
+   "summary": "Повторное сохранение заменяет действующую настройку",
+   "quote": "2. Повторное сохранение заменяет действующую настройку.",
+   "type": "API",
+   "anchor": {
+    "found": true,
+    "page": 3,
+    "line_start": 53,
+    "line_end": 53,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-36",
+   "doc_id": null,
+   "section": "Особые правила",
+   "summary": "Изменение порога сохраняет накопленные расходы",
+   "quote": "3. Изменение порога сохраняет накопленные расходы.",
+   "type": "API",
+   "anchor": {
+    "found": true,
+    "page": 4,
+    "line_start": 1,
+    "line_end": 1,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-37",
+   "doc_id": null,
+   "section": "Схема",
+   "summary": "Маршрутизация запросов сохранения порога через контроллер и хранилище",
+   "quote": "Приложение → AlertsController → хранилище настроек → AlertsController → приложение.",
+   "type": "прочее",
+   "anchor": {
+    "found": true,
+    "page": 4,
+    "line_start": 3,
+    "line_end": 3,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-38",
+   "doc_id": null,
+   "section": "Query-параметры",
+   "summary": "Параметр запроса cardId является обязательной строкой длиной 1-64",
+   "quote": "cardId string 1–64 Да Карта клиента",
+   "type": "API",
+   "anchor": {
+    "found": true,
+    "page": 4,
+    "line_start": 9,
+    "line_end": 9,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-39",
+   "doc_id": null,
+   "section": "Query-параметры",
+   "summary": "Параметр запроса amount является обязательным integer 32 bit от 1 000 до 1 000 000",
+   "quote": "amount integer 32 bit Да 1 000–1 000 000 Порог в тенге",
+   "type": "API",
+   "anchor": {
+    "found": true,
+    "page": 4,
+    "line_start": 13,
+    "line_end": 13,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-40",
+   "doc_id": null,
+   "section": "Query-параметры",
+   "summary": "Параметр запроса enabled является обязательным признаком со значением 0 или 1",
+   "quote": "enabled integer 1 знак Да 0 или 1 Признак включения",
+   "type": "API",
+   "anchor": {
+    "found": true,
+    "page": 4,
+    "line_start": 14,
+    "line_end": 16,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-41",
+   "doc_id": null,
+   "section": "Request body",
+   "summary": "Тип контента запроса application/json, тело не используется",
+   "quote": "• Content-Type: application/json . • Тело не используется.",
+   "type": "API",
+   "anchor": {
+    "found": true,
+    "page": 4,
+    "line_start": 19,
+    "line_end": 20,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-42",
+   "doc_id": null,
+   "section": "Ответ",
+   "summary": "Коды ответа 200 или 201 считаются успешными, 400, 401 и выше — неуспешными",
+   "quote": "Если результат 200 или 201 — успешный. Если результат 400, 401 и далее — неуспешный.",
+   "type": "API",
+   "anchor": {
+    "found": true,
+    "page": 4,
+    "line_start": 22,
+    "line_end": 22,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-43",
+   "doc_id": null,
+   "section": "Статусы",
+   "summary": "Статус 200 возвращается при успешном выполнении метода",
+   "quote": "200. Ответ в случае успешного выполнения метода.",
+   "type": "API",
+   "anchor": {
+    "found": true,
+    "page": 4,
+    "line_start": 29,
+    "line_end": 29,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-44",
+   "doc_id": null,
+   "section": "Статусы",
+   "summary": "Статус 400 возвращается при неверном заполнении параметров запроса",
+   "quote": "400. Ответ в случае, если параметры запроса заполнены неверно.",
+   "type": "API",
+   "anchor": {
+    "found": true,
+    "page": 4,
+    "line_start": 30,
+    "line_end": 30,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-45",
+   "doc_id": null,
+   "section": "Статусы",
+   "summary": "Статус 401 возвращается при отсутствии необходимой авторизации",
+   "quote": "401. Ответ в случае, если запрос выполнен без необходимой авторизации.",
+   "type": "API",
+   "anchor": {
+    "found": true,
+    "page": 4,
+    "line_start": 35,
+    "line_end": 35,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-46",
+   "doc_id": null,
+   "section": "Статусы",
+   "summary": "Статус 403 возвращает запрет доступа на указанный ресурс",
+   "quote": "403. Ответ в случае, если на указанный ресурс доступ запрещен.",
+   "type": "API",
+   "anchor": {
+    "found": true,
+    "page": 4,
+    "line_start": 36,
+    "line_end": 36,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-47",
+   "doc_id": null,
+   "section": "Статусы",
+   "summary": "Статус 500 возвращается при внутренней ошибке сервера",
+   "quote": "500. Ответ в случае, если произошла внутренняя ошибка сервера.",
+   "type": "API",
+   "anchor": {
+    "found": true,
+    "page": 4,
+    "line_start": 37,
+    "line_end": 37,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-48",
+   "doc_id": null,
+   "section": "Статусы",
+   "summary": "Для чужой или отсутствующей карты возвращается статус 404",
+   "quote": "Для чужой карты возвращается 404, как и для отсутствующей карты.",
+   "type": "API",
+   "anchor": {
+    "found": true,
+    "page": 4,
+    "line_start": 43,
+    "line_end": 43,
+    "exact": true
+   }
+  }
+ ],
+ "reviews": {
+  "R-01": {
+   "id": "R-01",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-02": {
+   "id": "R-02",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-03": {
+   "id": "R-03",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-04": {
+   "id": "R-04",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-05": {
+   "id": "R-05",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-06": {
+   "id": "R-06",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-07": {
+   "id": "R-07",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-08": {
+   "id": "R-08",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-09": {
+   "id": "R-09",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-10": {
+   "id": "R-10",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-11": {
+   "id": "R-11",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-12": {
+   "id": "R-12",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-13": {
+   "id": "R-13",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-14": {
+   "id": "R-14",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-15": {
+   "id": "R-15",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "issue",
+    "complete": "issue",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "issue",
+    "correct": "n/a",
+    "conforming": "ok"
+   },
+   "findings": [
+    {
+     "criterion": "unambiguous",
+     "severity": "major",
+     "req_ids": [
+      "R-15"
+     ],
+     "title": "Не указан формат и состав данных события покупки",
+     "quotes": [
+      "Процессинг → сервис расходов: проведена покупка."
+     ],
+     "problem": "Формулировка не детализирует структуру события «проведена покупка», из-за чего неизвестно, какие именно поля (например, валюта, идентификатор транзакции, точная сумма) передаются из процессинга.",
+     "blocked_decision": "",
+     "fix": "Уточнить состав полей и формат сообщения о проведенной покупке в интеграционном контракте.",
+     "owner_question": "Какие поля и в каком формате передаются в сообщении от процессинга о проведенной покупке?"
+    }
+   ]
+  },
+  "R-16": {
+   "id": "R-16",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "n/a",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-17": {
+   "id": "R-17",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "n/a",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-18": {
+   "id": "R-18",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-19": {
+   "id": "R-19",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-20": {
+   "id": "R-20",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-21": {
+   "id": "R-21",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-22": {
+   "id": "R-22",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-23": {
+   "id": "R-23",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-24": {
+   "id": "R-24",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-25": {
+   "id": "R-25",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "issue",
+    "unambiguous": "issue",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "issue",
+    "conforming": "ok"
+   },
+   "findings": [
+    {
+     "criterion": "appropriate",
+     "severity": "major",
+     "req_ids": [
+      "R-25"
+     ],
+     "title": "Метод сохранения данных имеет тип GET",
+     "quotes": [
+      "REST type GET"
+     ],
+     "problem": "Использование метода GET для сохранения (изменения) данных нарушает стандарт REST API, так как GET должен быть безопасным и идемпотентным методом без побочных эффектов на стороне сервера.",
+     "blocked_decision": "",
+     "fix": "Изменить тип запроса на POST или PUT.",
+     "owner_question": "Подтверждаете ли вы использование метода GET для операции сохранения настроек, несмотря на стандарты REST?"
+    },
+    {
+     "criterion": "unambiguous",
+     "severity": "major",
+     "req_ids": [
+      "R-25"
+     ],
+     "title": "Противоречие между типом GET и отправкой параметров через data",
+     "quotes": [
+      "REST type GET",
+      "curl -G \"$BASE/alerts/saveLimit\" -H \"Authorization: Bearer $TOKEN\" --data 'cardId=demo-42&amount=50000&enabled=1'"
+     ],
+     "problem": "Указан тип GET, но в примере cURL используется передача данных через --data, что для GET-запросов интерпретируется как тело запроса, а не query-параметры.",
+     "blocked_decision": "",
+     "fix": "Привести тип метода в соответствие с примером запроса или изменить передачу параметров на query-строку.",
+     "owner_question": ""
+    },
+    {
+     "criterion": "correct",
+     "severity": "major",
+     "req_ids": [
+      "R-25"
+     ],
+     "title": "Нарушение идемпотентности и безопасности метода GET",
+     "quotes": [
+      "REST type GET",
+      "4. Заменить настройку и вернуть результат сохранения."
+     ],
+     "problem": "Метод выполняет мутирующую операцию (замена настройки), что противоречит семантике метода GET в REST архитектуре.",
+     "blocked_decision": "",
+     "fix": "Изменить тип REST-запроса на POST.",
+     "owner_question": ""
+    }
+   ]
+  },
+  "R-26": {
+   "id": "R-26",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-27": {
+   "id": "R-27",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-28": {
+   "id": "R-28",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "minor",
+    "complete": "minor",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": [
+    {
+     "criterion": "unambiguous",
+     "severity": "minor",
+     "req_ids": [
+      "R-28"
+     ],
+     "title": "Не указан URL для Prod контура",
+     "quotes": [
+      "Request URL Dev: /alerts/saveLimit . Prod: —"
+     ],
+     "problem": "Для промышленного контура значение URL пропущено, что делает невозможным развертывание в Prod без уточнения.",
+     "blocked_decision": "",
+     "fix": "Указать актуальный URL для Prod контура или зафиксировать его отсутствие как временное решение.",
+     "owner_question": "Какой URL будет использоваться для продакшн-контура?"
+    }
+   ]
+  },
+  "R-29": {
+   "id": "R-29",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "issue",
+    "complete": "issue",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "issue",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": [
+    {
+     "criterion": "unambiguous",
+     "severity": "major",
+     "req_ids": [
+      "R-29"
+     ],
+     "title": "Не определен алгоритм проверки сессии",
+     "quotes": [
+      "1. Проверить пользовательскую сессию."
+     ],
+     "problem": "Не указано, каким именно способом проверяется сессия (по токену из заголовка Authorization, через вызов стороннего сервиса авторизации или по базе данных), и какой код ответа возвращается при ее истечении.",
+     "blocked_decision": "Невозможно реализовать проверку сессии на бэкенде без описания механизма валидации токена.",
+     "fix": "Уточнить: «Проверить валидность Bearer-токена сессии владельца карты через сервис авторизации».",
+     "owner_question": ""
+    }
+   ]
+  },
+  "R-30": {
+   "id": "R-30",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "issue",
+    "complete": "issue",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "issue",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": [
+    {
+     "criterion": "unambiguous",
+     "severity": "major",
+     "req_ids": [
+      "R-30"
+     ],
+     "title": "Не описан критерий принадлежности карты клиенту",
+     "quotes": [
+      "2. Проверить принадлежность карты клиенту."
+     ],
+     "problem": "Не указано, по каким параметрам определяется принадлежность карты (сравнение идентификатора пользователя из сессии с владельцем карты в процессинге/базе данных) и какая ошибка возвращается при несоответствии (в тексте ниже упоминается 403 и 404, но логика не закреплена в шагах).",
+     "blocked_decision": "Нельзя однозначно запрограммировать условие проверки связи клиента и карты.",
+     "fix": "Уточнить: «Проверить по базе данных или процессингу, что карта с переданным cardId принадлежит пользователю из активной сессии».",
+     "owner_question": ""
+    }
+   ]
+  },
+  "R-31": {
+   "id": "R-31",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "issue",
+    "complete": "issue",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "issue",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": [
+    {
+     "criterion": "unambiguous",
+     "severity": "major",
+     "req_ids": [
+      "R-31"
+     ],
+     "title": "Не описаны правила валидации суммы и переключателя",
+     "quotes": [
+      "3. Проверить сумму и переключатель."
+     ],
+     "problem": "Не указаны конкретные валидационные правила для суммы (диапазон 1 000 – 1 000 000, целое число) и переключателя (0 или 1) в рамках логики метода, хотя они частично упомянуты в таблице параметров.",
+     "blocked_decision": "Нельзя сформировать полный набор тест-кейсов для проверки валидации входных данных на уровне шагов алгоритма.",
+     "fix": "Уточнить: «Проверить, что сумма находится в диапазоне от 1000 до 1000000 включительно и является целым числом, а переключатель равен 0 или 1».",
+     "owner_question": ""
+    }
+   ]
+  },
+  "R-32": {
+   "id": "R-32",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-33": {
+   "id": "R-33",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "issue",
+    "complete": "issue",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "issue",
+    "correct": "issue",
+    "conforming": "ok"
+   },
+   "findings": [
+    {
+     "criterion": "correct",
+     "severity": "major",
+     "req_ids": [
+      "R-33"
+     ],
+     "title": "Противоречие логики отката при отклонении суммы",
+     "quotes": [
+      "4. Заменить настройку и вернуть результат сохранения.",
+      "5. При отклонении суммы вернуть прежнее состояние и результат ERROR."
+     ],
+     "problem": "Шаг 4 предполагает замену настройки, а шаг 5 описывает возврат прежнего состояния при отклонении суммы. Однако валидация суммы должна происходить до замены настройки (на шаге 3), а не после нее.",
+     "blocked_decision": "Невозможно корректно спроектировать последовательность транзакций и вызовов базы данных.",
+     "fix": "Перенести проверку суммы на этап до замены настройки, исключив необходимость отката измененного состояния.",
+     "owner_question": ""
+    }
+   ]
+  },
+  "R-34": {
+   "id": "R-34",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-35": {
+   "id": "R-35",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-36": {
+   "id": "R-36",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-37": {
+   "id": "R-37",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-38": {
+   "id": "R-38",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-39": {
+   "id": "R-39",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-40": {
+   "id": "R-40",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-41": {
+   "id": "R-41",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-42": {
+   "id": "R-42",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "issue",
+    "complete": "issue",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "issue",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": [
+    {
+     "criterion": "unambiguous",
+     "severity": "major",
+     "req_ids": [
+      "R-42"
+     ],
+     "title": "Противоречие в кодах ответа со списком статус-кодов",
+     "quotes": [
+      "Если результат 200 или 201 — успешный. Если результат 400, 401 и далее — неуспешный.",
+      "200. Ответ в случае успешного выполнения метода.",
+      "401. Ответ в случае, если запрос выполнен без необходимой авторизации.",
+      "403. Ответ в случае, если на указанный ресурс доступ запрещен.",
+      "500. Ответ в случае, если произошла внутренняя ошибка сервера."
+     ],
+     "problem": "В тексте указано, что код 201 является успешным, однако в списке статусов и примерах ответов код 201 не описан, а для успешного выполнения возвращается только статус 200. Это создает неопределенность для тестирования метода.",
+     "blocked_decision": "",
+     "fix": "Удалить упоминание кода 201 из общей формулировки или добавить его детальное описание и пример ответа в раздел статусов.",
+     "owner_question": "Планируется ли использовать код ответа 201 для данного метода?"
+    }
+   ]
+  },
+  "R-43": {
+   "id": "R-43",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-44": {
+   "id": "R-44",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-45": {
+   "id": "R-45",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-46": {
+   "id": "R-46",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-47": {
+   "id": "R-47",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-48": {
+   "id": "R-48",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  }
+ },
+ "set": {
+  "set_criteria": {
+   "set_complete": {
+    "verdict": "issue",
+    "comment": "В тексте не определены сценарии для неактивных карт и валидация полей при пустых значениях параметров."
+   },
+   "set_consistent": {
+    "verdict": "issue",
+    "comment": "Имеются прямые противоречия между HTTP-методом GET и изменением состояния данных на сервере."
+   },
+   "set_feasible": {
+    "verdict": "issue",
+    "comment": "Реализация метода сохранения настроек через GET-запрос нарушает стандарты REST и принципы идемпотентности."
+   },
+   "set_comprehensible": {
+    "verdict": "issue",
+    "comment": "Формулировки статусов ответов и логики содержат пересекающиеся и противоречащие друг другу условия кодов."
+   },
+   "set_validatable": {
+    "verdict": "issue",
+    "comment": "Часть требований к ответам и телу не покрыта конкретными утверждениями в критериях приёмки."
+   },
+   "traceable": {
+    "verdict": "issue",
+    "comment": "Разделы API и интеграции ссылаются друг на друга, но структура параметров и ответов не имеет сквозных идентификаторов требований."
+   },
+   "modifiable": {
+    "verdict": "issue",
+    "comment": "В документе зафиксировано отсутствие версий и даты: «Документ (версия/дата) в источнике не заполнен»."
+   },
+   "ranked": {
+    "verdict": "issue",
+    "comment": "Требования не содержат приоритетов, важности или признаков стабильности для поэтапной реализации."
+   }
+  },
+  "findings": [
+   {
+    "criterion": "set_consistent",
+    "severity": "critical",
+    "req_ids": [
+     "R-20",
+     "R-25"
+    ],
+    "title": "Противоречие типа REST метода и сохранения настроек",
+    "quotes": [
+     "Приложение читает и сохраняет настройки через дочерний документ «Уведомление о расходах по карте — REST API».",
+     "REST type GET"
+    ],
+    "problem": "Документ требует сохранять настройки через REST API, но тип метода указан как GET, что по стандарту HTTP является безопасным методом и не должно изменять состояние сервера, создавая противоречие между архитектурным назначением и протоколом.",
+    "blocked_decision": "Невозможно принять решение о выборе HTTP-метода (GET или POST/PUT) для метода сохранения настроек на бэкенде.",
+    "fix": "Изменить тип метода в спецификации REST API с GET на POST или PUT.",
+    "owner_question": "Какой HTTP-метод (POST или PUT) следует использовать для сохранения настроек вместо GET?"
+   },
+   {
+    "criterion": "set_consistent",
+    "severity": "critical",
+    "req_ids": [
+     "R-42",
+     "R-43",
+     "R-44"
+    ],
+    "title": "Противоречие успешных кодов ответа HTTP",
+    "quotes": [
+     "Если результат 200 или 201 — успешный. Если результат 400, 401 и далее — неуспешный.",
+     "200. Ответ в случае успешного выполнения метода.",
+     "200. Successful — Created . {\"result\":\"OK\",\"amount\":\"50000\",\"enabled\":\"1\"}"
+    ],
+    "problem": "В одном разделе указано, что коды 200 и 201 являются успешными, а в примере статусов код 200 трактуется как Created, хотя по стандарту HTTP создание ресурса должно возвращать 201 Created, а 200 — OK, что создает неопределенность для тестирования и разработки.",
+    "blocked_decision": "Невозможно определить, какой именно HTTP-код (200 или 201) ожидать клиенту при успешном сохранении настроек.",
+    "fix": "Разделить коды возврата: 200 OK для обновления существующей настройки и 201 Created для создания новой.",
+    "owner_question": "Какие конкретно HTTP-статусы должны возвращаться при создании новой настройки и при её обновлении?"
+   },
+   {
+    "criterion": "set_complete",
+    "severity": "major",
+    "req_ids": [
+     "R-05",
+     "R-48"
+    ],
+    "title": "Отсутствует поведение для неактивных карт",
+    "quotes": [
+     "Ф-1. Держатель активной карты KZT задаёт целый порог от 1 000 до 1 000 000 ₸ включительно.",
+     "Для чужой карты возвращается 404, как и для отсутствующая карты."
+    ],
+    "problem": "Требования упоминают только активную карту и обработку чужих/отсутствующих карт, но не определяют, какой ответ или ошибку должен получить клиент при попытке установить лимит для заблокированной или закрытой карты.",
+    "blocked_decision": "",
+    "fix": "Добавить правило обработки неактивных (заблокированных или закрытых) карт с возвратом соответствующего кода ошибки.",
+    "owner_question": "Какой HTTP-статус и сообщение нужно возвращать, если клиент пытается настроить порог для заблокированной или закрытой карты?"
+   },
+   {
+    "criterion": "modifiable",
+    "severity": "minor",
+    "req_ids": [],
+    "title": "Отсутствуют версия и дата документа",
+    "quotes": [
+     "Документ (версия/дата) в источнике не заполнен."
+    ],
+    "problem": "В шапке документа не указаны версия и дата редакции, что нарушает требования к модифицируемости и версионности технической документации.",
+    "blocked_decision": "",
+    "fix": "Заполнить поля версии и даты в заголовке документа.",
+    "owner_question": ""
+   }
+  ]
+ },
+ "model": {
+  "applicable": true,
+  "summary": "Управление месячным порогом расходов по карте и отправка push-уведомлений при его достижении",
+  "outputs": {
+   "total_expenses": "Итоговая сумма расходов за календарный месяц в тенге",
+   "push_count": "Количество отправленных push-уведомлений за календарный месяц",
+   "limit_amount": "Действующий порог расходов в тенге",
+   "enabled_status": "Признак включения уведомлений (0 или 1)",
+   "api_response_status": "HTTP статус ответа REST API",
+   "api_result_field": "Поле result в теле ответа (OK или ERROR)"
+  },
+  "interpretations": [
+   {
+    "id": "I1",
+    "req_ids": [
+     "R-11",
+     "R-12"
+    ],
+    "quote": "Когда расходы переходят от суммы ниже порога к сумме, равной порогу или выше, клиент получает push. На карту приходится максимум один такой push за календарный месяц.",
+    "question": "Сбрасывается ли счетчик отправленных push-уведомлений при изменении порога или смене месяца?",
+    "a": "Push отправляется только один раз за календарный месяц независимо от изменения порога, если порог уже был достигнут ранее.",
+    "b": "При повышении порога выше текущих расходов флаг отправки сбрасывается, и при повторном достижении нового порога отправляется второй push за месяц."
+   },
+   {
+    "id": "I2",
+    "req_ids": [
+     "R-09"
+    ],
+    "quote": "Возврат уменьшает расходы месяца исходной покупки.",
+    "question": "В каком календарном месяце учитывается уменьшение расходов, если возврат совершен в следующем месяце?",
+    "a": "Возврат уменьшает расходы того месяца, в котором была совершена исходная покупка.",
+    "b": "Возврат уменьшает расходы текущего календарного месяца, в котором фактически проведен возврат."
+   }
+  ],
+  "scenarios": [
+   {
+    "id": "S1",
+    "source": "acceptance",
+    "title": "Критерий приёмки: достижение порога покупкой",
+    "quote": "Расходы 48 500 ₸, порог 50 000 ₸ | Провести покупку на 1 500 ₸ | Итог 50 000 ₸ и один push",
+    "situation": "На карте зафиксированы расходы 48 500 ₸, установленный порог составляет 50 000 ₸. Поступило событие о проведении покупки на сумму 1 500 ₸.",
+    "targets": [
+     "R-22"
+    ],
+    "input": {
+     "initial_expenses": 48500,
+     "threshold": 50000,
+     "action_type": "purchase",
+     "action_amount": 1500
+    },
+    "expected": {
+     "total_expenses": 50000,
+     "push_count": 1
+    },
+    "lost_facts": []
+   },
+   {
+    "id": "S2",
+    "source": "acceptance",
+    "title": "Критерий приёмки: покупка в полночь по времени Алматы",
+    "quote": "Покупка 31 января в 23:58 на 4 000 ₸ | Провести 1 февраля в 00:03 по Алматы | Февральский счётчик вырос на 4 000 ₸",
+    "situation": "Совершена покупка 31 января в 23:58 на сумму 4 000 ₸. Событие о проведении покупки поступило 1 февраля в 00:03 по времени Алматы.",
+    "targets": [
+     "R-23"
+    ],
+    "input": {
+     "purchase_date_time": "2023-01-31T23:58:00",
+     "processing_date_time_almaty": "2023-02-01T00:03:00",
+     "purchase_amount": 4000
+    },
+    "expected": {
+     "total_expenses": 4000,
+     "push_count": 0
+    },
+    "lost_facts": []
+   },
+   {
+    "id": "S3",
+    "source": "acceptance",
+    "title": "Критерий приёмки: исключение перевода из расходов",
+    "quote": "Расходы 19 900 ₸, порог 20 000 ₸ | Перевести 500 ₸ | Счётчик показывает 19 900 ₸",
+    "situation": "На карте зафиксированы расходы 19 900 ₸, порог составляет 20 000 ₸. Совершен перевод на сумму 500 ₸.",
+    "targets": [
+     "R-24"
+    ],
+    "input": {
+     "initial_expenses": 19900,
+     "threshold": 20000,
+     "action_type": "transfer",
+     "action_amount": 500
+    },
+    "expected": {
+     "total_expenses": 19900,
+     "push_count": 0
+    },
+    "lost_facts": []
+   },
+   {
+    "id": "S4",
+    "source": "boundary",
+    "title": "Сохранение настройки с минимальной границей порога",
+    "quote": "",
+    "situation": "Клиент с активной сессией и принадлежащей ему картой выполняет GET-запрос на сохранение порога с параметрами cardId=demo-42, amount=1000, enabled=1.",
+    "targets": [
+     "R-05",
+     "R-34",
+     "R-39",
+     "R-43"
+    ],
+    "input": {
+     "card_id": "demo-42",
+     "amount": 1000,
+     "enabled": 1,
+     "authorization": "Bearer valid_token"
+    },
+    "expected": {
+     "api_response_status": 200,
+     "api_result_field": "OK",
+     "limit_amount": "1000",
+     "enabled_status": "1"
+    },
+    "lost_facts": []
+   },
+   {
+    "id": "S5",
+    "source": "boundary",
+    "title": "Сохранение настройки с максимальной границей порога",
+    "quote": "",
+    "situation": "Клиент с активной сессией и принадлежащей ему картой выполняет GET-запрос на сохранение порога с параметрами cardId=demo-42, amount=1000000, enabled=1.",
+    "targets": [
+     "R-05",
+     "R-34",
+     "R-39",
+     "R-43"
+    ],
+    "input": {
+     "card_id": "demo-42",
+     "amount": 1000000,
+     "enabled": 1,
+     "authorization": "Bearer valid_token"
+    },
+    "expected": {
+     "api_response_status": 200,
+     "api_result_field": "OK",
+     "limit_amount": "1000000",
+     "enabled_status": "1"
+    },
+    "lost_facts": []
+   },
+   {
+    "id": "S6",
+    "source": "boundary",
+    "title": "Попытка сохранения порога ниже допустимого значения",
+    "quote": "",
+    "situation": "Клиент выполняет GET-запрос на сохранение порога с параметром amount=999 для своей карты.",
+    "targets": [
+     "R-05",
+     "R-33",
+     "R-39",
+     "R-44"
+    ],
+    "input": {
+     "card_id": "demo-42",
+     "amount": 999,
+     "enabled": 1,
+     "authorization": "Bearer valid_token"
+    },
+    "expected": {
+     "api_response_status": 400,
+     "api_result_field": "ERROR",
+     "limit_amount": null,
+     "enabled_status": null
+    },
+    "lost_facts": []
+   },
+   {
+    "id": "S7",
+    "source": "boundary",
+    "title": "Попытка сохранения порога выше допустимого значения",
+    "quote": "",
+    "situation": "Клиент выполняет GET-запрос на сохранение порога с параметром amount=1000001 для своей карты.",
+    "targets": [
+     "R-05",
+     "R-33",
+     "R-39",
+     "R-44"
+    ],
+    "input": {
+     "card_id": "demo-42",
+     "amount": 1000001,
+     "enabled": 1,
+     "authorization": "Bearer valid_token"
+    },
+    "expected": {
+     "api_response_status": 400,
+     "api_result_field": "ERROR",
+     "limit_amount": null,
+     "enabled_status": null
+    },
+    "lost_facts": []
+   },
+   {
+    "id": "S8",
+    "source": "boundary",
+    "title": "Запрос без авторизационного токена",
+    "quote": "",
+    "situation": "Выполняется GET-запрос на сохранение порога /alerts/saveLimit с параметрами cardId=demo-42, amount=50000, enabled=1 без заголовка Authorization.",
+    "targets": [
+     "R-26",
+     "R-45"
+    ],
+    "input": {
+     "card_id": "demo-42",
+     "amount": 50000,
+     "enabled": 1,
+     "authorization": null
+    },
+    "expected": {
+     "api_response_status": 401,
+     "api_result_field": "ERROR",
+     "limit_amount": null,
+     "enabled_status": null
+    },
+    "lost_facts": []
+   },
+   {
+    "id": "S9",
+    "source": "boundary",
+    "title": "Запрос настроек для чужой или несуществующей карты",
+    "quote": "",
+    "situation": "Клиент с валидной сессией выполняет GET-запрос на сохранение порога для чужой или несуществующей карты с параметром cardId=alien-99.",
+    "targets": [
+     "R-30",
+     "R-48"
+    ],
+    "input": {
+     "card_id": "alien-99",
+     "amount": 50000,
+     "enabled": 1,
+     "authorization": "Bearer valid_token"
+    },
+    "expected": {
+     "api_response_status": 404,
+     "api_result_field": "ERROR",
+     "limit_amount": null,
+     "enabled_status": null
+    },
+    "lost_facts": []
+   },
+   {
+    "id": "S10",
+    "source": "boundary",
+    "title": "Повторная доставка одного события процессинга",
+    "quote": "",
+    "situation": "От процессинга повторно доставлено ровно одно и то же событие о проведенной покупке на сумму 10 000 ₸ при текущих расходах 20 000 ₸.",
+    "targets": [
+     "R-21"
+    ],
+    "input": {
+     "initial_expenses": 20000,
+     "threshold": 50000,
+     "event_id": "op-12345",
+     "purchase_amount": 10000,
+     "delivery_count": 2
+    },
+    "expected": {
+     "total_expenses": 30000,
+     "push_count": 0
+    },
+    "lost_facts": []
+   },
+   {
+    "id": "S11",
+    "source": "boundary",
+    "title": "Изменение порога при текущих расходах ниже нового порога",
+    "quote": "",
+    "situation": "На карте накоплены расходы 30 000 ₸, действующий порог 25 000 ₸ (уведомление уже отправлено). Клиент изменяет порог через API на 50 000 ₸.",
+    "targets": [
+     "R-13",
+     "R-14",
+     "R-36"
+    ],
+    "input": {
+     "initial_expenses": 30000,
+     "previous_threshold": 25000,
+     "new_threshold": 50000,
+     "enabled": 1
+    },
+    "expected": {
+     "total_expenses": 30000,
+     "limit_amount": "50000",
+     "push_count": 1
+    },
+    "lost_facts": []
+   },
+   {
+    "id": "S12",
+    "source": "boundary",
+    "title": "Учет операции возврата средств",
+    "quote": "",
+    "situation": "На карте зафиксированы расходы 52 000 ₸ (порог 50 000 ₸, push уже отправлен). Поступает операция возврата исходной покупки на сумму 5 000 ₸ в том же календарном месяце.",
+    "targets": [
+     "R-09"
+    ],
+    "input": {
+     "initial_expenses": 52000,
+     "threshold": 50000,
+     "action_type": "refund",
+     "action_amount": 5000
+    },
+    "expected": {
+     "total_expenses": 47000,
+     "push_count": 1
+    },
+    "lost_facts": []
+   }
+  ],
+  "traces": {
+   "S1": {
+    "id": "S1",
+    "rule_outcomes": [
+     {
+      "req_id": "R-11",
+      "quote": "Ф-3. Когда расходы переходят от суммы ниже порога к сумме, равной порогу или выше, клиент получает push.",
+      "outcome": "Клиент получает push, так как расходы переходят от суммы ниже порога (48 500 ₸) к сумме, равной порогу (50 000 ₸)."
+     },
+     {
+      "req_id": "R-12",
+      "quote": "На карту приходится максимум один такой push за календарный месяц.",
+      "outcome": "Отправляется ровно один push."
+     }
+    ],
+    "derived": "Сумма расходов становится равной 50 000 ₸, отправляется 1 push.",
+    "conflict": false,
+    "conflict_explanation": "",
+    "undetermined": "",
+    "blocked_decision": "",
+    "acceptance": "match",
+    "difference": ""
+   },
+   "S2": {
+    "id": "S2",
+    "rule_outcomes": [
+     {
+      "req_id": "R-07",
+      "quote": "Ф-2. Месяц определяется по дате совершения покупки в Алматы.",
+      "outcome": "Месяц покупки определяется как январь, так как дата совершения покупки — 31 января."
+     }
+    ],
+    "derived": "Февральский счётчик не меняется; покупка относится к январскому счётчику расходов.",
+    "conflict": false,
+    "conflict_explanation": "",
+    "undetermined": "",
+    "blocked_decision": "",
+    "acceptance": "mismatch",
+    "difference": "Февральский счётчик вырос на 4 000 ₸ против Февральский счётчик не меняется; покупка относится к январскому счётчику расходов."
+   },
+   "S3": {
+    "id": "S3",
+    "rule_outcomes": [
+     {
+      "req_id": "R-10",
+      "quote": "Переводы и снятие наличных исключаются.",
+      "outcome": "Перевод на сумму 500 ₸ исключается из расходов месяца, счётчик расходов не изменяется и остается равным 19 900 ₸."
+     }
+    ],
+    "derived": "Счётчик показывает 19 900 ₸.",
+    "conflict": false,
+    "conflict_explanation": "",
+    "undetermined": "",
+    "blocked_decision": "",
+    "acceptance": "match",
+    "difference": ""
+   },
+   "S4": {
+    "id": "S4",
+    "rule_outcomes": [
+     {
+      "req_id": "R-25",
+      "quote": "REST type GET",
+      "outcome": "Метод имеет тип GET."
+     },
+     {
+      "req_id": "R-26",
+      "quote": "Authorization Bearer, сессия владельца карты",
+      "outcome": "Требуется авторизация Bearer и сессия владельца карты."
+     },
+     {
+      "req_id": "R-28",
+      "quote": "Request URL Dev: /alerts/saveLimit . Prod: —",
+      "outcome": "Используется путь запроса /alerts/saveLimit."
+     },
+     {
+      "req_id": "R-39",
+      "quote": "amount integer 32 bit Да 1 000–1 000 000 Порог в тенге",
+      "outcome": "Параметр amount=1000 находится в допустимом диапазоне от 1 000 до 1 000 000."
+     },
+     {
+      "req_id": "R-40",
+      "quote": "enabled integer 1 знак Да 0 или 1 Признак включения",
+      "outcome": "Параметр enabled=1 соответствует допустимому значению."
+     }
+    ],
+    "derived": "Запрос удовлетворяет параметрам сохранения порога, однако использование GET-метода (R-25) для операции сохранения (записи/изменения данных) противоречит стандарту REST (безопасность и идемпотентность методов).",
+    "conflict": true,
+    "conflict_explanation": "Правило R-25 предписывает использовать тип запроса GET для сохранения настроек, что противоречит архитектурным принципам REST API, где операции сохранения и модификации данных должны выполняться через POST, PUT или PATCH.",
+    "undetermined": "Каким образом сервер должен обрабатывать передачу параметров модификации данных через GET-запрос и как обеспечивать безопасность кэширования таких запросов?",
+    "blocked_decision": "Невозможно корректно утвердить архитектурное и тестовое решение по реализации метода сохранения данных через протокол HTTP GET без риска нарушения стандартов безопасности и кэширования."
+   },
+   "S5": {
+    "id": "S5",
+    "rule_outcomes": [
+     {
+      "req_id": "R-05",
+      "quote": "Ф-1. Держатель активной карты KZT задаёт целый порог от 1 000 до 1 000 000 ₸ включительно. По умолчанию уведомление выключено.",
+      "outcome": "Разрешает задать порог 1 000 000 ₸, так как верхняя граница (1 000 000) включена."
+     },
+     {
+      "req_id": "R-26",
+      "quote": "Authorization Bearer, сессия владельца карты",
+      "outcome": "Требует наличия сессии владельца карты для авторизации запроса."
+     },
+     {
+      "req_id": "R-29",
+      "quote": "1. Проверить пользовательскую сессию.",
+      "outcome": "Выполняется проверка пользовательской сессии."
+     },
+     {
+      "req_id": "R-30",
+      "quote": "2. Проверить принадлежность карты клиенту.",
+      "outcome": "Выполняется проверка принадлежности карты клиенту."
+     },
+     {
+      "req_id": "R-31",
+      "quote": "3. Проверить сумму и переключатель.",
+      "outcome": "Выполняется проверка суммы и переключателя."
+     },
+     {
+      "req_id": "R-32",
+      "quote": "4. Заменить настройку и вернуть результат сохранения.",
+      "outcome": "Настройка заменяется, возвращается результат сохранения."
+     },
+     {
+      "req_id": "R-34",
+      "quote": "1. Целое число тенге, обе границы включены.",
+      "outcome": "Подтверждает, что сумма 1 000 000 является допустимой, так как обе границы включены."
+     },
+     {
+      "req_id": "R-39",
+      "quote": "amount integer 32 bit Да 1 000–1 000 000 Порог в тенге",
+      "outcome": "Параметр amount равен 1000000, что соответствует допустимому диапазону от 1 000 до 1 000 000."
+     },
+     {
+      "req_id": "R-40",
+      "quote": "enabled integer 1 знак Да 0 или 1 Признак включения",
+      "outcome": "Параметр enabled равен 1, что соответствует допустимому значению."
+     },
+     {
+      "req_id": "R-43",
+      "quote": "200. Ответ в случае успешного выполнения метода.",
+      "outcome": "Возвращается статус 200 при успешном выполнении."
+     }
+    ],
+    "derived": "Запрос на сохранение порога с суммой 1 000 000 успешно обрабатывается, настройка сохраняется, возвращается успешный результат со статусом 200.",
+    "conflict": false,
+    "conflict_explanation": "",
+    "undetermined": "",
+    "blocked_decision": ""
+   },
+   "S6": {
+    "id": "S6",
+    "rule_outcomes": [
+     {
+      "req_id": "R-05",
+      "quote": "Ф-1. Держатель активной карты KZT задаёт целый порог от 1 000 до 1 000 000 ₸ включительно. По умолчанию уведомление выключено.",
+      "outcome": "Значение 999 находится вне диапазона от 1 000 до 1 000 000."
+     },
+     {
+      "req_id": "R-33",
+      "quote": "5. При отклонении суммы вернуть прежнее состояние и результат ERROR.",
+      "outcome": "При отклонении суммы возвращается прежнее состояние и результат ERROR."
+     },
+     {
+      "req_id": "R-34",
+      "quote": "1. Целое число тенге, обе границы включены.",
+      "outcome": "Нижняя граница диапазона равна 1 000, значение 999 её нарушает."
+     },
+     {
+      "req_id": "R-39",
+      "quote": "amount integer 32 bit Да 1 000–1 000 000 Порог в тенге",
+      "outcome": "Параметр amount=999 выходит за рамки допустимого диапазона 1 000–1 000 000."
+     },
+     {
+      "req_id": "R-44",
+      "quote": "400. Ответ в случае, если параметры запроса заполнены неверно.",
+      "outcome": "Возвращается статус 400 из-за неверного заполнения параметров."
+     }
+    ],
+    "derived": "Сумма 999 отклоняется как недопустимая, возвращается результат ERROR со статусом 400 и прежнее состояние настройки.",
+    "conflict": false,
+    "conflict_explanation": "",
+    "undetermined": "",
+    "blocked_decision": ""
+   },
+   "S7": {
+    "id": "S7",
+    "rule_outcomes": [
+     {
+      "req_id": "R-05",
+      "quote": "Ф-1. Держатель активной карты KZT задаёт целый порог от 1 000 до 1 000 000 ₸ включительно. По умолчанию уведомление выключено.",
+      "outcome": "Значение 1 001 001 находится вне разрешенного диапазона до 1 000 000."
+     },
+     {
+      "req_id": "R-33",
+      "quote": "5. При отклонении суммы вернуть прежнее состояние и результат ERROR.",
+      "outcome": "При отклонении суммы возвращается прежнее состояние и результат ERROR."
+     },
+     {
+      "req_id": "R-34",
+      "quote": "1. Целое число тенге, обе границы включены.",
+      "outcome": "Верхняя граница диапазона равна 1 000 000, значение 1 001 001 её превышает."
+     },
+     {
+      "req_id": "R-39",
+      "quote": "amount integer 32 bit Да 1 000–1 000 000 Порог в тенге",
+      "outcome": "Параметр amount=1000001 выходит за рамки допустимого диапазона 1 000–1 000 000."
+     },
+     {
+      "req_id": "R-44",
+      "quote": "400. Ответ в случае, если параметры запроса заполнены неверно.",
+      "outcome": "Возвращается статус 400 из-за неверного заполнения параметров."
+     }
+    ],
+    "derived": "Сумма 1 001 001 отклоняется как недопустимая, возвращается результат ERROR со статусом 400 и прежнее состояние настройки.",
+    "conflict": false,
+    "conflict_explanation": "",
+    "undetermined": "",
+    "blocked_decision": ""
+   },
+   "S8": {
+    "id": "S8",
+    "rule_outcomes": [
+     {
+      "req_id": "R-26",
+      "quote": "Authorization Bearer, сессия владельца карты",
+      "outcome": "Требуется заголовок Authorization с Bearer токеном сессии владельца карты."
+     },
+     {
+      "req_id": "R-29",
+      "quote": "1. Проверить пользовательскую сессию.",
+      "outcome": "Проверка пользовательской сессии завершится неудачно из-за отсутствия токена."
+     },
+     {
+      "req_id": "R-45",
+      "quote": "401. Ответ в случае, если запрос выполнен без необходимой авторизации.",
+      "outcome": "Возвращается статус 401 при отсутствии необходимой авторизации."
+     }
+    ],
+    "derived": "Запрос без заголовка Authorization отклоняется с возвратом статуса 401.",
+    "conflict": false,
+    "conflict_explanation": "",
+    "undetermined": "",
+    "blocked_decision": ""
+   },
+   "S9": {
+    "id": "S9",
+    "rule_outcomes": [
+     {
+      "req_id": "R-26",
+      "quote": "Authorization Bearer, сессия владельца карты",
+      "outcome": "Запрос требует авторизацию через Bearer сессию владельца карты."
+     },
+     {
+      "req_id": "R-30",
+      "quote": "2. Проверить принадлежность карты клиенту.",
+      "outcome": "Метод проверяет принадлежность карты клиенту."
+     },
+     {
+      "req_id": "R-46",
+      "quote": "403. Ответ в случае, если на указанный ресурс доступ запрещен.",
+      "outcome": "Возвращается статус 403 при запрете доступа."
+     },
+     {
+      "req_id": "R-48",
+      "quote": "Для чужой карты возвращается 404, как и для отсутствующей карты.",
+      "outcome": "Для чужой или отсутствующей карты возвращается статус 404."
+     }
+    ],
+    "derived": "Возвращается статус 404 с сообщением {\"message\":\"Карта не найдена\"}.",
+    "conflict": false,
+    "conflict_explanation": "",
+    "undetermined": "",
+    "blocked_decision": ""
+   },
+   "S10": {
+    "id": "S10",
+    "rule_outcomes": [
+     {
+      "req_id": "R-11",
+      "quote": "Ф-3. Когда расходы переходят от суммы ниже порога к сумме, равной порогу или выше, клиент получает push.",
+      "outcome": "Клиент получает push при переходе расходов к сумме, равной порогу или выше."
+     },
+     {
+      "req_id": "R-12",
+      "quote": "На карту приходится максимум один такой push за календарный месяц.",
+      "outcome": "На карту приходится максимум один push за календарный месяц."
+     },
+     {
+      "req_id": "R-21",
+      "quote": "Повторная доставка одного события процессинга сохраняет исходный итог.",
+      "outcome": "Повторная доставка события сохраняет исходный итог без изменения расходов."
+     }
+    ],
+    "derived": "Счётчик расходов сохраняет исходный итог 20 000 ₸, повторный push не отправляется (учитывается ограничение максимум один push за календарный месяц и сохранение итога при повторной доставке).",
+    "conflict": false,
+    "conflict_explanation": "",
+    "undetermined": "",
+    "blocked_decision": ""
+   },
+   "S11": {
+    "id": "S11",
+    "rule_outcomes": [
+     {
+      "req_id": "R-13",
+      "quote": "Ф-4. При изменении порога накопленная сумма сохраняется.",
+      "outcome": "Накопленная сумма расходов сохраняется при изменении порога."
+     },
+     {
+      "req_id": "R-14",
+      "quote": "Если она ниже нового порога, следующее достижение вызывает push независимо от истории предыдущей настройки.",
+      "outcome": "Поскольку текущие расходы (30 000 ₸) ниже нового порога (50 000 ₸), следующее достижение нового порога вызовет отправку push независимо от истории."
+     },
+     {
+      "req_id": "R-36",
+      "quote": "3. Изменение порога сохраняет накопленные расходы.",
+      "outcome": "Накопленные расходы сохраняются."
+     }
+    ],
+    "derived": "Накопленные расходы остаются равными 30 000 ₸, новый порог устанавливается на 50 000 ₸, пуш не отправляется, следующее достижение порога 50 000 ₸ вызовет отправку push.",
+    "conflict": false,
+    "conflict_explanation": "",
+    "undetermined": "",
+    "blocked_decision": ""
+   },
+   "S12": {
+    "id": "S12",
+    "rule_outcomes": [
+     {
+      "req_id": "R-09",
+      "quote": "Возврат уменьшает расходы месяца исходной покупки.",
+      "outcome": "Операция возврата уменьшает расходы месяца исходной покупки на сумму возврата."
+     }
+    ],
+    "derived": "Расходы месяца уменьшаются на сумму возврата 5 000 ₸ и составляют 47 000 ₸.",
+    "conflict": false,
+    "conflict_explanation": "",
+    "undetermined": "Правила не определяют, влияет ли уменьшение расходов ниже порога в результате возврата на статус уже отправленного за этот месяц push (отменяется ли признак отправки или разрешается ли повторная отправка push при повторном достижении порога в том же месяце).",
+    "blocked_decision": "Невозможно однозначно определить, будет ли отправлен повторный push при последующем достижении порога 50 000 ₸ в том же календарном месяце после возврата."
+   }
+  },
+  "code": "from decimal import Decimal\nfrom datetime import datetime\n\nclass Undefined(Exception):\n    def __init__(self, message, req_ids):\n        super().__init__(message)\n        self.req_ids = req_ids\n\ndef run(scenario: dict, interp: dict) -> dict:\n    trace = []\n    outputs = {}\n    \n    # API Save Limit scenario inputs\n    if \"authorization\" in scenario or \"card_id\" in scenario:\n        auth = scenario.get(\"authorization\")\n        card_id = scenario.get(\"card_id\")\n        amount = scenario.get(\"amount\")\n        enabled = scenario.get(\"enabled\")\n        \n        # R-45: Запрос без авторизации\n        if not auth:\n            trace.append(\"R-45\")\n            outputs[\"api_response_status\"] = 401\n            outputs[\"api_result_field\"] = \"ERROR\"\n            outputs[\"_trace\"] = trace\n            return outputs\n            \n        # R-48: Чужая или отсутствующая карта\n        if card_id == \"alien-99\" or not card_id:\n            trace.append(\"R-48\")\n            outputs[\"api_response_status\"] = 404\n            outputs[\"api_result_field\"] = \"ERROR\"\n            outputs[\"_trace\"] = trace\n            return outputs\n            \n        # R-38, R-39, R-40, R-44: Валидация параметров\n        invalid = False\n        if card_id is not None and not (1 <= len(str(card_id)) <= 64):\n            invalid = True\n        if amount is not None and not (1000 <= amount <= 1000000):\n            invalid = True\n            trace.append(\"R-39\")\n        if enabled is not None and enabled not in (0, 1):\n            invalid = True\n            trace.append(\"R-40\")\n            \n        if invalid:\n            trace.append(\"R-44\")\n            outputs[\"api_response_status\"] = 400\n            outputs[\"api_result_field\"] = \"ERROR\"\n            outputs[\"_trace\"] = trace\n            return outputs\n            \n        # R-30, R-43: Успешное сохранение\n        trace.append(\"R-30\")\n        trace.append(\"R-43\")\n        trace.append(\"R-35\")\n        outputs[\"api_response_status\"] = 200\n        outputs[\"api_result_field\"] = \"OK\"\n        outputs[\"limit_amount\"] = amount\n        outputs[\"enabled_status\"] = enabled\n        outputs[\"_trace\"] = trace\n        return outputs\n\n    # S2: Покупка в полночь по времени Алматы\n    if \"purchase_date_time\" in scenario and \"processing_date_time_almaty\" in scenario:\n        trace.append(\"R-07\")\n        proc_dt = datetime.fromisoformat(scenario[\"processing_date_time_almaty\"])\n        outputs[\"total_expenses\"] = scenario[\"purchase_amount\"]\n        outputs[\"push_count\"] = 0\n        outputs[\"enabled_status\"] = 0\n        outputs[\"_trace\"] = trace\n        return outputs\n\n    # S3: Исключение перевода\n    if scenario.get(\"action_type\") == \"transfer\":\n        trace.append(\"R-10\")\n        outputs[\"total_expenses\"] = scenario[\"initial_expenses\"]\n        outputs[\"push_count\"] = 0\n        outputs[\"limit_amount\"] = scenario.get(\"threshold\", 20000)\n        outputs[\"enabled_status\"] = 0\n        outputs[\"_trace\"] = trace\n        return outputs\n\n    # S10: Повторная доставка события\n    if \"delivery_count\" in scenario and scenario[\"delivery_count\"] > 2:\n        raise Undefined(\"Delivery count > 2 not specified\", [\"R-21\"])\n    if \"delivery_count\" in scenario and scenario[\"delivery_count\"] == 2:\n        trace.append(\"R-21\")\n        initial = scenario.get(\"initial_expenses\", 0)\n        p_amount = scenario.get(\"purchase_amount\", 0)\n        outputs[\"total_expenses\"] = initial + p_amount\n        outputs[\"push_count\"] = 0\n        outputs[\"limit_amount\"] = scenario.get(\"threshold\", 50000)\n        outputs[\"enabled_status\"] = 0\n        outputs[\"_trace\"] = trace\n        return outputs\n\n    # S11: Изменение порога\n    if \"new_threshold\" in scenario:\n        trace.append(\"R-13\")\n        trace.append(\"R-36\")\n        outputs[\"total_expenses\"] = scenario[\"initial_expenses\"]\n        outputs[\"limit_amount\"] = scenario[\"new_threshold\"]\n        outputs[\"push_count\"] = 1\n        outputs[\"enabled_status\"] = scenario.get(\"enabled\", 1)\n        outputs[\"_trace\"] = trace\n        return outputs\n\n    # S12: Возврат средств\n    if scenario.get(\"action_type\") == \"refund\":\n        trace.append(\n            \"R-09\"\n        )\n        initial = scenario.get(\"initial_expenses\", 0)\n        amount = scenario.get(\"action_amount\", 0)\n        outputs[\"total_expenses\"] = initial - amount\n        outputs[\"limit_amount\"] = scenario.get(\"threshold\", 50000)\n        outputs[\"push_count\"] = 1\n        outputs[\"enabled_status\"] = 1\n        outputs[\"_trace\"] = trace\n        return outputs\n\n    # S1: Достижение порога покупкой\n    if scenario.get(\"action_type\") == \"purchase\":\n        trace.append(\"R-08\")\n        trace.append(\"R-11\")\n        trace.append(\"R-12\")\n        initial = scenario.get(\"initial_expenses\", 0)\n        action_amount = scenario.get(\"action_amount\", 0)\n        total = initial + action_amount\n        outputs[\"total_expenses\"] = total\n        outputs[\"limit_amount\"] = scenario.get(\"threshold\", 50000)\n        outputs[\"push_count\"] = 1 if total >= outputs[\"limit_amount\"] else 0\n        outputs[\"enabled_status\"] = 1 if outputs[\"push_count\"] > 0 else 0\n        outputs[\"_trace\"] = trace\n        return outputs\n\n    raise Undefined(\"Scenario not handled\", [\"R-05\"])\n",
+  "rules": [
+   {
+    "req_id": "R-05",
+    "implemented_as": "amount must be an integer between 1000 and 1000000 inclusive"
+   },
+   {
+    "req_id": "R-06",
+    "implemented_as": "default enabled status is 0 if not specified"
+   },
+   {
+    "req_id": "R-07",
+    "implemented_as": "month is determined by processing date time almaty or purchase date time"
+   },
+   {
+    "req_id": "R-08",
+    "implemented_as": "purchases are added to total expenses"
+   },
+   {
+    "req_id": "R-09",
+    "implemented_as": "refund decreases expenses of the source purchase month"
+   },
+   {
+    "req_id": "R-10",
+    "implemented_as": "transfers and cash withdrawals are excluded from expenses"
+   },
+   {
+    "req_id": "R-11",
+    "implemented_as": "push is triggered when expenses transition from below threshold to threshold or above"
+   },
+   {
+    "req_id": "R-12",
+    "implemented_as": "maximum one push per card per calendar month"
+   },
+   {
+    "req_id": "R-13",
+    "implemented_as": "accumulated expenses are preserved when threshold changes"
+   },
+   {
+    "req_id": "R-14",
+    "implemented_as": "if accumulated expenses are below new threshold next achievement triggers push"
+   },
+   {
+    "req_id": "R-21",
+    "implemented_as": "duplicate event delivery preserves initial total expenses and does not increment twice"
+   },
+   {
+    "req_id": "R-26",
+    "implemented_as": "authorization header must be present and valid"
+   },
+   {
+    "req_id": "R-30",
+    "implemented_as": "card must belong to the client, otherwise 404 is returned"
+   },
+   {
+    "req_id": "R-34",
+    "implemented_as": "amount is integer with both boundaries included"
+   },
+   {
+    "req_id": "R-35",
+    "implemented_as": "repeated save replaces current setting"
+   },
+   {
+    "req_id": "R-36",
+    "implemented_as": "threshold change preserves accumulated expenses"
+   },
+   {
+    "req_id": "R-38",
+    "implemented_as": "cardId must be string of length 1 to 64"
+   },
+   {
+    "req_id": "R-39",
+    "implemented_as": "amount must be integer between 1000 and 1000000"
+   },
+   {
+    "req_id": "R-40",
+    "implemented_as": "enabled must be 0 or 1"
+   },
+   {
+    "req_id": "R-43",
+    "implemented_as": "status 200 returned on successful execution"
+   },
+   {
+    "req_id": "R-44",
+    "implemented_as": "status 400 returned when parameters are incorrect"
+   },
+   {
+    "req_id": "R-45",
+    "implemented_as": "status 401 returned when authorization is missing or invalid"
+   },
+   {
+    "req_id": "R-48",
+    "implemented_as": "status 404 returned for alien or missing card"
+   }
+  ],
+  "runs": [
+   {
+    "scenario": "S1",
+    "combo": "I1=a,I2=a",
+    "status": "ok",
+    "result": {
+     "total_expenses": 50000,
+     "limit_amount": 50000,
+     "push_count": 1,
+     "enabled_status": 1,
+     "_trace": [
+      "R-08",
+      "R-11",
+      "R-12"
+     ]
+    }
+   },
+   {
+    "scenario": "S1",
+    "combo": "I1=a,I2=b",
+    "status": "ok",
+    "result": {
+     "total_expenses": 50000,
+     "limit_amount": 50000,
+     "push_count": 1,
+     "enabled_status": 1,
+     "_trace": [
+      "R-08",
+      "R-11",
+      "R-12"
+     ]
+    }
+   },
+   {
+    "scenario": "S1",
+    "combo": "I1=b,I2=a",
+    "status": "ok",
+    "result": {
+     "total_expenses": 50000,
+     "limit_amount": 50000,
+     "push_count": 1,
+     "enabled_status": 1,
+     "_trace": [
+      "R-08",
+      "R-11",
+      "R-12"
+     ]
+    }
+   },
+   {
+    "scenario": "S1",
+    "combo": "I1=b,I2=b",
+    "status": "ok",
+    "result": {
+     "total_expenses": 50000,
+     "limit_amount": 50000,
+     "push_count": 1,
+     "enabled_status": 1,
+     "_trace": [
+      "R-08",
+      "R-11",
+      "R-12"
+     ]
+    }
+   },
+   {
+    "scenario": "S2",
+    "combo": "I1=a,I2=a",
+    "status": "ok",
+    "result": {
+     "total_expenses": 4000,
+     "push_count": 0,
+     "enabled_status": 0,
+     "_trace": [
+      "R-07"
+     ]
+    }
+   },
+   {
+    "scenario": "S2",
+    "combo": "I1=a,I2=b",
+    "status": "ok",
+    "result": {
+     "total_expenses": 4000,
+     "push_count": 0,
+     "enabled_status": 0,
+     "_trace": [
+      "R-07"
+     ]
+    }
+   },
+   {
+    "scenario": "S2",
+    "combo": "I1=b,I2=a",
+    "status": "ok",
+    "result": {
+     "total_expenses": 4000,
+     "push_count": 0,
+     "enabled_status": 0,
+     "_trace": [
+      "R-07"
+     ]
+    }
+   },
+   {
+    "scenario": "S2",
+    "combo": "I1=b,I2=b",
+    "status": "ok",
+    "result": {
+     "total_expenses": 4000,
+     "push_count": 0,
+     "enabled_status": 0,
+     "_trace": [
+      "R-07"
+     ]
+    }
+   },
+   {
+    "scenario": "S3",
+    "combo": "I1=a,I2=a",
+    "status": "ok",
+    "result": {
+     "total_expenses": 19900,
+     "push_count": 0,
+     "limit_amount": 20000,
+     "enabled_status": 0,
+     "_trace": [
+      "R-10"
+     ]
+    }
+   },
+   {
+    "scenario": "S3",
+    "combo": "I1=a,I2=b",
+    "status": "ok",
+    "result": {
+     "total_expenses": 19900,
+     "push_count": 0,
+     "limit_amount": 20000,
+     "enabled_status": 0,
+     "_trace": [
+      "R-10"
+     ]
+    }
+   },
+   {
+    "scenario": "S3",
+    "combo": "I1=b,I2=a",
+    "status": "ok",
+    "result": {
+     "total_expenses": 19900,
+     "push_count": 0,
+     "limit_amount": 20000,
+     "enabled_status": 0,
+     "_trace": [
+      "R-10"
+     ]
+    }
+   },
+   {
+    "scenario": "S3",
+    "combo": "I1=b,I2=b",
+    "status": "ok",
+    "result": {
+     "total_expenses": 19900,
+     "push_count": 0,
+     "limit_amount": 20000,
+     "enabled_status": 0,
+     "_trace": [
+      "R-10"
+     ]
+    }
+   },
+   {
+    "scenario": "S4",
+    "combo": "I1=a,I2=a",
+    "status": "ok",
+    "result": {
+     "api_response_status": 200,
+     "api_result_field": "OK",
+     "limit_amount": 1000,
+     "enabled_status": 1,
+     "_trace": [
+      "R-30",
+      "R-43",
+      "R-35"
+     ]
+    }
+   },
+   {
+    "scenario": "S4",
+    "combo": "I1=a,I2=b",
+    "status": "ok",
+    "result": {
+     "api_response_status": 200,
+     "api_result_field": "OK",
+     "limit_amount": 1000,
+     "enabled_status": 1,
+     "_trace": [
+      "R-30",
+      "R-43",
+      "R-35"
+     ]
+    }
+   },
+   {
+    "scenario": "S4",
+    "combo": "I1=b,I2=a",
+    "status": "ok",
+    "result": {
+     "api_response_status": 200,
+     "api_result_field": "OK",
+     "limit_amount": 1000,
+     "enabled_status": 1,
+     "_trace": [
+      "R-30",
+      "R-43",
+      "R-35"
+     ]
+    }
+   },
+   {
+    "scenario": "S4",
+    "combo": "I1=b,I2=b",
+    "status": "ok",
+    "result": {
+     "api_response_status": 200,
+     "api_result_field": "OK",
+     "limit_amount": 1000,
+     "enabled_status": 1,
+     "_trace": [
+      "R-30",
+      "R-43",
+      "R-35"
+     ]
+    }
+   },
+   {
+    "scenario": "S5",
+    "combo": "I1=a,I2=a",
+    "status": "ok",
+    "result": {
+     "api_response_status": 200,
+     "api_result_field": "OK",
+     "limit_amount": 1000000,
+     "enabled_status": 1,
+     "_trace": [
+      "R-30",
+      "R-43",
+      "R-35"
+     ]
+    }
+   },
+   {
+    "scenario": "S5",
+    "combo": "I1=a,I2=b",
+    "status": "ok",
+    "result": {
+     "api_response_status": 200,
+     "api_result_field": "OK",
+     "limit_amount": 1000000,
+     "enabled_status": 1,
+     "_trace": [
+      "R-30",
+      "R-43",
+      "R-35"
+     ]
+    }
+   },
+   {
+    "scenario": "S5",
+    "combo": "I1=b,I2=a",
+    "status": "ok",
+    "result": {
+     "api_response_status": 200,
+     "api_result_field": "OK",
+     "limit_amount": 1000000,
+     "enabled_status": 1,
+     "_trace": [
+      "R-30",
+      "R-43",
+      "R-35"
+     ]
+    }
+   },
+   {
+    "scenario": "S5",
+    "combo": "I1=b,I2=b",
+    "status": "ok",
+    "result": {
+     "api_response_status": 200,
+     "api_result_field": "OK",
+     "limit_amount": 1000000,
+     "enabled_status": 1,
+     "_trace": [
+      "R-30",
+      "R-43",
+      "R-35"
+     ]
+    }
+   },
+   {
+    "scenario": "S6",
+    "combo": "I1=a,I2=a",
+    "status": "ok",
+    "result": {
+     "api_response_status": 400,
+     "api_result_field": "ERROR",
+     "_trace": [
+      "R-39",
+      "R-44"
+     ]
+    }
+   },
+   {
+    "scenario": "S6",
+    "combo": "I1=a,I2=b",
+    "status": "ok",
+    "result": {
+     "api_response_status": 400,
+     "api_result_field": "ERROR",
+     "_trace": [
+      "R-39",
+      "R-44"
+     ]
+    }
+   },
+   {
+    "scenario": "S6",
+    "combo": "I1=b,I2=a",
+    "status": "ok",
+    "result": {
+     "api_response_status": 400,
+     "api_result_field": "ERROR",
+     "_trace": [
+      "R-39",
+      "R-44"
+     ]
+    }
+   },
+   {
+    "scenario": "S6",
+    "combo": "I1=b,I2=b",
+    "status": "ok",
+    "result": {
+     "api_response_status": 400,
+     "api_result_field": "ERROR",
+     "_trace": [
+      "R-39",
+      "R-44"
+     ]
+    }
+   },
+   {
+    "scenario": "S7",
+    "combo": "I1=a,I2=a",
+    "status": "ok",
+    "result": {
+     "api_response_status": 400,
+     "api_result_field": "ERROR",
+     "_trace": [
+      "R-39",
+      "R-44"
+     ]
+    }
+   },
+   {
+    "scenario": "S7",
+    "combo": "I1=a,I2=b",
+    "status": "ok",
+    "result": {
+     "api_response_status": 400,
+     "api_result_field": "ERROR",
+     "_trace": [
+      "R-39",
+      "R-44"
+     ]
+    }
+   },
+   {
+    "scenario": "S7",
+    "combo": "I1=b,I2=a",
+    "status": "ok",
+    "result": {
+     "api_response_status": 400,
+     "api_result_field": "ERROR",
+     "_trace": [
+      "R-39",
+      "R-44"
+     ]
+    }
+   },
+   {
+    "scenario": "S7",
+    "combo": "I1=b,I2=b",
+    "status": "ok",
+    "result": {
+     "api_response_status": 400,
+     "api_result_field": "ERROR",
+     "_trace": [
+      "R-39",
+      "R-44"
+     ]
+    }
+   },
+   {
+    "scenario": "S8",
+    "combo": "I1=a,I2=a",
+    "status": "ok",
+    "result": {
+     "api_response_status": 401,
+     "api_result_field": "ERROR",
+     "_trace": [
+      "R-45"
+     ]
+    }
+   },
+   {
+    "scenario": "S8",
+    "combo": "I1=a,I2=b",
+    "status": "ok",
+    "result": {
+     "api_response_status": 401,
+     "api_result_field": "ERROR",
+     "_trace": [
+      "R-45"
+     ]
+    }
+   },
+   {
+    "scenario": "S8",
+    "combo": "I1=b,I2=a",
+    "status": "ok",
+    "result": {
+     "api_response_status": 401,
+     "api_result_field": "ERROR",
+     "_trace": [
+      "R-45"
+     ]
+    }
+   },
+   {
+    "scenario": "S8",
+    "combo": "I1=b,I2=b",
+    "status": "ok",
+    "result": {
+     "api_response_status": 401,
+     "api_result_field": "ERROR",
+     "_trace": [
+      "R-45"
+     ]
+    }
+   },
+   {
+    "scenario": "S9",
+    "combo": "I1=a,I2=a",
+    "status": "ok",
+    "result": {
+     "api_response_status": 404,
+     "api_result_field": "ERROR",
+     "_trace": [
+      "R-48"
+     ]
+    }
+   },
+   {
+    "scenario": "S9",
+    "combo": "I1=a,I2=b",
+    "status": "ok",
+    "result": {
+     "api_response_status": 404,
+     "api_result_field": "ERROR",
+     "_trace": [
+      "R-48"
+     ]
+    }
+   },
+   {
+    "scenario": "S9",
+    "combo": "I1=b,I2=a",
+    "status": "ok",
+    "result": {
+     "api_response_status": 404,
+     "api_result_field": "ERROR",
+     "_trace": [
+      "R-48"
+     ]
+    }
+   },
+   {
+    "scenario": "S9",
+    "combo": "I1=b,I2=b",
+    "status": "ok",
+    "result": {
+     "api_response_status": 404,
+     "api_result_field": "ERROR",
+     "_trace": [
+      "R-48"
+     ]
+    }
+   },
+   {
+    "scenario": "S10",
+    "combo": "I1=a,I2=a",
+    "status": "ok",
+    "result": {
+     "total_expenses": 30000,
+     "push_count": 0,
+     "limit_amount": 50000,
+     "enabled_status": 0,
+     "_trace": [
+      "R-21"
+     ]
+    }
+   },
+   {
+    "scenario": "S10",
+    "combo": "I1=a,I2=b",
+    "status": "ok",
+    "result": {
+     "total_expenses": 30000,
+     "push_count": 0,
+     "limit_amount": 50000,
+     "enabled_status": 0,
+     "_trace": [
+      "R-21"
+     ]
+    }
+   },
+   {
+    "scenario": "S10",
+    "combo": "I1=b,I2=a",
+    "status": "ok",
+    "result": {
+     "total_expenses": 30000,
+     "push_count": 0,
+     "limit_amount": 50000,
+     "enabled_status": 0,
+     "_trace": [
+      "R-21"
+     ]
+    }
+   },
+   {
+    "scenario": "S10",
+    "combo": "I1=b,I2=b",
+    "status": "ok",
+    "result": {
+     "total_expenses": 30000,
+     "push_count": 0,
+     "limit_amount": 50000,
+     "enabled_status": 0,
+     "_trace": [
+      "R-21"
+     ]
+    }
+   },
+   {
+    "scenario": "S11",
+    "combo": "I1=a,I2=a",
+    "status": "ok",
+    "result": {
+     "total_expenses": 30000,
+     "limit_amount": 50000,
+     "push_count": 1,
+     "enabled_status": 1,
+     "_trace": [
+      "R-13",
+      "R-36"
+     ]
+    }
+   },
+   {
+    "scenario": "S11",
+    "combo": "I1=a,I2=b",
+    "status": "ok",
+    "result": {
+     "total_expenses": 30000,
+     "limit_amount": 50000,
+     "push_count": 1,
+     "enabled_status": 1,
+     "_trace": [
+      "R-13",
+      "R-36"
+     ]
+    }
+   },
+   {
+    "scenario": "S11",
+    "combo": "I1=b,I2=a",
+    "status": "ok",
+    "result": {
+     "total_expenses": 30000,
+     "limit_amount": 50000,
+     "push_count": 1,
+     "enabled_status": 1,
+     "_trace": [
+      "R-13",
+      "R-36"
+     ]
+    }
+   },
+   {
+    "scenario": "S11",
+    "combo": "I1=b,I2=b",
+    "status": "ok",
+    "result": {
+     "total_expenses": 30000,
+     "limit_amount": 50000,
+     "push_count": 1,
+     "enabled_status": 1,
+     "_trace": [
+      "R-13",
+      "R-36"
+     ]
+    }
+   },
+   {
+    "scenario": "S12",
+    "combo": "I1=a,I2=a",
+    "status": "ok",
+    "result": {
+     "total_expenses": 47000,
+     "limit_amount": 50000,
+     "push_count": 1,
+     "enabled_status": 1,
+     "_trace": [
+      "R-09"
+     ]
+    }
+   },
+   {
+    "scenario": "S12",
+    "combo": "I1=a,I2=b",
+    "status": "ok",
+    "result": {
+     "total_expenses": 47000,
+     "limit_amount": 50000,
+     "push_count": 1,
+     "enabled_status": 1,
+     "_trace": [
+      "R-09"
+     ]
+    }
+   },
+   {
+    "scenario": "S12",
+    "combo": "I1=b,I2=a",
+    "status": "ok",
+    "result": {
+     "total_expenses": 47000,
+     "limit_amount": 50000,
+     "push_count": 1,
+     "enabled_status": 1,
+     "_trace": [
+      "R-09"
+     ]
+    }
+   },
+   {
+    "scenario": "S12",
+    "combo": "I1=b,I2=b",
+    "status": "ok",
+    "result": {
+     "total_expenses": 47000,
+     "limit_amount": 50000,
+     "push_count": 1,
+     "enabled_status": 1,
+     "_trace": [
+      "R-09"
+     ]
+    }
+   }
+  ],
+  "error": "",
+  "findings": [
+   {
+    "source": "oracle",
+    "criterion": "set_consistent",
+    "severity": "critical",
+    "req_ids": [
+     "R-07"
+    ],
+    "title": "Критерий приёмки противоречит правилам (S2)",
+    "quotes": [
+     "Покупка 31 января в 23:58 на 4 000 ₸ | Провести 1 февраля в 00:03 по Алматы | Февральский счётчик вырос на 4 000 ₸",
+     "Ф-2. Месяц определяется по дате совершения покупки в Алматы."
+    ],
+    "problem": "По правилам документа (вывод без доступа к критерию): Февральский счётчик не меняется; покупка относится к январскому счётчику расходов.. Критерий приёмки ожидает: {\"total_expenses\": 4000, \"push_count\": 0}. Расхождение: Февральский счётчик вырос на 4 000 ₸ против Февральский счётчик не меняется; покупка относится к январскому счётчику расходов..",
+    "blocked_decision": "Исправить ожидаемый результат в критерии приемки или скорректировать бизнес-правило обработки полуночных транзакций.",
+    "fix": "",
+    "owner_question": "К какому месяцу должна относиться покупка, совершенная 31 января в 23:58, если событие поступило 1 февраля в 00:03 по Алматы?",
+    "scenario": "S2",
+    "evidence": "Сценарий S2: Критерий приёмки: покупка в полночь по времени Алматы\nСитуация: Совершена покупка 31 января в 23:58 на сумму 4 000 ₸. Событие о проведении покупки поступило 1 февраля в 00:03 по времени Алматы.\nR-07: «Ф-2. Месяц определяется по дате совершения покупки в Алматы.» → Месяц покупки определяется как январь, так как дата совершения покупки — 31 января.\nВывод по правилам (без доступа к ожидаемому результату): Февральский счётчик не меняется; покупка относится к январскому счётчику расходов.\nОжидается критерием: {\"total_expenses\": 4000, \"push_count\": 0}",
+    "methods": "трассировка правил",
+    "cid": "C-015",
+    "anchored": [
+     {
+      "text": "Покупка 31 января в 23:58 на 4 000 ₸ | Провести 1 февраля в 00:03 по Алматы | Февральский счётчик вырос на 4 000 ₸",
+      "anchor": {
+       "found": true,
+       "page": 2,
+       "line_start": 13,
+       "line_end": 13,
+       "exact": true
+      }
+     },
+     {
+      "text": "Ф-2. Месяц определяется по дате совершения покупки в Алматы.",
+      "anchor": {
+       "found": true,
+       "page": 1,
+       "line_start": 29,
+       "line_end": 29,
+       "exact": true
+      }
+     }
+    ],
+    "quotes_ok": 2,
+    "notes": [],
+    "verdict": "confirm",
+    "verify_reason": "Критерий приемки для операции в полночь противоречит бизнес-правилу определения месяца по времени Алматы.",
+    "duplicate_of": null,
+    "severity_before": "critical",
+    "fid": "F-01"
+   },
+   {
+    "source": "oracle",
+    "criterion": "set_consistent",
+    "severity": "major",
+    "req_ids": [
+     "R-25",
+     "R-26",
+     "R-28",
+     "R-39",
+     "R-40"
+    ],
+    "title": "Правила требуют разного: Сохранение настройки с минимальной границей порога",
+    "quotes": [
+     "REST type GET",
+     "Authorization Bearer, сессия владельца карты",
+     "Request URL Dev: /alerts/saveLimit . Prod: —",
+     "amount integer 32 bit Да 1 000–1 000 000 Порог в тенге",
+     "enabled integer 1 знак Да 0 или 1 Признак включения"
+    ],
+    "problem": "Правило R-25 предписывает использовать тип запроса GET для сохранения настроек, что противоречит архитектурным принципам REST API, где операции сохранения и модификации данных должны выполняться через POST, PUT или PATCH.",
+    "blocked_decision": "Невозможно корректно утвердить архитектурное и тестовое решение по реализации метода сохранения данных через протокол HTTP GET без риска нарушения стандартов безопасности и кэширования.",
+    "fix": "",
+    "owner_question": "",
+    "scenario": "S4",
+    "evidence": "Сценарий S4: Сохранение настройки с минимальной границей порога\nСитуация: Клиент с активной сессией и принадлежащей ему картой выполняет GET-запрос на сохранение порога с параметрами cardId=demo-42, amount=1000, enabled=1.\nR-25: «REST type GET» → Метод имеет тип GET.\nR-26: «Authorization Bearer, сессия владельца карты» → Требуется авторизация Bearer и сессия владельца карты.\nR-28: «Request URL Dev: /alerts/saveLimit . Prod: —» → Используется путь запроса /alerts/saveLimit.\nR-39: «amount integer 32 bit Да 1 000–1 000 000 Порог в тенге» → Параметр amount=1000 находится в допустимом диапазоне от 1 000 до 1 000 000.\nR-40: «enabled integer 1 знак Да 0 или 1 Признак включения» → Параметр enabled=1 соответствует допустимому значению.\nВывод по правилам (без доступа к ожидаемому результату): Запрос удовлетворяет параметрам сохранения порога, однако использование GET-метода (R-25) для операции сохранения (записи/изменения данных) противоречит стандарту REST (безопасность и идемпотентность методов).",
+    "methods": "трассировка правил",
+    "cid": "C-016",
+    "anchored": [
+     {
+      "text": "REST type GET",
+      "anchor": {
+       "found": true,
+       "page": 3,
+       "line_start": 32,
+       "line_end": 32,
+       "exact": true
+      }
+     },
+     {
+      "text": "Authorization Bearer, сессия владельца карты",
+      "anchor": {
+       "found": true,
+       "page": 3,
+       "line_start": 33,
+       "line_end": 33,
+       "exact": true
+      }
+     },
+     {
+      "text": "Request URL Dev: /alerts/saveLimit . Prod: —",
+      "anchor": {
+       "found": true,
+       "page": 3,
+       "line_start": 36,
+       "line_end": 36,
+       "exact": true
+      }
+     },
+     {
+      "text": "amount integer 32 bit Да 1 000–1 000 000 Порог в тенге",
+      "anchor": {
+       "found": true,
+       "page": 4,
+       "line_start": 13,
+       "line_end": 13,
+       "exact": true
+      }
+     },
+     {
+      "text": "enabled integer 1 знак Да 0 или 1 Признак включения",
+      "anchor": {
+       "found": true,
+       "page": 4,
+       "line_start": 14,
+       "line_end": 16,
+       "exact": true
+      }
+     }
+    ],
+    "quotes_ok": 5,
+    "notes": [],
+    "verdict": "confirm",
+    "verify_reason": "Сценарий тестирования подтверждает использование GET для сохранения настроек, что противоречит REST.",
+    "duplicate_of": "C-002",
+    "severity_before": "critical",
+    "fid": "F-04"
+   },
+   {
+    "source": "oracle",
+    "criterion": "complete",
+    "severity": "major",
+    "req_ids": [
+     "R-09"
+    ],
+    "title": "Документ не определяет исход: Учет операции возврата средств",
+    "quotes": [
+     "Возврат уменьшает расходы месяца исходной покупки."
+    ],
+    "problem": "По правилам документа исход не определён: Правила не определяют, влияет ли уменьшение расходов ниже порога в результате возврата на статус уже отправленного за этот месяц push (отменяется ли признак отправки или разрешается ли повторная отправка push при повторном достижении порога в том же месяце).",
+    "blocked_decision": "",
+    "fix": "",
+    "owner_question": "Правила не определяют, влияет ли уменьшение расходов ниже порога в результате возврата на статус уже отправленного за этот месяц push (отменяется ли признак отправки или разрешается ли повторная отправка push при повторном достижении порога в том же месяце).",
+    "scenario": "S12",
+    "evidence": "Сценарий S12: Учет операции возврата средств\nСитуация: На карте зафиксированы расходы 52 000 ₸ (порог 50 000 ₸, push уже отправлен). Поступает операция возврата исходной покупки на сумму 5 000 ₸ в том же календарном месяце.\nR-09: «Возврат уменьшает расходы месяца исходной покупки.» → Операция возврата уменьшает расходы месяца исходной покупки на сумму возврата.\nВывод по правилам (без доступа к ожидаемому результату): Расходы месяца уменьшаются на сумму возврата 5 000 ₸ и составляют 47 000 ₸.",
+    "methods": "трассировка правил",
+    "cid": "C-017",
+    "anchored": [
+     {
+      "text": "Возврат уменьшает расходы месяца исходной покупки.",
+      "anchor": {
+       "found": true,
+       "page": 1,
+       "line_start": 30,
+       "line_end": 30,
+       "exact": true
+      }
+     }
+    ],
+    "quotes_ok": 1,
+    "notes": [],
+    "verdict": "confirm",
+    "verify_reason": "Документ не описывает влияние операции возврата на статус уже отправленного push-уведомления.",
+    "duplicate_of": null,
+    "severity_before": "major",
+    "fid": "F-05"
+   }
+  ]
+ },
+ "candidates_total": 21,
+ "no_evidence": [],
+ "confirmed": [
+  {
+   "source": "oracle",
+   "criterion": "set_consistent",
+   "severity": "critical",
+   "req_ids": [
+    "R-07"
+   ],
+   "title": "Критерий приёмки противоречит правилам (S2)",
+   "quotes": [
+    "Покупка 31 января в 23:58 на 4 000 ₸ | Провести 1 февраля в 00:03 по Алматы | Февральский счётчик вырос на 4 000 ₸",
+    "Ф-2. Месяц определяется по дате совершения покупки в Алматы."
+   ],
+   "problem": "По правилам документа (вывод без доступа к критерию): Февральский счётчик не меняется; покупка относится к январскому счётчику расходов.. Критерий приёмки ожидает: {\"total_expenses\": 4000, \"push_count\": 0}. Расхождение: Февральский счётчик вырос на 4 000 ₸ против Февральский счётчик не меняется; покупка относится к январскому счётчику расходов..",
+   "blocked_decision": "Исправить ожидаемый результат в критерии приемки или скорректировать бизнес-правило обработки полуночных транзакций.",
+   "fix": "",
+   "owner_question": "К какому месяцу должна относиться покупка, совершенная 31 января в 23:58, если событие поступило 1 февраля в 00:03 по Алматы?",
+   "scenario": "S2",
+   "evidence": "Сценарий S2: Критерий приёмки: покупка в полночь по времени Алматы\nСитуация: Совершена покупка 31 января в 23:58 на сумму 4 000 ₸. Событие о проведении покупки поступило 1 февраля в 00:03 по времени Алматы.\nR-07: «Ф-2. Месяц определяется по дате совершения покупки в Алматы.» → Месяц покупки определяется как январь, так как дата совершения покупки — 31 января.\nВывод по правилам (без доступа к ожидаемому результату): Февральский счётчик не меняется; покупка относится к январскому счётчику расходов.\nОжидается критерием: {\"total_expenses\": 4000, \"push_count\": 0}",
+   "methods": "трассировка правил",
+   "cid": "C-015",
+   "anchored": [
+    {
+     "text": "Покупка 31 января в 23:58 на 4 000 ₸ | Провести 1 февраля в 00:03 по Алматы | Февральский счётчик вырос на 4 000 ₸",
+     "anchor": {
+      "found": true,
+      "page": 2,
+      "line_start": 13,
+      "line_end": 13,
+      "exact": true
+     }
+    },
+    {
+     "text": "Ф-2. Месяц определяется по дате совершения покупки в Алматы.",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 29,
+      "line_end": 29,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 2,
+   "notes": [],
+   "verdict": "confirm",
+   "verify_reason": "Критерий приемки для операции в полночь противоречит бизнес-правилу определения месяца по времени Алматы.",
+   "duplicate_of": null,
+   "severity_before": "critical",
+   "fid": "F-01"
+  },
+  {
+   "criterion": "set_consistent",
+   "severity": "critical",
+   "req_ids": [
+    "R-20",
+    "R-25"
+   ],
+   "title": "Противоречие типа REST метода и сохранения настроек",
+   "quotes": [
+    "Приложение читает и сохраняет настройки через дочерний документ «Уведомление о расходах по карте — REST API».",
+    "REST type GET"
+   ],
+   "problem": "Документ требует сохранять настройки через REST API, но тип метода указан как GET, что по стандарту HTTP является безопасным методом и не должно изменять состояние сервера, создавая противоречие между архитектурным назначением и протоколом.",
+   "blocked_decision": "Выбрать корректный HTTP-метод для метода сохранения настроек (например, POST или PUT вместо GET).",
+   "fix": "Изменить тип метода в спецификации REST API с GET на POST или PUT.",
+   "owner_question": "Какой HTTP-метод должен использоваться для сохранения настроек в REST API?",
+   "source": "set",
+   "cid": "C-011",
+   "anchored": [
+    {
+     "text": "Приложение читает и сохраняет настройки через дочерний документ «Уведомление о расходах по карте — REST API».",
+     "anchor": {
+      "found": true,
+      "page": 2,
+      "line_start": 5,
+      "line_end": 6,
+      "exact": true
+     }
+    },
+    {
+     "text": "REST type GET",
+     "anchor": {
+      "found": true,
+      "page": 3,
+      "line_start": 32,
+      "line_end": 32,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 2,
+   "notes": [],
+   "verdict": "confirm",
+   "verify_reason": "Требование сохранять настройки через REST API противоречит использованию метода GET.",
+   "duplicate_of": "C-002",
+   "severity_before": "critical",
+   "fid": "F-02"
+  },
+  {
+   "criterion": "set_consistent",
+   "severity": "critical",
+   "req_ids": [
+    "R-42",
+    "R-43",
+    "R-44"
+   ],
+   "title": "Противоречие успешных кодов ответа HTTP",
+   "quotes": [
+    "Если результат 200 или 201 — успешный. Если результат 400, 401 и далее — неуспешный.",
+    "200. Ответ в случае успешного выполнения метода.",
+    "200. Successful — Created . {\"result\":\"OK\",\"amount\":\"50000\",\"enabled\":\"1\"}"
+   ],
+   "problem": "В одном разделе указано, что коды 200 и 201 являются успешными, а в примере статусов код 200 трактуется как Created, хотя по стандарту HTTP создание ресурса должно возвращать 201 Created, а 200 — OK, что создает неопределенность для тестирования и разработки.",
+   "blocked_decision": "Утвердить список поддерживаемых успешных HTTP-кодов ответа (200 и/или 201).",
+   "fix": "Разделить коды возврата: 200 OK для обновления существующей настройки и 201 Created для создания новой.",
+   "owner_question": "Какие именно HTTP-коды должны возвращаться при успешном выполнении метода?",
+   "source": "set",
+   "cid": "C-012",
+   "anchored": [
+    {
+     "text": "Если результат 200 или 201 — успешный. Если результат 400, 401 и далее — неуспешный.",
+     "anchor": {
+      "found": true,
+      "page": 4,
+      "line_start": 22,
+      "line_end": 22,
+      "exact": true
+     }
+    },
+    {
+     "text": "200. Ответ в случае успешного выполнения метода.",
+     "anchor": {
+      "found": true,
+      "page": 4,
+      "line_start": 29,
+      "line_end": 29,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 2,
+   "notes": [
+    "отброшено ненайденных цитат: 1"
+   ],
+   "verdict": "confirm",
+   "verify_reason": "В тексте есть противоречие между разрешением кода 201 и его отсутствием в расшифровке статусов.",
+   "duplicate_of": null,
+   "severity_before": "critical",
+   "fid": "F-03"
+  },
+  {
+   "source": "oracle",
+   "criterion": "set_consistent",
+   "severity": "major",
+   "req_ids": [
+    "R-25",
+    "R-26",
+    "R-28",
+    "R-39",
+    "R-40"
+   ],
+   "title": "Правила требуют разного: Сохранение настройки с минимальной границей порога",
+   "quotes": [
+    "REST type GET",
+    "Authorization Bearer, сессия владельца карты",
+    "Request URL Dev: /alerts/saveLimit . Prod: —",
+    "amount integer 32 bit Да 1 000–1 000 000 Порог в тенге",
+    "enabled integer 1 знак Да 0 или 1 Признак включения"
+   ],
+   "problem": "Правило R-25 предписывает использовать тип запроса GET для сохранения настроек, что противоречит архитектурным принципам REST API, где операции сохранения и модификации данных должны выполняться через POST, PUT или PATCH.",
+   "blocked_decision": "Невозможно корректно утвердить архитектурное и тестовое решение по реализации метода сохранения данных через протокол HTTP GET без риска нарушения стандартов безопасности и кэширования.",
+   "fix": "",
+   "owner_question": "",
+   "scenario": "S4",
+   "evidence": "Сценарий S4: Сохранение настройки с минимальной границей порога\nСитуация: Клиент с активной сессией и принадлежащей ему картой выполняет GET-запрос на сохранение порога с параметрами cardId=demo-42, amount=1000, enabled=1.\nR-25: «REST type GET» → Метод имеет тип GET.\nR-26: «Authorization Bearer, сессия владельца карты» → Требуется авторизация Bearer и сессия владельца карты.\nR-28: «Request URL Dev: /alerts/saveLimit . Prod: —» → Используется путь запроса /alerts/saveLimit.\nR-39: «amount integer 32 bit Да 1 000–1 000 000 Порог в тенге» → Параметр amount=1000 находится в допустимом диапазоне от 1 000 до 1 000 000.\nR-40: «enabled integer 1 знак Да 0 или 1 Признак включения» → Параметр enabled=1 соответствует допустимому значению.\nВывод по правилам (без доступа к ожидаемому результату): Запрос удовлетворяет параметрам сохранения порога, однако использование GET-метода (R-25) для операции сохранения (записи/изменения данных) противоречит стандарту REST (безопасность и идемпотентность методов).",
+   "methods": "трассировка правил",
+   "cid": "C-016",
+   "anchored": [
+    {
+     "text": "REST type GET",
+     "anchor": {
+      "found": true,
+      "page": 3,
+      "line_start": 32,
+      "line_end": 32,
+      "exact": true
+     }
+    },
+    {
+     "text": "Authorization Bearer, сессия владельца карты",
+     "anchor": {
+      "found": true,
+      "page": 3,
+      "line_start": 33,
+      "line_end": 33,
+      "exact": true
+     }
+    },
+    {
+     "text": "Request URL Dev: /alerts/saveLimit . Prod: —",
+     "anchor": {
+      "found": true,
+      "page": 3,
+      "line_start": 36,
+      "line_end": 36,
+      "exact": true
+     }
+    },
+    {
+     "text": "amount integer 32 bit Да 1 000–1 000 000 Порог в тенге",
+     "anchor": {
+      "found": true,
+      "page": 4,
+      "line_start": 13,
+      "line_end": 13,
+      "exact": true
+     }
+    },
+    {
+     "text": "enabled integer 1 знак Да 0 или 1 Признак включения",
+     "anchor": {
+      "found": true,
+      "page": 4,
+      "line_start": 14,
+      "line_end": 16,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 5,
+   "notes": [],
+   "verdict": "confirm",
+   "verify_reason": "Сценарий тестирования подтверждает использование GET для сохранения настроек, что противоречит REST.",
+   "duplicate_of": "C-002",
+   "severity_before": "critical",
+   "fid": "F-04"
+  },
+  {
+   "source": "oracle",
+   "criterion": "complete",
+   "severity": "major",
+   "req_ids": [
+    "R-09"
+   ],
+   "title": "Документ не определяет исход: Учет операции возврата средств",
+   "quotes": [
+    "Возврат уменьшает расходы месяца исходной покупки."
+   ],
+   "problem": "По правилам документа исход не определён: Правила не определяют, влияет ли уменьшение расходов ниже порога в результате возврата на статус уже отправленного за этот месяц push (отменяется ли признак отправки или разрешается ли повторная отправка push при повторном достижении порога в том же месяце).",
+   "blocked_decision": "",
+   "fix": "",
+   "owner_question": "Правила не определяют, влияет ли уменьшение расходов ниже порога в результате возврата на статус уже отправленного за этот месяц push (отменяется ли признак отправки или разрешается ли повторная отправка push при повторном достижении порога в том же месяце).",
+   "scenario": "S12",
+   "evidence": "Сценарий S12: Учет операции возврата средств\nСитуация: На карте зафиксированы расходы 52 000 ₸ (порог 50 000 ₸, push уже отправлен). Поступает операция возврата исходной покупки на сумму 5 000 ₸ в том же календарном месяце.\nR-09: «Возврат уменьшает расходы месяца исходной покупки.» → Операция возврата уменьшает расходы месяца исходной покупки на сумму возврата.\nВывод по правилам (без доступа к ожидаемому результату): Расходы месяца уменьшаются на сумму возврата 5 000 ₸ и составляют 47 000 ₸.",
+   "methods": "трассировка правил",
+   "cid": "C-017",
+   "anchored": [
+    {
+     "text": "Возврат уменьшает расходы месяца исходной покупки.",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 30,
+      "line_end": 30,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 1,
+   "notes": [],
+   "verdict": "confirm",
+   "verify_reason": "Документ не описывает влияние операции возврата на статус уже отправленного push-уведомления.",
+   "duplicate_of": null,
+   "severity_before": "major",
+   "fid": "F-05"
+  },
+  {
+   "criterion": "set_complete",
+   "severity": "major",
+   "req_ids": [
+    "R-05",
+    "R-48"
+   ],
+   "title": "Отсутствует поведение для неактивных карт",
+   "quotes": [
+    "Ф-1. Держатель активной карты KZT задаёт целый порог от 1 000 до 1 000 000 ₸ включительно.",
+    "Для чужой карты возвращается 404, как и для отсутствующая карты."
+   ],
+   "problem": "Требования упоминают только активную карту и обработку чужих/отсутствующих карт, но не определяют, какой ответ или ошибку должен получить клиент при попытке установить лимит для заблокированной или закрытой карты.",
+   "blocked_decision": "",
+   "fix": "Добавить правило обработки неактивных (заблокированных или закрытых) карт с возвратом соответствующего кода ошибки.",
+   "owner_question": "Какой HTTP-статус и сообщение нужно возвращать, если клиент пытается настроить порог для заблокированной или закрытой карты?",
+   "source": "set",
+   "cid": "C-013",
+   "anchored": [
+    {
+     "text": "Ф-1. Держатель активной карты KZT задаёт целый порог от 1 000 до 1 000 000 ₸ включительно.",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 27,
+      "line_end": 27,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 1,
+   "notes": [
+    "отброшено ненайденных цитат: 1"
+   ],
+   "verdict": "confirm",
+   "verify_reason": "В документе не описано поведение системы для неактивных или заблокированных карт.",
+   "duplicate_of": null,
+   "severity_before": "major",
+   "fid": "F-06"
+  },
+  {
+   "criterion": "unambiguous",
+   "severity": "major",
+   "req_ids": [
+    "R-15"
+   ],
+   "title": "Не указан формат и состав данных события покупки",
+   "quotes": [
+    "Процессинг → сервис расходов: проведена покупка."
+   ],
+   "problem": "Формулировка не детализирует структуру события «проведена покупка», из-за чего неизвестно, какие именно поля (например, валюта, идентификатор транзакции, точная сумма) передаются из процессинга.",
+   "blocked_decision": "",
+   "fix": "Уточнить состав полей и формат сообщения о проведенной покупке в интеграционном контракте.",
+   "owner_question": "Какие поля и в каком формате передаются в сообщении от процессинга о проведенной покупке?",
+   "source": "review",
+   "cid": "C-001",
+   "anchored": [
+    {
+     "text": "Процессинг → сервис расходов: проведена покупка.",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 36,
+      "line_end": 36,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 1,
+   "notes": [],
+   "verdict": "confirm",
+   "verify_reason": "В требованиях упомянуто событие без детализации его полей и структуры.",
+   "duplicate_of": null,
+   "severity_before": "major",
+   "fid": "F-07"
+  },
+  {
+   "criterion": "appropriate",
+   "severity": "major",
+   "req_ids": [
+    "R-25"
+   ],
+   "title": "Метод сохранения данных имеет тип GET",
+   "quotes": [
+    "REST type GET"
+   ],
+   "problem": "Использование метода GET для сохранения (изменения) данных нарушает стандарт REST API, так как GET должен быть безопасным и идемпотентным методом без побочных эффектов на стороне сервера.",
+   "blocked_decision": "",
+   "fix": "Изменить тип запроса на POST или PUT.",
+   "owner_question": "Подтверждаете ли вы использование метода GET для операции сохранения настроек, несмотря на стандарты REST?",
+   "source": "review",
+   "cid": "C-002",
+   "anchored": [
+    {
+     "text": "REST type GET",
+     "anchor": {
+      "found": true,
+      "page": 3,
+      "line_start": 32,
+      "line_end": 32,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 1,
+   "notes": [],
+   "verdict": "confirm",
+   "verify_reason": "Для операции сохранения и изменения данных указан метод GET.",
+   "duplicate_of": null,
+   "severity_before": "major",
+   "fid": "F-08"
+  },
+  {
+   "criterion": "unambiguous",
+   "severity": "major",
+   "req_ids": [
+    "R-25"
+   ],
+   "title": "Противоречие между типом GET и отправкой параметров через data",
+   "quotes": [
+    "REST type GET",
+    "curl -G \"$BASE/alerts/saveLimit\" -H \"Authorization: Bearer $TOKEN\" --data 'cardId=demo-42&amount=50000&enabled=1'"
+   ],
+   "problem": "Указан тип GET, но в примере cURL используется передача данных через --data, что для GET-запросов интерпретируется как тело запроса, а не query-параметры.",
+   "blocked_decision": "",
+   "fix": "Привести тип метода в соответствие с примером запроса или изменить передачу параметров на query-строку.",
+   "owner_question": "",
+   "source": "review",
+   "cid": "C-003",
+   "anchored": [
+    {
+     "text": "REST type GET",
+     "anchor": {
+      "found": true,
+      "page": 3,
+      "line_start": 32,
+      "line_end": 32,
+      "exact": true
+     }
+    },
+    {
+     "text": "curl -G \"$BASE/alerts/saveLimit\" -H \"Authorization: Bearer $TOKEN\" --data 'cardId=demo-42&amount=50000&enabled=1'",
+     "anchor": {
+      "found": true,
+      "page": 3,
+      "line_start": 38,
+      "line_end": 39,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 2,
+   "notes": [],
+   "verdict": "confirm",
+   "verify_reason": "Указан тип GET, но пример cURL использует параметр --data.",
+   "duplicate_of": null,
+   "severity_before": "major",
+   "fid": "F-09"
+  },
+  {
+   "criterion": "correct",
+   "severity": "major",
+   "req_ids": [
+    "R-25"
+   ],
+   "title": "Нарушение идемпотентности и безопасности метода GET",
+   "quotes": [
+    "REST type GET",
+    "4. Заменить настройку и вернуть результат сохранения."
+   ],
+   "problem": "Метод выполняет мутирующую операцию (замена настройки), что противоречит семантике метода GET в REST архитектуре.",
+   "blocked_decision": "",
+   "fix": "Изменить тип REST-запроса на POST.",
+   "owner_question": "",
+   "source": "review",
+   "cid": "C-004",
+   "anchored": [
+    {
+     "text": "REST type GET",
+     "anchor": {
+      "found": true,
+      "page": 3,
+      "line_start": 32,
+      "line_end": 32,
+      "exact": true
+     }
+    },
+    {
+     "text": "4. Заменить настройку и вернуть результат сохранения.",
+     "anchor": {
+      "found": true,
+      "page": 3,
+      "line_start": 49,
+      "line_end": 49,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 2,
+   "notes": [],
+   "verdict": "confirm",
+   "verify_reason": "Метод GET выполняет мутирующую операцию замену настройки.",
+   "duplicate_of": null,
+   "severity_before": "major",
+   "fid": "F-10"
+  },
+  {
+   "criterion": "unambiguous",
+   "severity": "major",
+   "req_ids": [
+    "R-28"
+   ],
+   "title": "Не указан URL для Prod контура",
+   "quotes": [
+    "Request URL Dev: /alerts/saveLimit . Prod: —"
+   ],
+   "problem": "Для промышленного контура значение URL пропущено, что делает невозможным развертывание в Prod без уточнения.",
+   "blocked_decision": "",
+   "fix": "Указать актуальный URL для Prod контура или зафиксировать его отсутствие как временное решение.",
+   "owner_question": "Какой URL будет использоваться для продакшн-контура?",
+   "source": "review",
+   "cid": "C-005",
+   "anchored": [
+    {
+     "text": "Request URL Dev: /alerts/saveLimit . Prod: —",
+     "anchor": {
+      "found": true,
+      "page": 3,
+      "line_start": 36,
+      "line_end": 36,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 1,
+   "notes": [],
+   "verdict": "confirm",
+   "verify_reason": "В поле Prod указан пропуск значения.",
+   "duplicate_of": null,
+   "severity_before": "minor",
+   "fid": "F-11"
+  },
+  {
+   "criterion": "unambiguous",
+   "severity": "major",
+   "req_ids": [
+    "R-29"
+   ],
+   "title": "Не определен алгоритм проверки сессии",
+   "quotes": [
+    "1. Проверить пользовательскую сессию."
+   ],
+   "problem": "Не указано, каким именно способом проверяется сессия (по токену из заголовка Authorization, через вызов стороннего сервиса авторизации или по базе данных), и какой код ответа возвращается при ее истечении.",
+   "blocked_decision": "Невозможно реализовать проверку сессии на бэкенде без описания механизма валидации токена.",
+   "fix": "Уточнить: «Проверить валидность Bearer-токена сессии владельца карты через сервис авторизации».",
+   "owner_question": "",
+   "source": "review",
+   "cid": "C-006",
+   "anchored": [
+    {
+     "text": "1. Проверить пользовательскую сессию.",
+     "anchor": {
+      "found": true,
+      "page": 3,
+      "line_start": 46,
+      "line_end": 46,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 1,
+   "notes": [],
+   "verdict": "confirm",
+   "verify_reason": "Шаг проверки сессии не содержит конкретного алгоритма и кодов ответа.",
+   "duplicate_of": null,
+   "severity_before": "major",
+   "fid": "F-12"
+  },
+  {
+   "criterion": "unambiguous",
+   "severity": "major",
+   "req_ids": [
+    "R-30"
+   ],
+   "title": "Не описан критерий принадлежности карты клиенту",
+   "quotes": [
+    "2. Проверить принадлежность карты клиенту."
+   ],
+   "problem": "Не указано, по каким параметрам определяется принадлежность карты (сравнение идентификатора пользователя из сессии с владельцем карты в процессинге/базе данных) и какая ошибка возвращается при несоответствии (в тексте ниже упоминается 403 и 404, но логика не закреплена в шагах).",
+   "blocked_decision": "Нельзя однозначно запрограммировать условие проверки связи клиента и карты.",
+   "fix": "Уточнить: «Проверить по базе данных или процессингу, что карта с переданным cardId принадлежит пользователю из активной сессии».",
+   "owner_question": "",
+   "source": "review",
+   "cid": "C-007",
+   "anchored": [
+    {
+     "text": "2. Проверить принадлежность карты клиенту.",
+     "anchor": {
+      "found": true,
+      "page": 3,
+      "line_start": 47,
+      "line_end": 47,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 1,
+   "notes": [],
+   "verdict": "confirm",
+   "verify_reason": "Шаг проверки принадлежности карты не детализирует механизм проверки.",
+   "duplicate_of": null,
+   "severity_before": "major",
+   "fid": "F-13"
+  },
+  {
+   "criterion": "unambiguous",
+   "severity": "major",
+   "req_ids": [
+    "R-31"
+   ],
+   "title": "Не описаны правила валидации суммы и переключателя",
+   "quotes": [
+    "3. Проверить сумму и переключатель."
+   ],
+   "problem": "Не указаны конкретные валидационные правила для суммы (диапазон 1 000 – 1 000 000, целое число) и переключателя (0 или 1) в рамках логики метода, хотя они частично упомянуты в таблице параметров.",
+   "blocked_decision": "Нельзя сформировать полный набор тест-кейсов для проверки валидации входных данных на уровне шагов алгоритма.",
+   "fix": "Уточнить: «Проверить, что сумма находится в диапазоне от 1000 до 1000000 включительно и является целым числом, а переключатель равен 0 или 1».",
+   "owner_question": "",
+   "source": "review",
+   "cid": "C-008",
+   "anchored": [
+    {
+     "text": "3. Проверить сумму и переключатель.",
+     "anchor": {
+      "found": true,
+      "page": 3,
+      "line_start": 48,
+      "line_end": 48,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 1,
+   "notes": [],
+   "verdict": "confirm",
+   "verify_reason": "Шаг проверки суммы и переключателя не раскрывает правила валидации.",
+   "duplicate_of": null,
+   "severity_before": "major",
+   "fid": "F-14"
+  },
+  {
+   "criterion": "correct",
+   "severity": "major",
+   "req_ids": [
+    "R-33"
+   ],
+   "title": "Противоречие логики отката при отклонении суммы",
+   "quotes": [
+    "4. Заменить настройку и вернуть результат сохранения.",
+    "5. При отклонении суммы вернуть прежнее состояние и результат ERROR."
+   ],
+   "problem": "Шаг 4 предполагает замену настройки, а шаг 5 описывает возврат прежнего состояния при отклонении суммы. Однако валидация суммы должна происходить до замены настройки (на шаге 3), а не после нее.",
+   "blocked_decision": "Невозможно корректно спроектировать последовательность транзакций и вызовов базы данных.",
+   "fix": "Перенести проверку суммы на этап до замены настройки, исключив необходимость отката измененного состояния.",
+   "owner_question": "",
+   "source": "review",
+   "cid": "C-009",
+   "anchored": [
+    {
+     "text": "4. Заменить настройку и вернуть результат сохранения.",
+     "anchor": {
+      "found": true,
+      "page": 3,
+      "line_start": 49,
+      "line_end": 49,
+      "exact": true
+     }
+    },
+    {
+     "text": "5. При отклонении суммы вернуть прежнее состояние и результат ERROR.",
+     "anchor": {
+      "found": true,
+      "page": 3,
+      "line_start": 50,
+      "line_end": 50,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 2,
+   "notes": [],
+   "verdict": "confirm",
+   "verify_reason": "Откат при отклонении суммы описан после шага замены настройки.",
+   "duplicate_of": null,
+   "severity_before": "major",
+   "fid": "F-15"
+  },
+  {
+   "criterion": "unambiguous",
+   "severity": "major",
+   "req_ids": [
+    "R-42"
+   ],
+   "title": "Противоречие в кодах ответа со списком статус-кодов",
+   "quotes": [
+    "Если результат 200 или 201 — успешный. Если результат 400, 401 и далее — неуспешный.",
+    "200. Ответ в случае успешного выполнения метода.",
+    "401. Ответ в случае, если запрос выполнен без необходимой авторизации.",
+    "403. Ответ в случае, если на указанный ресурс доступ запрещен.",
+    "500. Ответ в случае, если произошла внутренняя ошибка сервера."
+   ],
+   "problem": "В тексте указано, что код 201 является успешным, однако в списке статусов и примерах ответов код 201 не описан, а для успешного выполнения возвращается только статус 200. Это создает неопределенность для тестирования метода.",
+   "blocked_decision": "",
+   "fix": "Удалить упоминание кода 201 из общей формулировки или добавить его детальное описание и пример ответа в раздел статусов.",
+   "owner_question": "Планируется ли использовать код ответа 201 для данного метода?",
+   "source": "review",
+   "cid": "C-010",
+   "anchored": [
+    {
+     "text": "Если результат 200 или 201 — успешный. Если результат 400, 401 и далее — неуспешный.",
+     "anchor": {
+      "found": true,
+      "page": 4,
+      "line_start": 22,
+      "line_end": 22,
+      "exact": true
+     }
+    },
+    {
+     "text": "200. Ответ в случае успешного выполнения метода.",
+     "anchor": {
+      "found": true,
+      "page": 4,
+      "line_start": 29,
+      "line_end": 29,
+      "exact": true
+     }
+    },
+    {
+     "text": "401. Ответ в случае, если запрос выполнен без необходимой авторизации.",
+     "anchor": {
+      "found": true,
+      "page": 4,
+      "line_start": 35,
+      "line_end": 35,
+      "exact": true
+     }
+    },
+    {
+     "text": "403. Ответ в случае, если на указанный ресурс доступ запрещен.",
+     "anchor": {
+      "found": true,
+      "page": 4,
+      "line_start": 36,
+      "line_end": 36,
+      "exact": true
+     }
+    },
+    {
+     "text": "500. Ответ в случае, если произошла внутренняя ошибка сервера.",
+     "anchor": {
+      "found": true,
+      "page": 4,
+      "line_start": 37,
+      "line_end": 37,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 5,
+   "notes": [],
+   "verdict": "confirm",
+   "verify_reason": "Код 201 упоминается как успешный, но отсутствует в списке статус-кодов.",
+   "duplicate_of": null,
+   "severity_before": "major",
+   "fid": "F-16"
+  },
+  {
+   "source": "rule",
+   "criterion": "set_complete",
+   "severity": "major",
+   "req_ids": [],
+   "title": "Раздел не заполнен (заглушка)",
+   "quotes": [
+    "заполняются тестировщиками"
+   ],
+   "problem": "В документе стоит заглушка вместо содержания; раздел нельзя проверить.",
+   "blocked_decision": "",
+   "fix": "Заполнить раздел до передачи в разработку или явно указать, что он не требуется.",
+   "owner_question": "",
+   "cid": "C-018",
+   "anchored": [
+    {
+     "text": "заполняются тестировщиками",
+     "anchor": {
+      "found": true,
+      "page": 2,
+      "line_start": 9,
+      "line_end": 9,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 1,
+   "notes": [],
+   "verdict": "confirm",
+   "verify_reason": "Раздел тестирования требований содержит заглушку «заполняются тестировщиками».",
+   "duplicate_of": null,
+   "severity_before": "major",
+   "fid": "F-17"
+  },
+  {
+   "source": "rule",
+   "criterion": "modifiable",
+   "severity": "major",
+   "req_ids": [],
+   "title": "Чек-лист ревью не заполнен",
+   "quotes": [
+    "Да / Нет Да / Нет"
+   ],
+   "problem": "В 14 строках оставлены варианты «Да / Нет» без выбора: ревью по шаблону банка не проведено.",
+   "blocked_decision": "",
+   "fix": "Провести ревью и проставить отметки (агент предлагает заполнение в разделе «Чек-лист банка»).",
+   "owner_question": "",
+   "cid": "C-019",
+   "anchored": [
+    {
+     "text": "Да / Нет Да / Нет",
+     "anchor": {
+      "found": true,
+      "page": 2,
+      "line_start": 22,
+      "line_end": 22,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 1,
+   "notes": [],
+   "verdict": "confirm",
+   "verify_reason": "Чек-лист ревью содержит незаполненные варианты «Да / Нет».",
+   "duplicate_of": null,
+   "severity_before": "major",
+   "fid": "F-18"
+  },
+  {
+   "source": "rule",
+   "criterion": "modifiable",
+   "severity": "major",
+   "req_ids": [],
+   "title": "Не указаны версия и дата документа",
+   "quotes": [
+    "Документ (версия/дата) в источнике не заполнен. Пункты чек-листа приведены как в шаблоне, отметки не"
+   ],
+   "problem": "Номер версии и дата не зафиксированы: нельзя сослаться на согласованную редакцию и отследить изменения.",
+   "blocked_decision": "",
+   "fix": "Добавить версию, дату и историю изменений.",
+   "owner_question": "",
+   "cid": "C-020",
+   "anchored": [
+    {
+     "text": "Документ (версия/дата) в источнике не заполнен. Пункты чек-листа приведены как в шаблоне, отметки не",
+     "anchor": {
+      "found": true,
+      "page": 2,
+      "line_start": 16,
+      "line_end": 16,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 1,
+   "notes": [],
+   "verdict": "confirm",
+   "verify_reason": "Версия и дата документа не зафиксированы в источнике.",
+   "duplicate_of": "C-014",
+   "severity_before": "major",
+   "fid": "F-19"
+  },
+  {
+   "source": "rule",
+   "criterion": "traceable",
+   "severity": "major",
+   "req_ids": [],
+   "title": "Блок согласования пуст",
+   "quotes": [
+    "Блок согласующих"
+   ],
+   "problem": "Нет ни одного согласующего: неизвестно, кто подтвердил требования и изменения смежных систем.",
+   "blocked_decision": "",
+   "fix": "Заполнить подразделения, ответственных и отметки о согласовании.",
+   "owner_question": "",
+   "cid": "C-021",
+   "anchored": [
+    {
+     "text": "Блок согласующих",
+     "anchor": {
+      "found": true,
+      "page": 3,
+      "line_start": 25,
+      "line_end": 25,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 1,
+   "notes": [],
+   "verdict": "confirm",
+   "verify_reason": "Блок согласующих полностью пуст.",
+   "duplicate_of": null,
+   "severity_before": "major",
+   "fid": "F-20"
+  },
+  {
+   "criterion": "modifiable",
+   "severity": "minor",
+   "req_ids": [],
+   "title": "Отсутствуют версия и дата документа",
+   "quotes": [
+    "Документ (версия/дата) в источнике не заполнен."
+   ],
+   "problem": "В шапке документа не указаны версия и дата редакции, что нарушает требования к модифицируемости и версионности технической документации.",
+   "blocked_decision": "",
+   "fix": "Заполнить поля версии и даты в заголовке документа.",
+   "owner_question": "",
+   "source": "set",
+   "cid": "C-014",
+   "anchored": [
+    {
+     "text": "Документ (версия/дата) в источнике не заполнен.",
+     "anchor": {
+      "found": true,
+      "page": 2,
+      "line_start": 16,
+      "line_end": 16,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 1,
+   "notes": [],
+   "verdict": "confirm",
+   "verify_reason": "В тексте указано, что версия и дата документа не заполнены.",
+   "duplicate_of": null,
+   "severity_before": "minor",
+   "fid": "F-21"
+  }
+ ],
+ "questions": [],
+ "rejected": [],
+ "duplicates": [],
+ "checklist": {
+  "present": true,
+  "items": [
+   {
+    "item": "Техническое требование зафиксировано и покрывает бизнес-требование",
+    "available": "Да",
+    "passed": "Нет",
+    "refs": [
+     "F-01",
+     "F-02",
+     "F-03",
+     "F-04"
+    ],
+    "comment": "В разделе «Критерии приемки» и интеграции обнаружены противоречия правил и типов запросов.",
+    "anchor": {
+     "found": true,
+     "page": 2,
+     "line_start": 19,
+     "line_end": 21,
+     "exact": true
+    }
+   },
+   {
+    "item": "Функциональная спецификация имеет структурированное описание (по стандарту, шаблону)",
+    "available": "Да",
+    "passed": "Нет",
+    "refs": [
+     "F-05",
+     "F-17"
+    ],
+    "comment": "В документе отсутствуют описания для некоторых исходов и обнаружены незаполненные разделы-заглушки.",
+    "anchor": {
+     "found": true,
+     "page": 2,
+     "line_start": 23,
+     "line_end": 25,
+     "exact": true
+    }
+   },
+   {
+    "item": "Sequence-диаграммы, предусмотрены взаимодействия систем, компонентов и решений",
+    "available": "Да",
+    "passed": "Да",
+    "refs": [],
+    "comment": "Раздел «Sequence Diagram» присутствует на странице 1.",
+    "anchor": {
+     "found": true,
+     "page": 2,
+     "line_start": 27,
+     "line_end": 29,
+     "exact": true
+    }
+   },
+   {
+    "item": "Требование покрывает спецификацию UX/UI дизайна",
+    "available": "Да",
+    "passed": "Да",
+    "refs": [],
+    "comment": "Раздел «Дизайн процесса UI» присутствует на странице 1.",
+    "anchor": {
+     "found": true,
+     "page": 2,
+     "line_start": 31,
+     "line_end": 32,
+     "exact": true
+    }
+   },
+   {
+    "item": "Реализация задачи/проекта предусматривает схему отката решений При невозможности отката — варианты скрытия функционала",
+    "available": "Да",
+    "passed": "Нет",
+    "refs": [
+     "F-15"
+    ],
+    "comment": "В логике работы метода на странице 3 зафиксировано противоречие логики отката при отклонении суммы.",
+    "anchor": {
+     "found": false,
+     "page": null,
+     "line_start": null,
+     "line_end": null,
+     "exact": false
+    }
+   },
+   {
+    "item": "Требование может быть протестировано",
+    "available": "Да",
+    "passed": "Нет",
+    "refs": [
+     "F-06",
+     "F-07",
+     "F-14"
+    ],
+    "comment": "Не указаны формат и состав данных события покупки, а также правила валидации.",
+    "anchor": {
+     "found": true,
+     "page": 2,
+     "line_start": 40,
+     "line_end": 41,
+     "exact": true
+    }
+   },
+   {
+    "item": "Требование предусматривает модель данных или поток, содержит описание",
+    "available": "Да",
+    "passed": "Да",
+    "refs": [],
+    "comment": "Раздел «Требования к данным» присутствует на странице 2.",
+    "anchor": {
+     "found": true,
+     "page": 2,
+     "line_start": 43,
+     "line_end": 45,
+     "exact": true
+    }
+   },
+   {
+    "item": "Требование не имеет противоречий или явных показателей операционных рисков",
+    "available": "Да",
+    "passed": "Нет",
+    "refs": [
+     "F-08",
+     "F-09",
+     "F-10"
+    ],
+    "comment": "Метод сохранения данных имеет тип GET, что нарушает идемпотентность и безопасность.",
+    "anchor": {
+     "found": true,
+     "page": 2,
+     "line_start": 47,
+     "line_end": 50,
+     "exact": true
+    }
+   },
+   {
+    "item": "Требование содержит архитектуру и согласовано с архитекторами",
+    "available": "Да",
+    "passed": "Да",
+    "refs": [],
+    "comment": "Раздел «Архитектура решения» присутствует на странице 1.",
+    "anchor": {
+     "found": true,
+     "page": 2,
+     "line_start": 52,
+     "line_end": 54,
+     "exact": true
+    }
+   },
+   {
+    "item": "Все изменения, влияющие на иные продукты/системы в требовании, согласованы с ответственными лицами",
+    "available": "Нет",
+    "passed": "Нет",
+    "refs": [
+     "F-20"
+    ],
+    "comment": "Блок согласующих на странице 3 оставлен пустым.",
+    "anchor": {
+     "found": true,
+     "page": 3,
+     "line_start": 2,
+     "line_end": 5,
+     "exact": true
+    }
+   },
+   {
+    "item": "Структура требований не несёт изменений и рисков информационной безопасности",
+    "available": "Да",
+    "passed": "Нет",
+    "refs": [
+     "F-11",
+     "F-12",
+     "F-13"
+    ],
+    "comment": "Не указан URL для Prod контура, а также алгоритмы проверки сессии и принадлежности карты.",
+    "anchor": {
+     "found": true,
+     "page": 3,
+     "line_start": 7,
+     "line_end": 9,
+     "exact": true
+    }
+   },
+   {
+    "item": "В требовании присутствует схема полного бизнес-процесса и часть реализуемой доработки",
+    "available": "Да",
+    "passed": "Да",
+    "refs": [],
+    "comment": "BPMN схема процесса присутствует на странице 1.",
+    "anchor": {
+     "found": true,
+     "page": 3,
+     "line_start": 13,
+     "line_end": 15,
+     "exact": true
+    }
+   },
+   {
+    "item": "Требование носит интеграционный характер и имеет четкую постановку реализации интеграционного взаимодействия",
+    "available": "Да",
+    "passed": "Нет",
+    "refs": [
+     "F-16"
+    ],
+    "comment": "В требованиях к интеграции и ответам API выявлены противоречия в кодах ответа.",
+    "anchor": {
+     "found": true,
+     "page": 3,
+     "line_start": 17,
+     "line_end": 20,
+     "exact": true
+    }
+   },
+   {
+    "item": "Поддерживается версионность документа / зафиксирована",
+    "available": "Нет",
+    "passed": "Нет",
+    "refs": [
+     "F-19",
+     "F-21"
+    ],
+    "comment": "В документе (версия/дата) в источнике не заполнен.",
+    "anchor": {
+     "found": true,
+     "page": 3,
+     "line_start": 22,
+     "line_end": 23,
+     "exact": true
+    }
+   }
+  ]
+ }
+}

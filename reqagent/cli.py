@@ -19,16 +19,39 @@ from .report import delta_md, render
 ROOT = Path(__file__).resolve().parent.parent
 
 
+def _git_head() -> str:
+    """Хеш коммита без вызова git (git может быть не установлен на машине защиты)."""
+    g = ROOT / ".git"
+    try:
+        head = (g / "HEAD").read_text(encoding="utf-8").strip()
+        if head.startswith("ref:"):
+            ref = head.split(":", 1)[1].strip()
+            p = g / ref
+            if p.exists():
+                return p.read_text(encoding="utf-8").strip()[:7]
+            packed = g / "packed-refs"
+            if packed.exists():
+                for line in packed.read_text(encoding="utf-8").splitlines():
+                    if line.endswith(" " + ref):
+                        return line.split()[0][:7]
+            return ""
+        return head[:7]
+    except OSError:
+        return ""
+
+
 def agent_version() -> str:
+    sha, dirty = "", ""
     try:
         sha = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT, capture_output=True,
                              text=True, timeout=5).stdout.strip()
-        dirty = subprocess.run(["git", "status", "--porcelain", "--untracked-files=no"], cwd=ROOT,
-                               capture_output=True, text=True, timeout=5).stdout.strip()
-        if sha:
-            return f"{__version__} (коммит {sha}{', есть незакоммиченные изменения' if dirty else ''})"
+        dirty = subprocess.run(["git", "status", "--porcelain", "--untracked-files=no", "--", "reqagent"],
+                               cwd=ROOT, capture_output=True, text=True, timeout=5).stdout.strip()
     except Exception:
         pass
+    sha = sha or _git_head()
+    if sha:
+        return f"{__version__} (коммит {sha}{', код агента изменён после коммита' if dirty else ''})"
     return f"{__version__} (вне git)"
 
 

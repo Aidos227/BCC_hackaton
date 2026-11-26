@@ -222,6 +222,8 @@ def render(doc, res: Dict[str, Any], passport: Dict[str, str], log: List[Dict] =
         rows.append((f["cid"], SRC_RU.get(f["source"], f["source"]), f.get("title"), "перепроверка: " + (f.get("verify_reason") or "")))
     for f in res.get("duplicates") or []:
         rows.append((f["cid"], SRC_RU.get(f["source"], f["source"]), f.get("title"), f"дубль {f.get('dup_fid') or ''}"))
+    for d in (res.get("model") or {}).get("discarded") or []:
+        rows.append((d["scenario"], "исполняемая модель", d["title"], d["reason"]))
     if rows:
         w("| Кандидат | Источник | Суть | Причина |\n|---|---|---|---|")
         for r in rows:

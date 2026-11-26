@@ -139,10 +139,17 @@ def executable_model(llm: LLM, doc: Document, reqs: List[Dict]) -> Dict:
                 pass
     spec.update({"code": code, "rules": rules, "runs": runs, "error": error})
     mf = model_findings(spec, reqs, doc) if runs else []
+    for m in mf:
+        m["_trace"] = (spec.get("traces") or {}).get(m["scenario"]) or {}
     of = oracle_findings(spec, reqs)
     spec["findings"] = merge_methods(mf, of)
+    spec["discarded"] = [{"title": m["title"], "scenario": m["scenario"], "reason": m["discarded"]}
+                         for m in mf if m.get("discarded")]
+    for m in mf:
+        m.pop("_trace", None)
     say(f"    сценариев: {len(scenarios)}, развилок: {len(interps)}, находок: модель {len(mf)}, "
-        f"трассировка {len(of)}, после объединения {len(spec['findings'])}")
+        f"трассировка {len(of)}, после объединения {len(spec['findings'])} "
+        f"(отброшено как ошибка модели: {len(spec['discarded'])})")
     return spec
 
 
@@ -259,6 +266,14 @@ def merge_methods(mf: List[Dict], of: List[Dict]) -> List[Dict]:
     out = list(of)
     for m in mf:
         twin = next((o for o in of if o["scenario"] == m["scenario"]), None)
+        t = (m.get("_trace") or {})
+        if not twin and t and m["criterion"] in ("complete", "set_consistent") and t.get("derived") \
+                and not (t.get("undetermined") or "").strip() and not t.get("conflict") \
+                and t.get("acceptance") in (None, "match", "n/a"):
+            # Трассировка правил однозначно выводит исход (и для критерия приёмки он совпадает),
+            # а модель «не смогла» или «не совпала» — это ошибка кода модели, а не дефект документа.
+            m["discarded"] = "трассировка правил однозначно определяет исход; расхождение — ошибка исполняемой модели"
+            continue
         if twin:
             twin["evidence"] = twin["evidence"] + "\n\nПрогон исполняемой модели:\n" + m["evidence"]
             twin["methods"] = "трассировка правил + вычисление модели"
@@ -495,6 +510,28 @@ def finalize(cand: List[Dict]) -> Dict[str, List[Dict]]:
             confirmed.append(f)
             ids.add(f["cid"])
     dups = [f for f in dups if f["verdict"] == "duplicate"]
+    # Детерминированная склейка дублей, которые рецензент пропустил: цитаты одного замечания целиком
+    # входят в цитаты другого и критерии из одной группы.
+    group = {"set_consistent": 1, "correct": 1, "unambiguous": 1, "appropriate": 1,
+             "complete": 2, "set_complete": 2, "verifiable": 2, "modifiable": 3, "traceable": 4}
+    strength = lambda f: (SEV_ORDER[f["severity"]], SRC_ORDER.get(f["source"], 9), f["cid"])
+    confirmed.sort(key=strength)
+    kept: List[Dict] = []
+    for f in confirmed:
+        qs = {normalize(a["text"]) for a in f["anchored"]}
+        g = group.get(f.get("criterion"), f.get("criterion"))
+        main = next((k for k in kept if group.get(k.get("criterion"), k.get("criterion")) == g and qs and
+                     all(any(q in kq or kq in q for kq in {normalize(a["text"]) for a in k["anchored"]}) for q in qs)
+                     and not f.get("pinned")), None)
+        if main is not None:
+            f["verdict"], f["duplicate_of"] = "duplicate", main["cid"]
+            f["verify_reason"] = "дубль по цитатам (склеено кодом)"
+            main.setdefault("also", []).append(f["source"])
+            main["req_ids"] = sorted(set((main.get("req_ids") or []) + (f.get("req_ids") or [])))
+            dups.append(f)
+        else:
+            kept.append(f)
+    confirmed = kept
     # итоговая нумерация: по критичности, затем по силе доказательства
     confirmed.sort(key=lambda f: (SEV_ORDER[f["severity"]], -1 if f.get("pinned") else SRC_ORDER.get(f["source"], 9), f["cid"]))
     for n, f in enumerate(confirmed, start=1):

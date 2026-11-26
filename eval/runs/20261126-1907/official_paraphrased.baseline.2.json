@@ -1,0 +1,23 @@
+{
+ "requirements": [],
+ "findings": [],
+ "verdict": "Невозможно сформировать корректный JSON, так как схема не содержит полей requirements, findings и verdict в требуемом формате.",
+ "_meta": {
+  "model": "gemini-3.5-flash-lite",
+  "usage": {
+   "calls": 1,
+   "input_tokens": 3512,
+   "output_tokens": 45,
+   "seconds": 19.117205381393433,
+   "log": [
+    {
+     "stage": "baseline: один запрос",
+     "model": "gemini-3.5-flash-lite",
+     "in": 3512,
+     "out": 45,
+     "sec": 19.1
+    }
+   ]
+  }
+ }
+}

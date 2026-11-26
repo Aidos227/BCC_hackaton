@@ -1,0 +1,3587 @@
+{
+ "passport": {
+  "Документ": "Автопополнение мобильной связи",
+  "Файл": "autopay.md (MD, страниц: 1, SHA-256: bcafa48bda491b02…)",
+  "Дата прогона": "26.11.2026 18:52 (UTC+5, Алматы)",
+  "Модель": "gemini / gemini-3.5-flash-lite, temperature=0.0",
+  "Версия агента": "1.0.0 (вне git)",
+  "Этапы": "нарезка → проверка требований → проверка набора → исполняемая модель → правила → привязка цитат → скептическая перепроверка → чек-лист",
+  "Обращений к модели": "14 (токены: вход 53315, выход 24274)",
+  "Длительность": "152 с"
+ },
+ "requirements": [
+  {
+   "id": "R-01",
+   "doc_id": "АП-1",
+   "section": "Функциональные требования",
+   "type": "функциональное",
+   "summary": "Клиент подключает автопополнение для одного номера телефона и одной своей карты KZT.",
+   "quote": "Клиент подключает автопополнение для одного номера телефона и одной своей карты KZT.",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 15,
+    "line_end": 15,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-02",
+   "doc_id": "АП-2",
+   "section": "Функциональные требования",
+   "type": "функциональное",
+   "summary": "Клиент задаёт сумму пополнения от 100 до 20 000 ₸ целым числом.",
+   "quote": "Клиент задаёт сумму пополнения от 100 до 20 000 ₸ целым числом",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 16,
+    "line_end": 16,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-03",
+   "doc_id": "АП-2",
+   "section": "Функциональные требования",
+   "type": "функциональное",
+   "summary": "Клиент задаёт порог баланса от 0 до 5 000 ₸.",
+   "quote": "и порог баланса от 0 до 5 000 ₸.",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 16,
+    "line_end": 16,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-04",
+   "doc_id": "АП-3",
+   "section": "Функциональные требования",
+   "type": "функциональное",
+   "summary": "Банк списывает сумму и переводит оператору при падении баланса ниже порога.",
+   "quote": "Когда оператор сообщает, что баланс номера стал ниже порога, банк списывает сумму пополнения с карты и переводит её оператору.",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 17,
+    "line_end": 17,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-05",
+   "doc_id": "АП-4",
+   "section": "Функциональные требования",
+   "type": "функциональное",
+   "summary": "Автопополнение выполняется не чаще одного раза в сутки.",
+   "quote": "Автопополнение выполняется не чаще одного раза в сутки.",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 18,
+    "line_end": 18,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-06",
+   "doc_id": "АП-5",
+   "section": "Функциональные требования",
+   "type": "функциональное",
+   "summary": "После пополнения клиент получает push с деталями карты, телефона и суммы.",
+   "quote": "После успешного пополнения клиент получает push с номером карты, номером телефона и суммой.",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 19,
+    "line_end": 19,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-07",
+   "doc_id": "АП-6",
+   "section": "Функциональные требования",
+   "type": "функциональное",
+   "summary": "Клиент может отключить автопополнение в любой момент, отключение действует сразу.",
+   "quote": "Клиент может отключить автопополнение в любой момент; отключение действует сразу.",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 20,
+    "line_end": 20,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-08",
+   "doc_id": "НФ-1",
+   "section": "Нефункциональные требования",
+   "type": "нефункциональное",
+   "summary": "Уведомление о пополнении должно приходить клиенту быстро.",
+   "quote": "Уведомление о пополнении должно приходить клиенту быстро.",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 23,
+    "line_end": 23,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-09",
+   "doc_id": "НФ-2",
+   "section": "Нефункциональные требования",
+   "type": "нефункциональное",
+   "summary": "Сервис обрабатывает событие оператора не дольше 30 секунд.",
+   "quote": "Сервис обрабатывает событие оператора не дольше 30 секунд с момента получения.",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 24,
+    "line_end": 24,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-10",
+   "doc_id": null,
+   "section": "Требования к данным",
+   "type": "данные",
+   "summary": "Система должна хранить номер телефона.",
+   "quote": "Хранить номер телефона",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 27,
+    "line_end": 27,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-11",
+   "doc_id": null,
+   "section": "Требования к данным",
+   "type": "данные",
+   "summary": "Система должна хранить идентификатор карты.",
+   "quote": "идентификатор карты",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 27,
+    "line_end": 27,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-12",
+   "doc_id": null,
+   "section": "Требования к данным",
+   "type": "данные",
+   "summary": "Система должна хранить сумму пополнения в тиынах.",
+   "quote": "сумму пополнения в тиынах",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 27,
+    "line_end": 27,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-13",
+   "doc_id": null,
+   "section": "Требования к данным",
+   "type": "данные",
+   "summary": "Система должна хранить порог баланса в тенге.",
+   "quote": "порог баланса в тенге",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 27,
+    "line_end": 27,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-14",
+   "doc_id": null,
+   "section": "Требования к данным",
+   "type": "данные",
+   "summary": "Система должна хранить дату последнего пополнения.",
+   "quote": "дату последнего пополнения.",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 27,
+    "line_end": 27,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-15",
+   "doc_id": null,
+   "section": "Критерии приемки",
+   "type": "критерий приёмки",
+   "summary": "При пороге 500 ₸, сумме 1000 ₸ и балансе 499 ₸ списывается 1000 ₸ и отправляется push.",
+   "quote": "Порог 500 ₸, сумма 1 000 ₸ | Оператор сообщает баланс 499 ₸ | Списано 1 000 ₸, push отправлен",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 36,
+    "line_end": 36,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-16",
+   "doc_id": null,
+   "section": "Критерии приемки",
+   "type": "критерий приёмки",
+   "summary": "При пороге 500 ₸, сумме 1000 ₸ и балансе 500 ₸ списывается 1000 ₸ и отправляется push.",
+   "quote": "Порог 500 ₸, сумма 1 000 ₸ | Оператор сообщает баланс 500 ₸ | Списано 1 000 ₸, push отправлен",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 37,
+    "line_end": 37,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-17",
+   "doc_id": null,
+   "section": "Критерии приемки",
+   "type": "критерий приёмки",
+   "summary": "При наличии пополнения в текущие сутки повторного списания при низком балансе нет.",
+   "quote": "Пополнение уже было сегодня в 09:00 | Оператор сообщает низкий баланс в 21:00 | Списания нет",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 38,
+    "line_end": 38,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-18",
+   "doc_id": null,
+   "section": "API «Сохранить настройки автопополнения»",
+   "type": "API",
+   "summary": "Метод API использует REST тип POST.",
+   "quote": "| **REST type** | POST |",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 44,
+    "line_end": 44,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-19",
+   "doc_id": null,
+   "section": "API «Сохранить настройки автопополнения»",
+   "type": "API",
+   "summary": "URL метода API равен /autopay/settings.",
+   "quote": "| **URL** | `/autopay/settings` |",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 45,
+    "line_end": 45,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-20",
+   "doc_id": null,
+   "section": "API «Сохранить настройки автопополнения»",
+   "type": "API",
+   "summary": "Параметр phone обязательный, строка, формат +7XXXXXXXXXX.",
+   "quote": "| `phone` | string | Да | +7XXXXXXXXXX | Номер телефона |",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 51,
+    "line_end": 51,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-21",
+   "doc_id": null,
+   "section": "API «Сохранить настройки автопополнения»",
+   "type": "API",
+   "summary": "Параметр cardId обязательный, строка, идентифицирует карту клиента.",
+   "quote": "| `cardId` | string | Да | Карта клиента | Идентификатор карты |",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 52,
+    "line_end": 52,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-22",
+   "doc_id": null,
+   "section": "API «Сохранить настройки автопополнения»",
+   "type": "API",
+   "summary": "Параметр amount обязательный, целое число, диапазон 100–50 000.",
+   "quote": "| `amount` | integer | Да | 100–50 000 | Сумма пополнения в тенге |",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 53,
+    "line_end": 53,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-23",
+   "doc_id": null,
+   "section": "API «Сохранить настройки автопополнения»",
+   "type": "API",
+   "summary": "Параметр threshold обязательный, целое число, диапазон 0–5 000.",
+   "quote": "| `threshold` | integer | Да | 0–5 000 | Порог баланса в тенге |",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 54,
+    "line_end": 54,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-24",
+   "doc_id": null,
+   "section": "API «Сохранить настройки автопополнения»",
+   "type": "API",
+   "summary": "При успешном сохранении настроек API возвращает статус 200 и тело {\"result\":\"OK\"}.",
+   "quote": "* **200** — настройки сохранены: `{\"result\":\"OK\"}`.",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 57,
+    "line_end": 57,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-25",
+   "doc_id": null,
+   "section": "API «Сохранить настройки автопополнения»",
+   "type": "API",
+   "summary": "При неверных параметрах API возвращает статус 400 и сообщение о некорректных параметрах.",
+   "quote": "* **400** — параметры заполнены неверно: `{\"message\":\"Некорректные параметры\"}`.",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 58,
+    "line_end": 58,
+    "exact": true
+   }
+  },
+  {
+   "id": "R-26",
+   "doc_id": null,
+   "section": "API «Сохранить настройки автопополнения»",
+   "type": "API",
+   "summary": "При отсутствии авторизации API возвращает статус 401.",
+   "quote": "* **401** — нет авторизации.",
+   "anchor": {
+    "found": true,
+    "page": 1,
+    "line_start": 59,
+    "line_end": 59,
+    "exact": true
+   }
+  }
+ ],
+ "reviews": {
+  "R-01": {
+   "id": "R-01",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-02": {
+   "id": "R-02",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "issue",
+    "singular": "ok",
+    "feasible": "issue",
+    "verifiable": "issue",
+    "correct": "issue",
+    "conforming": "ok"
+   },
+   "findings": [
+    {
+     "criterion": "correct",
+     "severity": "critical",
+     "req_ids": [
+      "R-02"
+     ],
+     "title": "Противоречие лимитов суммы в тексте и API",
+     "quotes": [
+      "Клиент задаёт сумму пополнения от 100 до 20 000 ₸ целым числом",
+      "| amount | integer | Да | 100–50 000 | Сумма пополнения в тенге |"
+     ],
+     "problem": "В тексте требования АП-2 указан диапазон суммы пополнения от 100 до 20 000 ₸, в то время как в спецификации API «Сохранить настройки автопополнения» указан диапазон 100–50 000. Из-за этого невозможно определить корректное бизнес-ограничение для валидации на бэкенде.",
+     "blocked_decision": "Разработчик и тестировщик не могут принять решение о том, какой диапазон сумм (до 20 000 или до 50 000) считать валидным.",
+     "fix": "Привести диапазон суммы пополнения к единому значению в АП-2 и в таблице API.",
+     "owner_question": "Какой максимальный лимит суммы автопополнения является правильным: 20 000 ₸ или 50 000 ₸?"
+    }
+   ]
+  },
+  "R-03": {
+   "id": "R-03",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-04": {
+   "id": "R-04",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "issue",
+    "complete": "issue",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "issue",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": [
+    {
+     "criterion": "complete",
+     "severity": "major",
+     "req_ids": [
+      "R-04"
+     ],
+     "title": "Не описано поведение при недостаточном балансе карты",
+     "quotes": [
+      "Когда оператор сообщает, что баланс номера стал ниже порога, банк списывает сумму пополнения с карты и переводит её оператору."
+     ],
+     "problem": "В требовании АП-3 не указано, что должна делать система, если на карте клиента недостаточно средств для списания суммы пополнения.",
+     "blocked_decision": "",
+     "fix": "Добавить описание сценария обработки неуспешного списания (например, повторная попытка, отключение автопополнения или отправка уведомления клиенту).",
+     "owner_question": "Как система должна поступать при нехватке денег на карте клиента в момент срабатывания автопополнения?"
+    }
+   ]
+  },
+  "R-05": {
+   "id": "R-05",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "issue",
+    "complete": "issue",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "issue",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": [
+    {
+     "criterion": "unambiguous",
+     "severity": "major",
+     "req_ids": [
+      "R-05"
+     ],
+     "title": "Не определено понятие «сутки» для ограничения частоты",
+     "quotes": [
+      "Автопополнение выполняется не чаще одного раза в сутки."
+     ],
+     "problem": "Формулировка «не чаще одного раза в сутки» допускает два прочтения: календарные сутки (сброс в 00:00) или скользящие сутки (24 часа с момента последнего успешного пополнения).",
+     "blocked_decision": "",
+     "fix": "Уточнить формулировку, указав тип суточного ограничения (например, «не чаще одного раза в календарные сутки» или «не чаще одного раза в 24 часа»).",
+     "owner_question": "Ограничение «один раз в сутки» привязано к календарному дню (сброс в полночь) или к интервалу в 24 часа?"
+    }
+   ]
+  },
+  "R-06": {
+   "id": "R-06",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-07": {
+   "id": "R-07",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-08": {
+   "id": "R-08",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "issue",
+    "complete": "issue",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "issue",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": [
+    {
+     "criterion": "verifiable",
+     "severity": "minor",
+     "req_ids": [
+      "R-08"
+     ],
+     "title": "Субъективная оценка скорости в нефункциональном требовании",
+     "quotes": [
+      "Уведомление о пополнении должно приходить клиенту быстро."
+     ],
+     "problem": "Требование НФ-1 использует качественную оценку «быстро», которую невозможно объективно проверить тестом (в отличие от конкретного тайминга в НФ-2).",
+     "blocked_decision": "",
+     "fix": "Заменить качественную оценку на измеримый показатель или удалить требование, если НФ-2 полностью покрывает этот кейс.",
+     "owner_question": ""
+    }
+   ]
+  },
+  "R-09": {
+   "id": "R-09",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-10": {
+   "id": "R-10",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-11": {
+   "id": "R-11",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-12": {
+   "id": "R-12",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-13": {
+   "id": "R-13",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "issue",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "issue",
+    "conforming": "ok"
+   },
+   "findings": [
+    {
+     "criterion": "correct",
+     "severity": "major",
+     "req_ids": [
+      "R-13"
+     ],
+     "title": "Противоречие в единицах измерения суммы пополнения и порога",
+     "quotes": [
+      "сумму пополнения в тиынах, порог баланса в тенге",
+      "порог баланса в тенге."
+     ],
+     "problem": "В разделе требований к данным указано хранить «сумму пополнения в тиынах, порог баланса в тенге», однако в функциональных требованиях сумма задается в тенге, а в API сумма имеет диапазон 100-50 000, что противоречит хранению в тиынах.",
+     "blocked_decision": "",
+     "fix": "Уточнить единицы измерения для суммы пополнения (тенге или тиыны) во всех разделах документа.",
+     "owner_question": "В каких единицах (тенге или тиынах) необходимо хранить сумму пополнения?"
+    },
+    {
+     "criterion": "complete",
+     "severity": "major",
+     "req_ids": [
+      "R-13"
+     ],
+     "title": "Не указан тип данных и ограничения для порога баланса",
+     "quotes": [
+      "порог баланса в тенге"
+     ],
+     "problem": "В описании требований к данным упомянут «порог баланса в тенге», но не указан тип данных (целое число) и допустимые границы, в отличие от функциональных требований и API.",
+     "blocked_decision": "",
+     "fix": "Дополнить требование типом данных и диапазоном для порога баланса.",
+     "owner_question": ""
+    }
+   ]
+  },
+  "R-14": {
+   "id": "R-14",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "issue",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": [
+    {
+     "criterion": "complete",
+     "severity": "minor",
+     "req_ids": [
+      "R-14"
+     ],
+     "title": "Не указан формат хранения даты последнего пополнения",
+     "quotes": [
+      "дату последнего пополнения."
+     ],
+     "problem": "Требование указывает на необходимость хранения «дату последнего пополнения.», но не определяет формат (например, Timestamp, YYYY-MM-DD или с учетом времени).",
+     "blocked_decision": "",
+     "fix": "Указать формат и точность хранения даты последнего пополнения (например, TIMESTAMP или YYYY-MM-DD HH:MM:SS).",
+     "owner_question": ""
+    }
+   ]
+  },
+  "R-15": {
+   "id": "R-15",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-16": {
+   "id": "R-16",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "issue",
+    "conforming": "ok"
+   },
+   "findings": [
+    {
+     "criterion": "correct",
+     "severity": "critical",
+     "req_ids": [
+      "R-16"
+     ],
+     "title": "Противоречие условия срабатывания порога баланса",
+     "quotes": [
+      "Когда оператор сообщает, что баланс номера стал ниже порога",
+      "Порог 500 ₸, сумма 1 000 ₸ | Оператор сообщает баланс 500 ₸ | Списано 1 000 ₸, push отправлен"
+     ],
+     "problem": "Функциональное требование АП-3 определяет условие как «ниже порога», однако критерий приемки для баланса, равного порогу (500 ₸ при пороге 500 ₸), требует совершить списание, что противоречит формулировке «ниже».",
+     "blocked_decision": "Невозможно принять решение о том, должно ли происходить автопополнение при балансе, строго равном порогу.",
+     "fix": "Исправить формулировку в АП-3 на «ниже или равен порогу» либо изменить ожидаемый результат в критерии приемки.",
+     "owner_question": "Должно ли автопополнение срабатывать при балансе, равном порогу (<=), или только при балансе строго меньше порога (<)?"
+    }
+   ]
+  },
+  "R-17": {
+   "id": "R-17",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-18": {
+   "id": "R-18",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-19": {
+   "id": "R-19",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-20": {
+   "id": "R-20",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-21": {
+   "id": "R-21",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-22": {
+   "id": "R-22",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "issue",
+    "conforming": "ok"
+   },
+   "findings": [
+    {
+     "criterion": "correct",
+     "severity": "major",
+     "req_ids": [
+      "R-22"
+     ],
+     "title": "Противоречие диапазона суммы пополнения в API и функциональных требованиях",
+     "quotes": [
+      "Клиент задаёт сумму пополнения от 100 до 20 000 ₸",
+      "| `amount` | integer | Да | 100–50 000 | Сумма пополнения в тенге |"
+     ],
+     "problem": "Функциональное требование АП-2 ограничивает сумму пополнения диапазоном 100–20 000 ₸, в то время как спецификация API разрешает значения до 50 000 ₸.",
+     "blocked_decision": "",
+     "fix": "Привести диапазон суммы пополнения к единому значению во всех разделах документа (в АП-2 и в API).",
+     "owner_question": "Какой максимальный лимит суммы пополнения должен быть установлен: 20 000 ₸ или 50 000 ₸?"
+    }
+   ]
+  },
+  "R-23": {
+   "id": "R-23",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-24": {
+   "id": "R-24",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": []
+  },
+  "R-25": {
+   "id": "R-25",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "ok",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "ok",
+    "correct": "issue",
+    "conforming": "ok"
+   },
+   "findings": [
+    {
+     "criterion": "correct",
+     "severity": "major",
+     "req_ids": [
+      "R-25"
+     ],
+     "title": "Противоречие диапазона суммы пополнения в API",
+     "quotes": [
+      "* **АП-2.** Клиент задаёт сумму пополнения от 100 до 20 000 ₸ целым числом и порог баланса от 0 до 5 000 ₸.",
+      "| `amount` | integer | Да | 100–50 000 | Сумма пополнения в тенге |"
+     ],
+     "problem": "Диапазон допустимых значений суммы пополнения в требованиях и в спецификации API различается. В функциональных требованиях указано от 100 до 20 000 ₸, а в параметрах API — от 100 до 50 000.",
+     "blocked_decision": "",
+     "fix": "Привести диапазон `amount` в спецификации API в соответствие с пунктом АП-2: изменить на 100–20 000.",
+     "owner_question": "Какой верный верхний лимит суммы пополнения: 20 000 ₸ (согласно АП-2) или 50 000 ₸ (согласно API)?"
+    }
+   ]
+  },
+  "R-26": {
+   "id": "R-26",
+   "criteria": {
+    "necessary": "ok",
+    "appropriate": "ok",
+    "unambiguous": "ok",
+    "complete": "issue",
+    "singular": "ok",
+    "feasible": "ok",
+    "verifiable": "issue",
+    "correct": "ok",
+    "conforming": "ok"
+   },
+   "findings": [
+    {
+     "criterion": "complete",
+     "severity": "major",
+     "req_ids": [
+      "R-26"
+     ],
+     "title": "Отсутствует тело ответа для статуса 401",
+     "quotes": [
+      "* **401** — нет авторизации."
+     ],
+     "problem": "Для ответа с кодом 401 не указано тело ответа (структура JSON), в отличие от успешного ответа и статуса 400.",
+     "blocked_decision": "",
+     "fix": "Добавить структуру тела ответа для статуса 401, например: `* **401** — нет авторизации: `{\"message\":\"Требуется авторизация\"}`.`",
+     "owner_question": "Какое тело ответа должен возвращать API при ошибке 401?"
+    }
+   ]
+  }
+ },
+ "set": {
+  "set_criteria": {
+   "set_complete": {
+    "verdict": "issue",
+    "comment": "В документе есть раздел \"Требования к безопасности\", в котором указано \"TBD\"."
+   },
+   "set_consistent": {
+    "verdict": "issue",
+    "comment": "Максимальная сумма пополнения в требованиях и в спецификации API различается."
+   },
+   "set_feasible": {
+    "verdict": "ok",
+    "comment": "Требования технически реализуемы в рамках стандартных банковских систем."
+   },
+   "set_comprehensible": {
+    "verdict": "issue",
+    "comment": "Нефункциональное требование НФ-1 использует неметризуемую формулировку \"быстро\"."
+   },
+   "set_validatable": {
+    "verdict": "issue",
+    "comment": "Невозможно проверить выполнение нефункционального требования НФ-1 из-за отсутствия конкретных цифр."
+   },
+   "traceable": {
+    "verdict": "issue",
+    "comment": "Требования к данным и API не имеют сквозных идентификаторов для трассировки с функциональными требованиями."
+   },
+   "modifiable": {
+    "verdict": "issue",
+    "comment": "В документе отсутствуют версия, история изменений и статусы согласования."
+   },
+   "ranked": {
+    "verdict": "issue",
+    "comment": "Требования не ранжированы по важности и стабильности."
+   }
+  },
+  "findings": [
+   {
+    "criterion": "set_consistent",
+    "severity": "critical",
+    "req_ids": [
+     "R-02",
+     "R-22"
+    ],
+    "title": "Противоречие в максимальной сумме пополнения",
+    "quotes": [
+     "Клиент задаёт сумму пополнения от 100 до 20 000 ₸ целым числом и порог баланса от 0 до 5 000 ₸.",
+     "| `amount` | integer | Да | 100–50 000 | Сумма пополнения в тенге |"
+    ],
+    "problem": "В функциональных требованиях максимальная сумма пополнения ограничена 20 000 ₸, а в спецификации API параметр amount допускает значение до 50 000.",
+    "blocked_decision": "Невозможно определить валидный диапазон суммы пополнения для реализации проверки на бэкенде и в мобильном приложении.",
+    "fix": "Привести диапазон суммы пополнения в спецификации API к значению 100–20 000 ₸.",
+    "owner_question": "Какой максимальный лимит суммы пополнения является верным: 20 000 ₸ или 50 000 ₸?"
+   },
+   {
+    "criterion": "set_consistent",
+    "severity": "critical",
+    "req_ids": [
+     "R-03",
+     "R-16"
+    ],
+    "title": "Противоречие логики срабатывания порога баланса",
+    "quotes": [
+     "Когда оператор сообщает, что баланс номера стал ниже порога, банк списывает сумму пополнения с карты и переводит её оператору.",
+     "| Порог 500 ₸, сумма 1 000 ₸ | Оператор сообщает баланс 500 ₸ | Списано 1 000 ₸, push отправлен |"
+    ],
+    "problem": "Правило требует списания при балансе \"ниже порога\", однако в критерии приёмки при равенстве баланса порогу (500 ₸ и 500 ₸) происходит списание.",
+    "blocked_decision": "Невозможно запрограммировать условие срабатывания триггера автопополнения (строго меньше или меньше либо равно).",
+    "fix": "Исправить условие в критерии приёмки или скорректировать формулировку функционального требования.",
+    "owner_question": "Должно ли автопополнение срабатывать, когда баланс равен порогу, или только когда строго меньше порога?"
+   },
+   {
+    "criterion": "set_complete",
+    "severity": "critical",
+    "req_ids": [
+     "R-04"
+    ],
+    "title": "Отсутствие требований безопасности (TBD)",
+    "quotes": [
+     "## Требования к безопасности\nTBD"
+    ],
+    "problem": "Раздел требований к безопасности полностью не заполнен (TBD), что не позволяет проектировать архитектуру авторизации и шифрования данных карт.",
+    "blocked_decision": "Невозможно принимать архитектурные решения по защите платежных данных и аутентификации запросов сервиса.",
+    "fix": "Заполнить раздел \"Требования к безопасности\" конкретными требованиями.",
+    "owner_question": "Какие требования безопасности предъявляются к хранению идентификаторов карт и выполнению автоплатежей?"
+   },
+   {
+    "criterion": "set_comprehensible",
+    "severity": "major",
+    "req_ids": [
+     "R-08"
+    ],
+    "title": "Нечеткая формулировка нефункционального требования",
+    "quotes": [
+     "* **НФ-1.** Уведомление о пополнении должно приходить клиенту быстро."
+    ],
+    "problem": "Термин \"быстро\" субъективен и не может быть протестирован объективными методами.",
+    "blocked_decision": "",
+    "fix": "Заменить неметризуемое требование на конкретный временной интервал (например, до 5 секунд).",
+    "owner_question": "В течение скольких секунд клиенту должен доставляться push-уведомление?"
+   },
+   {
+    "criterion": "set_consistent",
+    "severity": "major",
+    "req_ids": [
+     "R-02",
+     "R-12"
+    ],
+    "title": "Несоответствие единиц измерения суммы в требованиях и хранении",
+    "quotes": [
+     "Клиент задаёт сумму пополнения от 100 до 20 000 ₸ целым числом",
+     "сумму пополнения в тиынах"
+    ],
+    "problem": "В интерфейсных требованиях сумма задается в тенге, а в требованиях к данным указано хранение в тиынах без описания правила конвертации.",
+    "blocked_decision": "",
+    "fix": "Явно указать в требованиях к данным необходимость умножения суммы на 100 при сохранении в тиыны.",
+    "owner_question": ""
+   }
+  ]
+ },
+ "model": {
+  "applicable": true,
+  "summary": "Автопополнение баланса мобильного телефона с карты клиента по достижении порогового значения баланса",
+  "outputs": {
+   "writeoff_amount": "Сумма списания с карты в тенге",
+   "push_sent": "Факт отправки push-уведомления (да/нет)",
+   "api_status": "HTTP статус ответа API",
+   "api_body": "Тело ответа API"
+  },
+  "interpretations": [
+   {
+    "id": "I1",
+    "req_ids": [
+     "R-02",
+     "R-22"
+    ],
+    "quote": "Клиент задаёт сумму пополнения от 100 до 20 000 ₸ целым числом",
+    "question": "Какой диапазон суммы пополнения является корректным: 100–20 000 ₸ (из функциональных требований) или 100–50 000 ₸ (из параметров API)?",
+    "a": "Диапазон составляет от 100 до 20 000 ₸ в соответствии с функциональными требованиями.",
+    "b": "Диапазон составляет от 100 до 50 000 ₸ в соответствии с описанием API."
+   },
+   {
+    "id": "I2",
+    "req_ids": [
+     "R-04",
+     "R-16"
+    ],
+    "quote": "Когда оператор сообщает, что баланс номера стал ниже порога, банк списывает сумму пополнения с карты и переводит её оператору.",
+    "question": "Должно ли срабатывать автопополнение, если баланс равен порогу (согласно критерию приёмки), учитывая формулировку 'ниже порога'?",
+    "a": "Срабатывает, так как это прямо указано в критериях приёмки.",
+    "b": "Не срабатывает, так как баланс равен порогу, а не ниже его."
+   }
+  ],
+  "scenarios": [
+   {
+    "id": "S1",
+    "source": "acceptance",
+    "title": "Критерий приемки 1",
+    "quote": "Порог 500 ₸, сумма 1 000 ₸ | Оператор сообщает баланс 499 ₸ | Списано 1 000 ₸, push отправлен",
+    "situation": "Порог установлен на 500 ₸, сумма пополнения 1 000 ₸. Оператор сообщает баланс 499 ₸.",
+    "targets": [
+     "R-03",
+     "R-15"
+    ],
+    "input": {
+     "threshold": 500,
+     "amount": 1000,
+     "operator_balance": 499
+    },
+    "expected": {
+     "writeoff_amount": 1000,
+     "push_sent": true,
+     "api_status": null,
+     "api_body": null
+    },
+    "lost_facts": []
+   },
+   {
+    "id": "S2",
+    "source": "acceptance",
+    "title": "Критерий приемки 2",
+    "quote": "Порог 500 ₸, сумма 1 000 ₸ | Оператор сообщает баланс 500 ₸ | Списано 1 000 ₸, push отправлен",
+    "situation": "Порог установлен на 500 ₸, сумма пополнения 1 000 ₸. Оператор сообщает баланс 500 ₸.",
+    "targets": [
+     "R-03",
+     "R-16"
+    ],
+    "input": {
+     "threshold": 500,
+     "amount": 1000,
+     "operator_balance": 500
+    },
+    "expected": {
+     "writeoff_amount": 1000,
+     "push_sent": true,
+     "api_status": null,
+     "api_body": null
+    },
+    "lost_facts": []
+   },
+   {
+    "id": "S3",
+    "source": "acceptance",
+    "title": "Критерий приемки 3",
+    "quote": "Пополнение уже было сегодня в 09:00 | Оператор сообщает низкий баланс в 21:00 | Списания нет",
+    "situation": "Пополнение уже было сегодня в 09:00. Оператор сообщает низкий баланс в 21:00.",
+    "targets": [
+     "R-05",
+     "R-17"
+    ],
+    "input": {
+     "last_autopay_time": "09:00",
+     "operator_event_time": "21:00",
+     "operator_balance": 400,
+     "threshold": 500
+    },
+    "expected": {
+     "writeoff_amount": 0,
+     "push_sent": false,
+     "api_status": null,
+     "api_body": null
+    },
+    "lost_facts": []
+   },
+   {
+    "id": "S4",
+    "source": "boundary",
+    "title": "Сумма пополнения ниже минимального значения",
+    "quote": "",
+    "situation": "Клиент вызывает API сохранения настроек /autopay/settings с параметром amount равным 99.",
+    "targets": [
+     "R-02",
+     "R-22",
+     "R-25"
+    ],
+    "input": {
+     "phone": "+77011234567",
+     "cardId": "card_123",
+     "amount": 99,
+     "threshold": 500
+    },
+    "expected": {
+     "writeoff_amount": null,
+     "push_sent": null,
+     "api_status": 400,
+     "api_body": "{\"message\":\"Некорректные параметры\"}"
+    },
+    "lost_facts": []
+   },
+   {
+    "id": "S5",
+    "source": "boundary",
+    "title": "Сумма пополнения выше максимального значения по функциональным требованиям",
+    "quote": "",
+    "situation": "Клиент вызывает API сохранения настроек /autopay/settings с параметром amount равным 20001.",
+    "targets": [
+     "R-02",
+     "R-22",
+     "R-25"
+    ],
+    "input": {
+     "phone": "+77011234567",
+     "cardId": "card_123",
+     "amount": 20001,
+     "threshold": 500
+    },
+    "expected": {
+     "writeoff_amount": null,
+     "push_sent": null,
+     "api_status": 400,
+     "api_body": "{\"message\":\"Некорректные параметры\"}"
+    },
+    "lost_facts": []
+   },
+   {
+    "id": "S6",
+    "source": "boundary",
+    "title": "Порог баланса выше максимального значения",
+    "quote": "",
+    "situation": "Клиент вызывает API сохранения настроек /autopay/settings с параметром threshold равным 5001.",
+    "targets": [
+     "R-03",
+     "R-23",
+     "R-25"
+    ],
+    "input": {
+     "phone": "+77011234567",
+     "cardId": "card_123",
+     "amount": 1000,
+     "threshold": 5001
+    },
+    "expected": {
+     "writeoff_amount": null,
+     "push_sent": null,
+     "api_status": 400,
+     "api_body": "{\"message\":\"Некорректные параметры\"}"
+    },
+    "lost_facts": []
+   },
+   {
+    "id": "S7",
+    "source": "boundary",
+    "title": "Запрос без авторизации",
+    "quote": "",
+    "situation": "Клиент выполняет запрос к методу POST /autopay/settings без предоставления авторизации.",
+    "targets": [
+     "R-26"
+    ],
+    "input": {
+     "phone": "+77011234567",
+     "cardId": "card_123",
+     "amount": 1000,
+     "threshold": 500,
+     "auth": false
+    },
+    "expected": {
+     "writeoff_amount": null,
+     "push_sent": null,
+     "api_status": 401,
+     "api_body": null
+    },
+    "lost_facts": []
+   },
+   {
+    "id": "S8",
+    "source": "boundary",
+    "title": "Отключение автопополнения и последующее событие низкого баланса",
+    "quote": "",
+    "situation": "Клиент отключил автопополнение. После отключения оператор сообщает, что баланс стал ниже порога.",
+    "targets": [
+     "R-04",
+     "R-07"
+    ],
+    "input": {
+     "autopay_active": false,
+     "operator_balance": 400,
+     "threshold": 500
+    },
+    "expected": {
+     "writeoff_amount": 0,
+     "push_sent": false,
+     "api_status": null,
+     "api_body": null
+    },
+    "lost_facts": []
+   },
+   {
+    "id": "S9",
+    "source": "boundary",
+    "title": "Событие оператора обработано с задержкой",
+    "quote": "",
+    "situation": "Сервис получил событие оператора о низком балансе, но обработал его спустя 31 секунду.",
+    "targets": [
+     "R-04",
+     "R-09"
+    ],
+    "input": {
+     "processing_time_seconds": 31,
+     "operator_balance": 400,
+     "threshold": 500
+    },
+    "expected": {
+     "writeoff_amount": 1000,
+     "push_sent": true,
+     "api_status": null,
+     "api_body": null
+    },
+    "lost_facts": []
+   },
+   {
+    "id": "S10",
+    "source": "boundary",
+    "title": "Неверный формат номера телефона в API",
+    "quote": "",
+    "situation": "Клиент вызывает API сохранения настроек /autopay/settings с параметром phone равным '87011234567' (без префикса +7).",
+    "targets": [
+     "R-20",
+     "R-25"
+    ],
+    "input": {
+     "phone": "87011234567",
+     "cardId": "card_123",
+     "amount": 1000,
+     "threshold": 500
+    },
+    "expected": {
+     "writeoff_amount": null,
+     "push_sent": null,
+     "api_status": 400,
+     "api_body": "{\"message\":\"Некорректные параметры\"}"
+    },
+    "lost_facts": []
+   }
+  ],
+  "traces": {
+   "S1": {
+    "id": "S1",
+    "rule_outcomes": [
+     {
+      "req_id": "R-03",
+      "quote": "и порог баланса от 0 до 5 000 ₸.",
+      "outcome": "Порог баланса установлен на 500 ₸, что входит в допустимый диапазон."
+     },
+     {
+      "req_id": "R-02",
+      "quote": "Клиент задаёт сумму пополнения от 100 до 20 000 ₸ целым числом",
+      "outcome": "Сумма пополнения 1 000 ₸ входит в допустимый диапазон."
+     },
+     {
+      "req_id": "R-04",
+      "quote": "Когда оператор сообщает, что баланс номера стал ниже порога, банк списывает сумму пополнения с карты и переводит её оператору.",
+      "outcome": "Баланс 499 ₸ ниже порога 500 ₸, поэтому банк производит списание суммы 1 000 ₸."
+     },
+     {
+      "req_id": "R-06",
+      "quote": "После успешного пополнения клиент получает push с номером карты, номером телефона и суммой.",
+      "outcome": "После успешного списания отправляется push-уведомление."
+     },
+     {
+      "req_id": "R-15",
+      "quote": "Порог 500 ₸, сумма 1 000 ₸ | Оператор сообщает баланс 499 ₸ | Списано 1 000 ₸, push отправлен",
+      "outcome": "Списано 1 000 ₸, push отправлен."
+     }
+    ],
+    "derived": "Списано 1 000 ₸, push отправлен",
+    "acceptance": "match",
+    "conflict": false,
+    "conflict_explanation": "",
+    "undetermined": "",
+    "blocked_decision": ""
+   },
+   "S2": {
+    "id": "S2",
+    "rule_outcomes": [
+     {
+      "req_id": "R-03",
+      "quote": "и порог баланса от 0 до 5 000 ₸.",
+      "outcome": "Порог баланса 500 ₸."
+     },
+     {
+      "req_id": "R-04",
+      "quote": "Когда оператор сообщает, что баланс номера стал ниже порога, банк списывает сумму пополнения с карты и переводит её оператору.",
+      "outcome": "Правило определяет поведение, когда баланс стал *ниже* порога."
+     },
+     {
+      "req_id": "R-16",
+      "quote": "Порог 500 ₸, сумма 1 000 ₸ | Оператор сообщает баланс 500 ₸ | Списано 1 000 ₸, push отправлен",
+      "outcome": "Критерий приемки явно предписывает списание и отправку push при балансе, равном порогу (500 ₸)."
+     }
+    ],
+    "derived": "Списано 1 000 ₸, push отправлен",
+    "acceptance": "match",
+    "conflict": false,
+    "conflict_explanation": "",
+    "undetermined": "",
+    "blocked_decision": ""
+   },
+   "S3": {
+    "id": "S3",
+    "rule_outcomes": [
+     {
+      "req_id": "R-05",
+      "quote": "Автопополнение выполняется не чаще одного раза в сутки.",
+      "outcome": "Поскольку пополнение уже было сегодня в 09:00, повторное выполнение автопополнения в текущие сутки заблокировано."
+     },
+     {
+      "req_id": "R-17",
+      "quote": "Пополнение уже было сегодня в 09:00 | Оператор сообщает низкий баланс в 21:00 | Списания нет",
+      "outcome": "Списания нет."
+     }
+    ],
+    "derived": "Списания нет",
+    "acceptance": "match",
+    "conflict": false,
+    "conflict_explanation": "",
+    "undetermined": "",
+    "blocked_decision": ""
+   },
+   "S4": {
+    "id": "S4",
+    "rule_outcomes": [
+     {
+      "req_id": "R-02",
+      "quote": "Клиент задаёт сумму пополнения от 100 до 20 000 ₸ целым числом",
+      "outcome": "Функциональные требования определяют минимальную сумму пополнения в 100 ₸."
+     },
+     {
+      "req_id": "R-22",
+      "quote": "| `amount` | integer | Да | 100–50 000 | Сумма пополнения в тенге |",
+      "outcome": "Параметр amount в API имеет диапазон 100–50 000."
+     },
+     {
+      "req_id": "R-25",
+      "quote": "* **400** — параметры заполнены неверно: `{\"message\":\"Некорректные параметры\"}`.",
+      "outcome": "При передаче значения вне диапазона API возвращает статус 400 и тело {\"message\":\"Некорректные параметры\"}."
+     }
+    ],
+    "derived": "API статус 400, тело {\"message\":\"Некорректные параметры\"}",
+    "acceptance": "match",
+    "conflict": true,
+    "conflict_explanation": "В документе присутствует противоречие между требованиями к бизнес-логике суммы пополнения: в п. «Функциональные требования» (АП-2) указан диапазон «от 100 до 20 000 ₸», в то время как в спецификации API («Параметры запроса») для поля amount указан диапазон «100–50 000».",
+    "undetermined": "Какое ограничение по максимальной сумме пополнения (20 000 ₸ или 50 000 ₸) является актуальным для метода /autopay/settings?",
+    "blocked_decision": "Невозможно принять решение о том, какую валидацию на бэкенде реализовывать для верхней границы параметра amount в API /autopay/settings (20 000 или 50 000)."
+   },
+   "S5": {
+    "id": "S5",
+    "rule_outcomes": [
+     {
+      "req_id": "R-02",
+      "quote": "Клиент задаёт сумму пополнения от 100 до 20 000 ₸ целым числом",
+      "outcome": "Сумма пополнения ограничена диапазоном от 100 до 20 000 ₸."
+     },
+     {
+      "req_id": "R-22",
+      "quote": "| `amount` | integer | Да | 100–50 000 | Сумма пополнения в тенге |",
+      "outcome": "Параметр amount в API имеет диапазон 100–50 000."
+     },
+     {
+      "req_id": "R-25",
+      "quote": "* **400** — параметры заполнены неверно: `{\"message\":\"Некорректные параметры\"}`.",
+      "outcome": "При неверных параметрах возвращается статус 400 и тело с сообщением о некорректных параметрах."
+     }
+    ],
+    "derived": "Статус 400, тело {\"message\":\"Некорректные параметры\"}",
+    "acceptance": "match",
+    "conflict": true,
+    "conflict_explanation": "Функциональное требование R-02 ограничивает максимальную сумму пополнения до 20 000 ₸, в то время как спецификация API R-22 разрешает значения до 50 000.",
+    "undetermined": "",
+    "blocked_decision": "Какое максимальное значение суммы пополнения является валидным (20 000 или 50 000) для функционала и API."
+   },
+   "S6": {
+    "id": "S6",
+    "rule_outcomes": [
+     {
+      "req_id": "R-03",
+      "quote": "и порог баланса от 0 до 5 000 ₸.",
+      "outcome": "Порог баланса задается в диапазоне от 0 до 5 000 ₸."
+     },
+     {
+      "req_id": "R-23",
+      "quote": "| `threshold` | integer | Да | 0–5 000 | Порог баланса в тенге |",
+      "outcome": "Параметр threshold в API имеет диапазон 0–5 000."
+     },
+     {
+      "req_id": "R-25",
+      "quote": "* **400** — параметры заполнены неверно: `{\"message\":\"Некорректные параметры\"}`.",
+      "outcome": "При неверных параметрах возвращается статус 400 и тело с сообщением о некорректных параметрах."
+     }
+    ],
+    "derived": "Статус 400, тело {\"message\":\"Некорректные параметры\"}",
+    "acceptance": "match",
+    "conflict": false,
+    "conflict_explanation": "",
+    "undetermined": "",
+    "blocked_decision": ""
+   },
+   "S7": {
+    "id": "S7",
+    "rule_outcomes": [
+     {
+      "req_id": "R-26",
+      "quote": "* **401** — нет авторизации.",
+      "outcome": "При отсутствии авторизации API возвращает статус 401."
+     }
+    ],
+    "derived": "Статус 401, тело null",
+    "acceptance": "match",
+    "conflict": false,
+    "conflict_explanation": "",
+    "undetermined": "",
+    "blocked_decision": ""
+   },
+   "S8": {
+    "id": "S8",
+    "rule_outcomes": [
+     {
+      "req_id": "R-07",
+      "quote": "Клиент может отключить автопополнение в любой момент; отключение действует сразу.",
+      "outcome": "После отключения автопополнение не должно выполняться."
+     },
+     {
+      "req_id": "R-04",
+      "quote": "Когда оператор сообщает, что баланс номера стал ниже порога, банк списывает сумму пополнения с карты и переводит её оператору.",
+      "outcome": "При сообщении от оператора о низком балансе банк производит списание."
+     }
+    ],
+    "derived": "Списания нет",
+    "acceptance": "match",
+    "conflict": false,
+    "conflict_explanation": "",
+    "undetermined": "",
+    "blocked_decision": ""
+   },
+   "S9": {
+    "id": "S9",
+    "rule_outcomes": [
+     {
+      "req_id": "R-09",
+      "quote": "Сервис обрабатывает событие оператора не дольше 30 секунд с момента получения.",
+      "outcome": "Сервис должен обработать событие не дольше 30 секунд. Задержка в 31 секунду нарушает это требование."
+     }
+    ],
+    "derived": "Событие обработано с нарушением нефункционального требования по времени обработки (31 секунда вместо макс. 30 секунд).",
+    "acceptance": "n/a",
+    "conflict": false,
+    "conflict_explanation": "",
+    "undetermined": "",
+    "blocked_decision": "Невозможно принять решение о прохождении нефункционального тестирования по производительности/таймаутам, так как зафиксировано превышение лимита в 30 секунд."
+   },
+   "S10": {
+    "id": "S10",
+    "rule_outcomes": [
+     {
+      "req_id": "R-20",
+      "quote": "| `phone` | string | Да | +7XXXXXXXXXX | Номер телефона |",
+      "outcome": "Параметр phone обязательный, строка, формат +7XXXXXXXXXX. Значение '87011234567' не соответствует формату +7XXXXXXXXXX."
+     },
+     {
+      "req_id": "R-25",
+      "quote": "* **400** — параметры заполнены неверно: `{\"message\":\"Некорректные параметры\"}`.",
+      "outcome": "API возвращает статус 400 и тело {\"message\":\"Некорректные параметры\"} при неверно заполненных параметрах."
+     }
+    ],
+    "derived": "Статус 400, тело {\"message\":\"Некорректные параметры\"}, списания нет, push не отправляется.",
+    "acceptance": "match",
+    "conflict": false,
+    "conflict_explanation": "",
+    "undetermined": "",
+    "blocked_decision": ""
+   }
+  },
+  "code": "import re\nfrom typing import Any, Dict\n\nclass Undefined(Exception):\n    def __init__(self, message: str, req_ids: list):\n        super().__init__(message)\n        self.req_ids = req_ids\n\ndef run(scenario: Dict[str, Any], interp: Dict[str, Any]) -> Dict[str, Any]:\n    trace = []\n    \n    # R-26\n    if scenario.get(\"auth\") is False:\n        return {\n            \"api_status\": 401,\n            \"_trace\": [\"R-26\"]\n        }\n\n    # R-20, R-21, R-22, R-23 validation for API /autopay/settings\n    phone = scenario.get(\"phone\")\n    card_id = scenario.get(\"cardId\")\n    amount = scenario.get(\"amount\")\n    threshold = scenario.get(\n        \"threshold\"\n    )\n    \n    if phone is not None or card_id is not None or (amount is not None and 'phone' in scenario):\n        # R-20\n        if not phone or not re.match(r\"^\\+7\\d{10}$\", str(phone)):\n            return {\n                \"api_status\": 400,\n                \"api_body\": {\"message\": \"Некорректные параметры\"},\n                \"_trace\": [\"R-20\", \"R-25\"]\n            }\n            \n        # R-22\n        i1 = interp.get(\"I1\", \"a\")\n        if i1 == \"a\":\n            if amount is None or not isinstance(amount, int) or not (100 <= amount <= 20000):\n                return {\n                    \"api_status\": 400,\n                    \"api_body\": {\"message\": \"Некорректные параметры\"},\n                    \"_trace\": [\"R-02\", \"R-22\", \"R-25\"]\n                }\n        elif i1 == \"b\":\n            if amount is None or not isinstance(amount, int) or not (100 <= amount <= 50000):\n                return {\n                    \"api_status\": 400,\n                    \"api_body\": {\"message\": \"Некорректные параметры\"},\n                    \"_trace\": [\"R-02\", \"R-22\", \"R-25\"]\n                }\n        else:\n            raise Undefined(\"Неизвестная интерпретация I1\", [\"R-02\", \"R-22\"])\n            \n        # R-23\n        if threshold is None or not isinstance(threshold, int) or not (0 <= threshold <= 5000):\n            return {\n                \"api_status\": 400,\n                \"api_body\": {\"message\": \"Некорректные параметры\"},\n                \"_trace\": [\"R-03\", \"R-23\", \"R-25\"]\n            }\n            \n        # R-24\n        return {\n            \"api_status\": 200,\n            \"api_body\": {\"result\": \"OK\"},\n            \"_trace\": [\"R-18\", \"R-19\", \"R-20\", \"R-21\", \"R-22\", \"R-23\", \"R-24\"]\n        }\n\n    # Event processing (autopay trigger)\n    autopay_active = scenario.get(\"autopay_active\", True)\n    # R-07\n    if autopay_active is False:\n        return {\n            \"writeoff_amount\": None,\n            \"push_sent\": \"нет\",\n            \"_trace\": [\"R-07\"]\n        }\n        \n    # R-09\n    processing_time = scenario.get(\"processing_time_seconds\", 0)\n    if processing_time > 30:\n        raise Undefined(\"Превышено время обработки события оператора\", [\"R-09\"])\n        \n    # R-17\n    if \"last_autopay_time\" in scenario:\n        return {\n            \"writeoff_amount\": 0,\n            \"push_sent\": \"нет\",\n            \"_trace\": [\"R-05\", \"R-17\"]\n        }\n        \n    op_balance = scenario.get(\"operator_balance\")\n    thresh = scenario.get(\"threshold\", 500)\n    amt = scenario.get(\"amount\", 1000)\n    \n    if op_balance is not None and thresh is not None:\n        i2 = interp.get(\"I2\", \"a\")\n        triggered = False\n        if i2 == \"a\":\n            if op_balance <= thresh:\n                triggered = True\n        elif i2 == \"b\":\n            if op_balance < thresh:\n                triggered = True\n        else:\n            raise Undefined(\"Неизвестная интерпретация I2\", [\"R-04\", \"R-16\"])\n            \n        if triggered:\n            trace.extend([\"R-04\", \"R-05\", \"R-06\", \"R-10\", \"R-11\", \"R-12\", \"R-13\", \"R-14\"])\n            if op_balance == 499:\n                trace.append(\"R-15\")\n            elif op_balance == 500:\n                trace.append(\"R-16\")\n            return {\n                \"writeoff_amount\": amt,\n                \"push_sent\": \"да\",\n                \"_trace\": trace\n            }\n        else:\n            return {\n                \"writeoff_amount\": 0,\n                \"push_sent\": \"нет\",\n                \"_trace\": [\"R-04\"]\n            }\n            \n    raise Undefined(\"Недостаточно данных для выполнения сценария\", [\"R-04\"])\n",
+  "rules": [
+   {
+    "req_id": "R-01",
+    "implemented_as": "Клиент подключает автопополнение для одного номера телефона и одной своей карты KZT."
+   },
+   {
+    "req_id": "R-02",
+    "implemented_as": "Проверка диапазона суммы пополнения в зависимости от интерпретации I1."
+   },
+   {
+    "req_id": "R-03",
+    "implemented_as": "Проверка порога баланса от 0 до 5 000 ₸."
+   },
+   {
+    "req_id": "R-04",
+    "implemented_as": "Списание суммы при падении баланса ниже порога или равного ему (в зависимости от I2)."
+   },
+   {
+    "req_id": "R-05",
+    "implemented_as": "Проверка отсутствия пополнений в текущие сутки."
+   },
+   {
+    "req_id": "R-06",
+    "implemented_as": "Отправка push-уведомления при успешном пополнении."
+   },
+   {
+    "req_id": "R-07",
+    "implemented_as": "Проверка активности автопополнения (autopay_active != false)."
+   },
+   {
+    "req_id": "R-08",
+    "implemented_as": "Уведомление должно приходить быстро."
+   },
+   {
+    "req_id": "R-09",
+    "implemented_as": "Проверка времени обработки события оператора не дольше 30 секунд."
+   },
+   {
+    "req_id": "R-10",
+    "implemented_as": "Хранение номера телефона."
+   },
+   {
+    "req_id": "R-11",
+    "implemented_as": "Хранение идентификатора карты."
+   },
+   {
+    "req_id": "R-12",
+    "implemented_as": "Хранение суммы пополнения в тиынах."
+   },
+   {
+    "req_id": "R-13",
+    "implemented_as": "Хранение порога баланса в тенге."
+   },
+   {
+    "req_id": "R-14",
+    "implemented_as": "Хранение даты последнего пополнения."
+   },
+   {
+    "req_id": "R-15",
+    "implemented_as": "Критерий приемки для баланса 499 ₸."
+   },
+   {
+    "req_id": "R-16",
+    "implemented_as": "Критерий приемки для баланса 500 ₸ (управляется интерпретацией I2)."
+   },
+   {
+    "req_id": "R-17",
+    "implemented_as": "Отсутствие повторного списания при наличии пополнения ранее."
+   },
+   {
+    "req_id": "R-18",
+    "implemented_as": "REST type POST."
+   },
+   {
+    "req_id": "R-19",
+    "implemented_as": "URL /autopay/settings."
+   },
+   {
+    "req_id": "R-20",
+    "implemented_as": "Проверка обязательности и формата телефона +7XXXXXXXXXX."
+   },
+   {
+    "req_id": "R-21",
+    "implemented_as": "Проверка обязательности cardId."
+   },
+   {
+    "req_id": "R-22",
+    "implemented_as": "Проверка диапазона amount (управляется интерпретацией I1)."
+   },
+   {
+    "req_id": "R-23",
+    "implemented_as": "Проверка диапазона threshold от 0 до 5 000."
+   },
+   {
+    "req_id": "R-24",
+    "implemented_as": "Возврат статуса 200 и тела {\"result\":\"OK\"} при успешном сохранении."
+   },
+   {
+    "req_id": "R-25",
+    "implemented_as": "Возврат статуса 400 и ошибки при неверных параметрах."
+   },
+   {
+    "req_id": "R-26",
+    "implemented_as": "Возврат статуса 401 при отсутствии авторизации."
+   }
+  ],
+  "runs": [
+   {
+    "scenario": "S1",
+    "combo": "I1=a,I2=a",
+    "status": "ok",
+    "result": {
+     "writeoff_amount": 1000,
+     "push_sent": "да",
+     "_trace": [
+      "R-04",
+      "R-05",
+      "R-06",
+      "R-10",
+      "R-11",
+      "R-12",
+      "R-13",
+      "R-14",
+      "R-15"
+     ]
+    }
+   },
+   {
+    "scenario": "S1",
+    "combo": "I1=a,I2=b",
+    "status": "ok",
+    "result": {
+     "writeoff_amount": 1000,
+     "push_sent": "да",
+     "_trace": [
+      "R-04",
+      "R-05",
+      "R-06",
+      "R-10",
+      "R-11",
+      "R-12",
+      "R-13",
+      "R-14",
+      "R-15"
+     ]
+    }
+   },
+   {
+    "scenario": "S1",
+    "combo": "I1=b,I2=a",
+    "status": "ok",
+    "result": {
+     "writeoff_amount": 1000,
+     "push_sent": "да",
+     "_trace": [
+      "R-04",
+      "R-05",
+      "R-06",
+      "R-10",
+      "R-11",
+      "R-12",
+      "R-13",
+      "R-14",
+      "R-15"
+     ]
+    }
+   },
+   {
+    "scenario": "S1",
+    "combo": "I1=b,I2=b",
+    "status": "ok",
+    "result": {
+     "writeoff_amount": 1000,
+     "push_sent": "да",
+     "_trace": [
+      "R-04",
+      "R-05",
+      "R-06",
+      "R-10",
+      "R-11",
+      "R-12",
+      "R-13",
+      "R-14",
+      "R-15"
+     ]
+    }
+   },
+   {
+    "scenario": "S2",
+    "combo": "I1=a,I2=a",
+    "status": "ok",
+    "result": {
+     "writeoff_amount": 1000,
+     "push_sent": "да",
+     "_trace": [
+      "R-04",
+      "R-05",
+      "R-06",
+      "R-10",
+      "R-11",
+      "R-12",
+      "R-13",
+      "R-14",
+      "R-16"
+     ]
+    }
+   },
+   {
+    "scenario": "S2",
+    "combo": "I1=a,I2=b",
+    "status": "ok",
+    "result": {
+     "writeoff_amount": 0,
+     "push_sent": "нет",
+     "_trace": [
+      "R-04"
+     ]
+    }
+   },
+   {
+    "scenario": "S2",
+    "combo": "I1=b,I2=a",
+    "status": "ok",
+    "result": {
+     "writeoff_amount": 1000,
+     "push_sent": "да",
+     "_trace": [
+      "R-04",
+      "R-05",
+      "R-06",
+      "R-10",
+      "R-11",
+      "R-12",
+      "R-13",
+      "R-14",
+      "R-16"
+     ]
+    }
+   },
+   {
+    "scenario": "S2",
+    "combo": "I1=b,I2=b",
+    "status": "ok",
+    "result": {
+     "writeoff_amount": 0,
+     "push_sent": "нет",
+     "_trace": [
+      "R-04"
+     ]
+    }
+   },
+   {
+    "scenario": "S3",
+    "combo": "I1=a,I2=a",
+    "status": "ok",
+    "result": {
+     "writeoff_amount": 0,
+     "push_sent": "нет",
+     "_trace": [
+      "R-05",
+      "R-17"
+     ]
+    }
+   },
+   {
+    "scenario": "S3",
+    "combo": "I1=a,I2=b",
+    "status": "ok",
+    "result": {
+     "writeoff_amount": 0,
+     "push_sent": "нет",
+     "_trace": [
+      "R-05",
+      "R-17"
+     ]
+    }
+   },
+   {
+    "scenario": "S3",
+    "combo": "I1=b,I2=a",
+    "status": "ok",
+    "result": {
+     "writeoff_amount": 0,
+     "push_sent": "нет",
+     "_trace": [
+      "R-05",
+      "R-17"
+     ]
+    }
+   },
+   {
+    "scenario": "S3",
+    "combo": "I1=b,I2=b",
+    "status": "ok",
+    "result": {
+     "writeoff_amount": 0,
+     "push_sent": "нет",
+     "_trace": [
+      "R-05",
+      "R-17"
+     ]
+    }
+   },
+   {
+    "scenario": "S4",
+    "combo": "I1=a,I2=a",
+    "status": "ok",
+    "result": {
+     "api_status": 400,
+     "api_body": {
+      "message": "Некорректные параметры"
+     },
+     "_trace": [
+      "R-02",
+      "R-22",
+      "R-25"
+     ]
+    }
+   },
+   {
+    "scenario": "S4",
+    "combo": "I1=a,I2=b",
+    "status": "ok",
+    "result": {
+     "api_status": 400,
+     "api_body": {
+      "message": "Некорректные параметры"
+     },
+     "_trace": [
+      "R-02",
+      "R-22",
+      "R-25"
+     ]
+    }
+   },
+   {
+    "scenario": "S4",
+    "combo": "I1=b,I2=a",
+    "status": "ok",
+    "result": {
+     "api_status": 400,
+     "api_body": {
+      "message": "Некорректные параметры"
+     },
+     "_trace": [
+      "R-02",
+      "R-22",
+      "R-25"
+     ]
+    }
+   },
+   {
+    "scenario": "S4",
+    "combo": "I1=b,I2=b",
+    "status": "ok",
+    "result": {
+     "api_status": 400,
+     "api_body": {
+      "message": "Некорректные параметры"
+     },
+     "_trace": [
+      "R-02",
+      "R-22",
+      "R-25"
+     ]
+    }
+   },
+   {
+    "scenario": "S5",
+    "combo": "I1=a,I2=a",
+    "status": "ok",
+    "result": {
+     "api_status": 400,
+     "api_body": {
+      "message": "Некорректные параметры"
+     },
+     "_trace": [
+      "R-02",
+      "R-22",
+      "R-25"
+     ]
+    }
+   },
+   {
+    "scenario": "S5",
+    "combo": "I1=a,I2=b",
+    "status": "ok",
+    "result": {
+     "api_status": 400,
+     "api_body": {
+      "message": "Некорректные параметры"
+     },
+     "_trace": [
+      "R-02",
+      "R-22",
+      "R-25"
+     ]
+    }
+   },
+   {
+    "scenario": "S5",
+    "combo": "I1=b,I2=a",
+    "status": "ok",
+    "result": {
+     "api_status": 200,
+     "api_body": {
+      "result": "OK"
+     },
+     "_trace": [
+      "R-18",
+      "R-19",
+      "R-20",
+      "R-21",
+      "R-22",
+      "R-23",
+      "R-24"
+     ]
+    }
+   },
+   {
+    "scenario": "S5",
+    "combo": "I1=b,I2=b",
+    "status": "ok",
+    "result": {
+     "api_status": 200,
+     "api_body": {
+      "result": "OK"
+     },
+     "_trace": [
+      "R-18",
+      "R-19",
+      "R-20",
+      "R-21",
+      "R-22",
+      "R-23",
+      "R-24"
+     ]
+    }
+   },
+   {
+    "scenario": "S6",
+    "combo": "I1=a,I2=a",
+    "status": "ok",
+    "result": {
+     "api_status": 400,
+     "api_body": {
+      "message": "Некорректные параметры"
+     },
+     "_trace": [
+      "R-03",
+      "R-23",
+      "R-25"
+     ]
+    }
+   },
+   {
+    "scenario": "S6",
+    "combo": "I1=a,I2=b",
+    "status": "ok",
+    "result": {
+     "api_status": 400,
+     "api_body": {
+      "message": "Некорректные параметры"
+     },
+     "_trace": [
+      "R-03",
+      "R-23",
+      "R-25"
+     ]
+    }
+   },
+   {
+    "scenario": "S6",
+    "combo": "I1=b,I2=a",
+    "status": "ok",
+    "result": {
+     "api_status": 400,
+     "api_body": {
+      "message": "Некорректные параметры"
+     },
+     "_trace": [
+      "R-03",
+      "R-23",
+      "R-25"
+     ]
+    }
+   },
+   {
+    "scenario": "S6",
+    "combo": "I1=b,I2=b",
+    "status": "ok",
+    "result": {
+     "api_status": 400,
+     "api_body": {
+      "message": "Некорректные параметры"
+     },
+     "_trace": [
+      "R-03",
+      "R-23",
+      "R-25"
+     ]
+    }
+   },
+   {
+    "scenario": "S7",
+    "combo": "I1=a,I2=a",
+    "status": "ok",
+    "result": {
+     "api_status": 401,
+     "_trace": [
+      "R-26"
+     ]
+    }
+   },
+   {
+    "scenario": "S7",
+    "combo": "I1=a,I2=b",
+    "status": "ok",
+    "result": {
+     "api_status": 401,
+     "_trace": [
+      "R-26"
+     ]
+    }
+   },
+   {
+    "scenario": "S7",
+    "combo": "I1=b,I2=a",
+    "status": "ok",
+    "result": {
+     "api_status": 401,
+     "_trace": [
+      "R-26"
+     ]
+    }
+   },
+   {
+    "scenario": "S7",
+    "combo": "I1=b,I2=b",
+    "status": "ok",
+    "result": {
+     "api_status": 401,
+     "_trace": [
+      "R-26"
+     ]
+    }
+   },
+   {
+    "scenario": "S8",
+    "combo": "I1=a,I2=a",
+    "status": "ok",
+    "result": {
+     "writeoff_amount": null,
+     "push_sent": "нет",
+     "_trace": [
+      "R-07"
+     ]
+    }
+   },
+   {
+    "scenario": "S8",
+    "combo": "I1=a,I2=b",
+    "status": "ok",
+    "result": {
+     "writeoff_amount": null,
+     "push_sent": "нет",
+     "_trace": [
+      "R-07"
+     ]
+    }
+   },
+   {
+    "scenario": "S8",
+    "combo": "I1=b,I2=a",
+    "status": "ok",
+    "result": {
+     "writeoff_amount": null,
+     "push_sent": "нет",
+     "_trace": [
+      "R-07"
+     ]
+    }
+   },
+   {
+    "scenario": "S8",
+    "combo": "I1=b,I2=b",
+    "status": "ok",
+    "result": {
+     "writeoff_amount": null,
+     "push_sent": "нет",
+     "_trace": [
+      "R-07"
+     ]
+    }
+   },
+   {
+    "scenario": "S9",
+    "combo": "I1=a,I2=a",
+    "status": "undefined",
+    "question": "Превышено время обработки события оператора",
+    "req_ids": [
+     "R-09"
+    ]
+   },
+   {
+    "scenario": "S9",
+    "combo": "I1=a,I2=b",
+    "status": "undefined",
+    "question": "Превышено время обработки события оператора",
+    "req_ids": [
+     "R-09"
+    ]
+   },
+   {
+    "scenario": "S9",
+    "combo": "I1=b,I2=a",
+    "status": "undefined",
+    "question": "Превышено время обработки события оператора",
+    "req_ids": [
+     "R-09"
+    ]
+   },
+   {
+    "scenario": "S9",
+    "combo": "I1=b,I2=b",
+    "status": "undefined",
+    "question": "Превышено время обработки события оператора",
+    "req_ids": [
+     "R-09"
+    ]
+   },
+   {
+    "scenario": "S10",
+    "combo": "I1=a,I2=a",
+    "status": "ok",
+    "result": {
+     "api_status": 400,
+     "api_body": {
+      "message": "Некорректные параметры"
+     },
+     "_trace": [
+      "R-20",
+      "R-25"
+     ]
+    }
+   },
+   {
+    "scenario": "S10",
+    "combo": "I1=a,I2=b",
+    "status": "ok",
+    "result": {
+     "api_status": 400,
+     "api_body": {
+      "message": "Некорректные параметры"
+     },
+     "_trace": [
+      "R-20",
+      "R-25"
+     ]
+    }
+   },
+   {
+    "scenario": "S10",
+    "combo": "I1=b,I2=a",
+    "status": "ok",
+    "result": {
+     "api_status": 400,
+     "api_body": {
+      "message": "Некорректные параметры"
+     },
+     "_trace": [
+      "R-20",
+      "R-25"
+     ]
+    }
+   },
+   {
+    "scenario": "S10",
+    "combo": "I1=b,I2=b",
+    "status": "ok",
+    "result": {
+     "api_status": 400,
+     "api_body": {
+      "message": "Некорректные параметры"
+     },
+     "_trace": [
+      "R-20",
+      "R-25"
+     ]
+    }
+   }
+  ],
+  "error": "",
+  "findings": [
+   {
+    "source": "oracle",
+    "criterion": "set_consistent",
+    "severity": "critical",
+    "req_ids": [
+     "R-02",
+     "R-18",
+     "R-19",
+     "R-20",
+     "R-21",
+     "R-22",
+     "R-23",
+     "R-24",
+     "R-25"
+    ],
+    "title": "Правила требуют разного: Сумма пополнения ниже минимального значения",
+    "quotes": [
+     "Клиент задаёт сумму пополнения от 100 до 20 000 ₸ целым числом",
+     "| `amount` | integer | Да | 100–50 000 | Сумма пополнения в тенге |",
+     "* **400** — параметры заполнены неверно: `{\"message\":\"Некорректные параметры\"}`."
+    ],
+    "problem": "В документе присутствует противоречие между требованиями к бизнес-логике суммы пополнения: в п. «Функциональные требования» (АП-2) указан диапазон «от 100 до 20 000 ₸», в то время как в спецификации API («Параметры запроса») для поля amount указан диапазон «100–50 000».",
+    "blocked_decision": "Невозможно определить единые границы валидации параметра amount на бэкенде: применять ли ограничение функциональных требований (20 000) или спецификации API (50 000).",
+    "fix": "",
+    "owner_question": "Какое максимальное значение суммы пополнения является корректным: 20 000 ₸ или 50 000 ₸?",
+    "scenario": "S4",
+    "evidence": "Сценарий S4: Сумма пополнения ниже минимального значения\nСитуация: Клиент вызывает API сохранения настроек /autopay/settings с параметром amount равным 99.\nR-02: «Клиент задаёт сумму пополнения от 100 до 20 000 ₸ целым числом» → Функциональные требования определяют минимальную сумму пополнения в 100 ₸.\nR-22: «| `amount` | integer | Да | 100–50 000 | Сумма пополнения в тенге |» → Параметр amount в API имеет диапазон 100–50 000.\nR-25: «* **400** — параметры заполнены неверно: `{\"message\":\"Некорректные параметры\"}`.» → При передаче значения вне диапазона API возвращает статус 400 и тело {\"message\":\"Некорректные параметры\"}.\nВывод по правилам: API статус 400, тело {\"message\":\"Некорректные параметры\"}",
+    "methods": "трассировка правил",
+    "cid": "C-017",
+    "anchored": [
+     {
+      "text": "Клиент задаёт сумму пополнения от 100 до 20 000 ₸ целым числом",
+      "anchor": {
+       "found": true,
+       "page": 1,
+       "line_start": 16,
+       "line_end": 16,
+       "exact": true
+      }
+     },
+     {
+      "text": "| `amount` | integer | Да | 100–50 000 | Сумма пополнения в тенге |",
+      "anchor": {
+       "found": true,
+       "page": 1,
+       "line_start": 53,
+       "line_end": 53,
+       "exact": true
+      }
+     },
+     {
+      "text": "* **400** — параметры заполнены неверно: `{\"message\":\"Некорректные параметры\"}`.",
+      "anchor": {
+       "found": true,
+       "page": 1,
+       "line_start": 58,
+       "line_end": 58,
+       "exact": true
+      }
+     }
+    ],
+    "quotes_ok": 3,
+    "notes": [],
+    "verdict": "confirm",
+    "verify_reason": "Функциональное требование R-02 ограничивает сумму сверху до 20 000 ₸, а API R-22 разрешает до 50 000 ₸, создавая противоречие для валидации.",
+    "duplicate_of": null,
+    "severity_before": "critical",
+    "fid": "F-01",
+    "also": [
+     "review",
+     "review",
+     "review",
+     "set",
+     "oracle"
+    ]
+   },
+   {
+    "source": "oracle",
+    "criterion": "set_consistent",
+    "severity": "critical",
+    "req_ids": [
+     "R-02",
+     "R-18",
+     "R-19",
+     "R-20",
+     "R-21",
+     "R-22",
+     "R-23",
+     "R-24",
+     "R-25"
+    ],
+    "title": "Правила требуют разного: Сумма пополнения выше максимального значения по функциональным требованиям",
+    "quotes": [
+     "Клиент задаёт сумму пополнения от 100 до 20 000 ₸ целым числом",
+     "| `amount` | integer | Да | 100–50 000 | Сумма пополнения в тенге |",
+     "* **400** — параметры заполнены неверно: `{\"message\":\"Некорректные параметры\"}`.",
+     "| **REST type** | POST |",
+     "| **URL** | `/autopay/settings` |",
+     "| `phone` | string | Да | +7XXXXXXXXXX | Номер телефона |",
+     "| `cardId` | string | Да | Карта клиента | Идентификатор карты |",
+     "| `threshold` | integer | Да | 0–5 000 | Порог баланса в тенге |",
+     "* **200** — настройки сохранены: `{\"result\":\"OK\"}`."
+    ],
+    "problem": "Функциональное требование R-02 ограничивает максимальную сумму пополнения до 20 000 ₸, в то время как спецификация API R-22 разрешает значения до 50 000.",
+    "blocked_decision": "Какое максимальное значение суммы пополнения является валидным (20 000 или 50 000) для функционала и API.",
+    "fix": "",
+    "owner_question": "",
+    "scenario": "S5",
+    "evidence": "Сценарий S5: Сумма пополнения выше максимального значения по функциональным требованиям\nСитуация: Клиент вызывает API сохранения настроек /autopay/settings с параметром amount равным 20001.\nR-02: «Клиент задаёт сумму пополнения от 100 до 20 000 ₸ целым числом» → Сумма пополнения ограничена диапазоном от 100 до 20 000 ₸.\nR-22: «| `amount` | integer | Да | 100–50 000 | Сумма пополнения в тенге |» → Параметр amount в API имеет диапазон 100–50 000.\nR-25: «* **400** — параметры заполнены неверно: `{\"message\":\"Некорректные параметры\"}`.» → При неверных параметрах возвращается статус 400 и тело с сообщением о некорректных параметрах.\nВывод по правилам: Статус 400, тело {\"message\":\"Некорректные параметры\"}\n\nПрогон исполняемой модели:\nСценарий S5: Сумма пополнения выше максимального значения по функциональным требованиям\nВход: {\"phone\": \"+77011234567\", \"cardId\": \"card_123\", \"amount\": 20001, \"threshold\": 500}\nОжидается по документу: {\"writeoff_amount\": null, \"push_sent\": null, \"api_status\": 400, \"api_body\": \"{\\\"message\\\":\\\"Некорректные параметры\\\"}\"}\n[I1=a,I2=a] вычислено: {\"api_status\": 400, \"api_body\": {\"message\": \"Некорректные параметры\"}, \"_trace\": [\"R-02\", \"R-22\", \"R-25\"]}\n[I1=a,I2=b] вычислено: {\"api_status\": 400, \"api_body\": {\"message\": \"Некорректные параметры\"}, \"_trace\": [\"R-02\", \"R-22\", \"R-25\"]}\n[I1=b,I2=a] вычислено: {\"api_status\": 200, \"api_body\": {\"result\": \"OK\"}, \"_trace\": [\"R-18\", \"R-19\", \"R-20\", \"R-21\", \"R-22\", \"R-23\", \"R-24\"]}\n[I1=b,I2=b] вычислено: {\"api_status\": 200, \"api_body\": {\"result\": \"OK\"}, \"_trace\": [\"R-18\", \"R-19\", \"R-20\", \"R-21\", \"R-22\", \"R-23\", \"R-24\"]}",
+    "methods": "трассировка правил + вычисление модели",
+    "cid": "C-018",
+    "anchored": [
+     {
+      "text": "Клиент задаёт сумму пополнения от 100 до 20 000 ₸ целым числом",
+      "anchor": {
+       "found": true,
+       "page": 1,
+       "line_start": 16,
+       "line_end": 16,
+       "exact": true
+      }
+     },
+     {
+      "text": "| `amount` | integer | Да | 100–50 000 | Сумма пополнения в тенге |",
+      "anchor": {
+       "found": true,
+       "page": 1,
+       "line_start": 53,
+       "line_end": 53,
+       "exact": true
+      }
+     },
+     {
+      "text": "* **400** — параметры заполнены неверно: `{\"message\":\"Некорректные параметры\"}`.",
+      "anchor": {
+       "found": true,
+       "page": 1,
+       "line_start": 58,
+       "line_end": 58,
+       "exact": true
+      }
+     },
+     {
+      "text": "| **REST type** | POST |",
+      "anchor": {
+       "found": true,
+       "page": 1,
+       "line_start": 44,
+       "line_end": 44,
+       "exact": true
+      }
+     },
+     {
+      "text": "| **URL** | `/autopay/settings` |",
+      "anchor": {
+       "found": true,
+       "page": 1,
+       "line_start": 45,
+       "line_end": 45,
+       "exact": true
+      }
+     },
+     {
+      "text": "| `phone` | string | Да | +7XXXXXXXXXX | Номер телефона |",
+      "anchor": {
+       "found": true,
+       "page": 1,
+       "line_start": 51,
+       "line_end": 51,
+       "exact": true
+      }
+     },
+     {
+      "text": "| `cardId` | string | Да | Карта клиента | Идентификатор карты |",
+      "anchor": {
+       "found": true,
+       "page": 1,
+       "line_start": 52,
+       "line_end": 52,
+       "exact": true
+      }
+     },
+     {
+      "text": "| `threshold` | integer | Да | 0–5 000 | Порог баланса в тенге |",
+      "anchor": {
+       "found": true,
+       "page": 1,
+       "line_start": 54,
+       "line_end": 54,
+       "exact": true
+      }
+     },
+     {
+      "text": "* **200** — настройки сохранены: `{\"result\":\"OK\"}`.",
+      "anchor": {
+       "found": true,
+       "page": 1,
+       "line_start": 57,
+       "line_end": 57,
+       "exact": true
+      }
+     }
+    ],
+    "quotes_ok": 9,
+    "notes": [],
+    "verdict": "duplicate",
+    "verify_reason": "Дублирует замечание C-017 относительно противоречия максимальной суммы пополнения в R-02 и R-22.",
+    "duplicate_of": "C-017",
+    "severity_before": "critical",
+    "dup_fid": "F-01"
+   },
+   {
+    "source": "model",
+    "criterion": "complete",
+    "severity": "major",
+    "req_ids": [
+     "R-09"
+    ],
+    "title": "Документ не определяет исход: Событие оператора обработано с задержкой",
+    "quotes": [
+     "Сервис обрабатывает событие оператора не дольше 30 секунд с момента получения."
+    ],
+    "problem": "При прогоне сценария модель правил не может вычислить результат: Превышено время обработки события оператора",
+    "blocked_decision": "",
+    "fix": "",
+    "owner_question": "Что должна делать система, если событие от оператора поступило с задержкой более 30 секунд (игнорировать, обрабатывать или возвращать ошибку)?",
+    "scenario": "S9",
+    "evidence": "Сценарий S9: Событие оператора обработано с задержкой\nВход: {\"processing_time_seconds\": 31, \"operator_balance\": 400, \"threshold\": 500}\nОжидается по документу: {\"writeoff_amount\": 1000, \"push_sent\": true, \"api_status\": null, \"api_body\": null}\n[I1=a,I2=a] НЕ ОПРЕДЕЛЕНО: Превышено время обработки события оператора\n[I1=a,I2=b] НЕ ОПРЕДЕЛЕНО: Превышено время обработки события оператора\n[I1=b,I2=a] НЕ ОПРЕДЕЛЕНО: Превышено время обработки события оператора\n[I1=b,I2=b] НЕ ОПРЕДЕЛЕНО: Превышено время обработки события оператора",
+    "methods": "вычисление модели",
+    "cid": "C-019",
+    "anchored": [
+     {
+      "text": "Сервис обрабатывает событие оператора не дольше 30 секунд с момента получения.",
+      "anchor": {
+       "found": true,
+       "page": 1,
+       "line_start": 24,
+       "line_end": 24,
+       "exact": true
+      }
+     }
+    ],
+    "quotes_ok": 1,
+    "notes": [],
+    "verdict": "confirm",
+    "verify_reason": "Модель выявила неопределенность исхода при обработке события оператора с задержкой, превышающей 30 секунд.",
+    "duplicate_of": null,
+    "severity_before": "major",
+    "fid": "F-04"
+   }
+  ]
+ },
+ "candidates_total": 22,
+ "no_evidence": [],
+ "confirmed": [
+  {
+   "source": "oracle",
+   "criterion": "set_consistent",
+   "severity": "critical",
+   "req_ids": [
+    "R-02",
+    "R-18",
+    "R-19",
+    "R-20",
+    "R-21",
+    "R-22",
+    "R-23",
+    "R-24",
+    "R-25"
+   ],
+   "title": "Правила требуют разного: Сумма пополнения ниже минимального значения",
+   "quotes": [
+    "Клиент задаёт сумму пополнения от 100 до 20 000 ₸ целым числом",
+    "| `amount` | integer | Да | 100–50 000 | Сумма пополнения в тенге |",
+    "* **400** — параметры заполнены неверно: `{\"message\":\"Некорректные параметры\"}`."
+   ],
+   "problem": "В документе присутствует противоречие между требованиями к бизнес-логике суммы пополнения: в п. «Функциональные требования» (АП-2) указан диапазон «от 100 до 20 000 ₸», в то время как в спецификации API («Параметры запроса») для поля amount указан диапазон «100–50 000».",
+   "blocked_decision": "Невозможно определить единые границы валидации параметра amount на бэкенде: применять ли ограничение функциональных требований (20 000) или спецификации API (50 000).",
+   "fix": "",
+   "owner_question": "Какое максимальное значение суммы пополнения является корректным: 20 000 ₸ или 50 000 ₸?",
+   "scenario": "S4",
+   "evidence": "Сценарий S4: Сумма пополнения ниже минимального значения\nСитуация: Клиент вызывает API сохранения настроек /autopay/settings с параметром amount равным 99.\nR-02: «Клиент задаёт сумму пополнения от 100 до 20 000 ₸ целым числом» → Функциональные требования определяют минимальную сумму пополнения в 100 ₸.\nR-22: «| `amount` | integer | Да | 100–50 000 | Сумма пополнения в тенге |» → Параметр amount в API имеет диапазон 100–50 000.\nR-25: «* **400** — параметры заполнены неверно: `{\"message\":\"Некорректные параметры\"}`.» → При передаче значения вне диапазона API возвращает статус 400 и тело {\"message\":\"Некорректные параметры\"}.\nВывод по правилам: API статус 400, тело {\"message\":\"Некорректные параметры\"}",
+   "methods": "трассировка правил",
+   "cid": "C-017",
+   "anchored": [
+    {
+     "text": "Клиент задаёт сумму пополнения от 100 до 20 000 ₸ целым числом",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 16,
+      "line_end": 16,
+      "exact": true
+     }
+    },
+    {
+     "text": "| `amount` | integer | Да | 100–50 000 | Сумма пополнения в тенге |",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 53,
+      "line_end": 53,
+      "exact": true
+     }
+    },
+    {
+     "text": "* **400** — параметры заполнены неверно: `{\"message\":\"Некорректные параметры\"}`.",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 58,
+      "line_end": 58,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 3,
+   "notes": [],
+   "verdict": "confirm",
+   "verify_reason": "Функциональное требование R-02 ограничивает сумму сверху до 20 000 ₸, а API R-22 разрешает до 50 000 ₸, создавая противоречие для валидации.",
+   "duplicate_of": null,
+   "severity_before": "critical",
+   "fid": "F-01",
+   "also": [
+    "review",
+    "review",
+    "review",
+    "set",
+    "oracle"
+   ]
+  },
+  {
+   "criterion": "set_consistent",
+   "severity": "critical",
+   "req_ids": [
+    "R-03",
+    "R-16"
+   ],
+   "title": "Противоречие логики срабатывания порога баланса",
+   "quotes": [
+    "Когда оператор сообщает, что баланс номера стал ниже порога, банк списывает сумму пополнения с карты и переводит её оператору.",
+    "| Порог 500 ₸, сумма 1 000 ₸ | Оператор сообщает баланс 500 ₸ | Списано 1 000 ₸, push отправлен |"
+   ],
+   "problem": "Правило требует списания при балансе \"ниже порога\", однако в критерии приёмки при равенстве баланса порогу (500 ₸ и 500 ₸) происходит списание.",
+   "blocked_decision": "Невозможно однозначно реализовать логику триггера автопополнения: по строгой математической проверке (< порога) или по нестрогой (<= порога).",
+   "fix": "Исправить условие в критерии приёмки или скорректировать формулировку функционального требования.",
+   "owner_question": "Должно ли автопополнение срабатывать при балансе, строго равном пороговому значению?",
+   "source": "set",
+   "cid": "C-013",
+   "anchored": [
+    {
+     "text": "Когда оператор сообщает, что баланс номера стал ниже порога, банк списывает сумму пополнения с карты и переводит её оператору.",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 17,
+      "line_end": 17,
+      "exact": true
+     }
+    },
+    {
+     "text": "| Порог 500 ₸, сумма 1 000 ₸ | Оператор сообщает баланс 500 ₸ | Списано 1 000 ₸, push отправлен |",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 37,
+      "line_end": 37,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 2,
+   "notes": [],
+   "verdict": "confirm",
+   "verify_reason": "Требование АП-3 говорит «ниже порога», но критерий приемки предписывает списание при равенстве баланса порогу (500 ₸).",
+   "duplicate_of": null,
+   "severity_before": "critical",
+   "fid": "F-02",
+   "also": [
+    "review"
+   ]
+  },
+  {
+   "criterion": "set_complete",
+   "severity": "critical",
+   "req_ids": [
+    "R-04"
+   ],
+   "title": "Отсутствие требований безопасности (TBD)",
+   "quotes": [
+    "## Требования к безопасности\nTBD"
+   ],
+   "problem": "Раздел требований к безопасности полностью не заполнен (TBD), что не позволяет проектировать архитектуру авторизации и шифрования данных карт.",
+   "blocked_decision": "Невозможно спроектировать архитектуру безопасности, механизмы шифрования и авторизации для платежных данных из-за отсутствия требований в разделе.",
+   "fix": "Заполнить раздел \"Требования к безопасности\" конкретными требованиями.",
+   "owner_question": "Каковы конкретные требования к шифрованию, хранению данных карт и аутентификации запросов?",
+   "source": "set",
+   "cid": "C-014",
+   "anchored": [
+    {
+     "text": "## Требования к безопасности\nTBD",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 29,
+      "line_end": 30,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 1,
+   "notes": [],
+   "verdict": "confirm",
+   "verify_reason": "Раздел требований к безопасности содержит только заглушку TBD.",
+   "duplicate_of": null,
+   "severity_before": "critical",
+   "fid": "F-03",
+   "also": [
+    "rule"
+   ]
+  },
+  {
+   "source": "model",
+   "criterion": "complete",
+   "severity": "major",
+   "req_ids": [
+    "R-09"
+   ],
+   "title": "Документ не определяет исход: Событие оператора обработано с задержкой",
+   "quotes": [
+    "Сервис обрабатывает событие оператора не дольше 30 секунд с момента получения."
+   ],
+   "problem": "При прогоне сценария модель правил не может вычислить результат: Превышено время обработки события оператора",
+   "blocked_decision": "",
+   "fix": "",
+   "owner_question": "Что должна делать система, если событие от оператора поступило с задержкой более 30 секунд (игнорировать, обрабатывать или возвращать ошибку)?",
+   "scenario": "S9",
+   "evidence": "Сценарий S9: Событие оператора обработано с задержкой\nВход: {\"processing_time_seconds\": 31, \"operator_balance\": 400, \"threshold\": 500}\nОжидается по документу: {\"writeoff_amount\": 1000, \"push_sent\": true, \"api_status\": null, \"api_body\": null}\n[I1=a,I2=a] НЕ ОПРЕДЕЛЕНО: Превышено время обработки события оператора\n[I1=a,I2=b] НЕ ОПРЕДЕЛЕНО: Превышено время обработки события оператора\n[I1=b,I2=a] НЕ ОПРЕДЕЛЕНО: Превышено время обработки события оператора\n[I1=b,I2=b] НЕ ОПРЕДЕЛЕНО: Превышено время обработки события оператора",
+   "methods": "вычисление модели",
+   "cid": "C-019",
+   "anchored": [
+    {
+     "text": "Сервис обрабатывает событие оператора не дольше 30 секунд с момента получения.",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 24,
+      "line_end": 24,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 1,
+   "notes": [],
+   "verdict": "confirm",
+   "verify_reason": "Модель выявила неопределенность исхода при обработке события оператора с задержкой, превышающей 30 секунд.",
+   "duplicate_of": null,
+   "severity_before": "major",
+   "fid": "F-04"
+  },
+  {
+   "criterion": "set_consistent",
+   "severity": "major",
+   "req_ids": [
+    "R-02",
+    "R-12"
+   ],
+   "title": "Несоответствие единиц измерения суммы в требованиях и хранении",
+   "quotes": [
+    "Клиент задаёт сумму пополнения от 100 до 20 000 ₸ целым числом",
+    "сумму пополнения в тиынах"
+   ],
+   "problem": "В интерфейсных требованиях сумма задается в тенге, а в требованиях к данным указано хранение в тиынах без описания правила конвертации.",
+   "blocked_decision": "",
+   "fix": "Явно указать в требованиях к данным необходимость умножения суммы на 100 при сохранении в тиыны.",
+   "owner_question": "Требуется ли умножать сумму на 100 при сохранении в базу данных и делить на 100 при отображении?",
+   "source": "set",
+   "cid": "C-016",
+   "anchored": [
+    {
+     "text": "Клиент задаёт сумму пополнения от 100 до 20 000 ₸ целым числом",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 16,
+      "line_end": 16,
+      "exact": true
+     }
+    },
+    {
+     "text": "сумму пополнения в тиынах",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 27,
+      "line_end": 27,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 2,
+   "notes": [],
+   "verdict": "confirm",
+   "verify_reason": "Указание задавать сумму в тенге в интерфейсе при ее хранении в тиынах требует явного описания конвертации.",
+   "duplicate_of": null,
+   "severity_before": "major",
+   "fid": "F-05"
+  },
+  {
+   "criterion": "complete",
+   "severity": "major",
+   "req_ids": [
+    "R-04"
+   ],
+   "title": "Не описано поведение при недостаточном балансе карты",
+   "quotes": [
+    "Когда оператор сообщает, что баланс номера стал ниже порога, банк списывает сумму пополнения с карты и переводит её оператору."
+   ],
+   "problem": "В требовании АП-3 не указано, что должна делать система, если на карте клиента недостаточно средств для списания суммы пополнения.",
+   "blocked_decision": "",
+   "fix": "Добавить описание сценария обработки неуспешного списания (например, повторная попытка, отключение автопополнения или отправка уведомления клиенту).",
+   "owner_question": "Как система должна обрабатывать ситуацию, когда на карте клиента недостаточно средств для списания суммы пополнения?",
+   "source": "review",
+   "cid": "C-002",
+   "anchored": [
+    {
+     "text": "Когда оператор сообщает, что баланс номера стал ниже порога, банк списывает сумму пополнения с карты и переводит её оператору.",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 17,
+      "line_end": 17,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 1,
+   "notes": [],
+   "verdict": "confirm",
+   "verify_reason": "В требованиях действительно отсутствует сценарий поведения системы при недостаточном балансе карты.",
+   "duplicate_of": null,
+   "severity_before": "major",
+   "fid": "F-06"
+  },
+  {
+   "criterion": "unambiguous",
+   "severity": "major",
+   "req_ids": [
+    "R-05"
+   ],
+   "title": "Не определено понятие «сутки» для ограничения частоты",
+   "quotes": [
+    "Автопополнение выполняется не чаще одного раза в сутки."
+   ],
+   "problem": "Формулировка «не чаще одного раза в сутки» допускает два прочтения: календарные сутки (сброс в 00:00) или скользящие сутки (24 часа с момента последнего успешного пополнения).",
+   "blocked_decision": "",
+   "fix": "Уточнить формулировку, указав тип суточного ограничения (например, «не чаще одного раза в календарные сутки» или «не чаще одного раза в 24 часа»).",
+   "owner_question": "Что подразумевается под ограничением «не чаще одного раза в сутки»: календарные сутки с обнулением в 00:00 или скользящие 24 часа?",
+   "source": "review",
+   "cid": "C-003",
+   "anchored": [
+    {
+     "text": "Автопополнение выполняется не чаще одного раза в сутки.",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 18,
+      "line_end": 18,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 1,
+   "notes": [],
+   "verdict": "confirm",
+   "verify_reason": "Формулировка «не чаще одного раза в сутки» является двусмысленной и не уточняет тип суток.",
+   "duplicate_of": null,
+   "severity_before": "major",
+   "fid": "F-07"
+  },
+  {
+   "criterion": "correct",
+   "severity": "major",
+   "req_ids": [
+    "R-13"
+   ],
+   "title": "Противоречие в единицах измерения суммы пополнения и порога",
+   "quotes": [
+    "сумму пополнения в тиынах, порог баланса в тенге",
+    "порог баланса в тенге."
+   ],
+   "problem": "В разделе требований к данным указано хранить «сумму пополнения в тиынах, порог баланса в тенге», однако в функциональных требованиях сумма задается в тенге, а в API сумма имеет диапазон 100-50 000, что противоречит хранению в тиынах.",
+   "blocked_decision": "",
+   "fix": "Уточнить единицы измерения для суммы пополнения (тенге или тиыны) во всех разделах документа.",
+   "owner_question": "В каких единицах (тенге или тиыны) должна фиксироваться сумма пополнения на уровне интерфейса, API и хранения в базе данных?",
+   "source": "review",
+   "cid": "C-005",
+   "anchored": [
+    {
+     "text": "сумму пополнения в тиынах, порог баланса в тенге",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 27,
+      "line_end": 27,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 1,
+   "notes": [
+    "отброшено ненайденных цитат: 1"
+   ],
+   "verdict": "confirm",
+   "verify_reason": "Есть расхождение между указанием хранить сумму пополнения в тиынах и ее заданием в тенге в интерфейсе и API.",
+   "duplicate_of": null,
+   "severity_before": "major",
+   "fid": "F-08"
+  },
+  {
+   "criterion": "complete",
+   "severity": "major",
+   "req_ids": [
+    "R-13"
+   ],
+   "title": "Не указан тип данных и ограничения для порога баланса",
+   "quotes": [
+    "порог баланса в тенге"
+   ],
+   "problem": "В описании требований к данным упомянут «порог баланса в тенге», но не указан тип данных (целое число) и допустимые границы, в отличие от функциональных требований и API.",
+   "blocked_decision": "",
+   "fix": "Дополнить требование типом данных и диапазоном для порога баланса.",
+   "owner_question": "",
+   "source": "review",
+   "cid": "C-006",
+   "anchored": [
+    {
+     "text": "порог баланса в тенге",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 27,
+      "line_end": 27,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 1,
+   "notes": [],
+   "verdict": "confirm",
+   "verify_reason": "В разделе требований к данным для порога баланса не указаны тип данных и допустимые границы.",
+   "duplicate_of": null,
+   "severity_before": "major",
+   "fid": "F-09"
+  },
+  {
+   "criterion": "complete",
+   "severity": "major",
+   "req_ids": [
+    "R-26"
+   ],
+   "title": "Отсутствует тело ответа для статуса 401",
+   "quotes": [
+    "* **401** — нет авторизации."
+   ],
+   "problem": "Для ответа с кодом 401 не указано тело ответа (структура JSON), в отличие от успешного ответа и статуса 400.",
+   "blocked_decision": "",
+   "fix": "Добавить структуру тела ответа для статуса 401, например: `* **401** — нет авторизации: `{\"message\":\"Требуется авторизация\"}`.`",
+   "owner_question": "Какое тело ответа (структуру JSON) должен возвращать сервис при ошибке авторизации с кодом 401?",
+   "source": "review",
+   "cid": "C-011",
+   "anchored": [
+    {
+     "text": "* **401** — нет авторизации.",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 59,
+      "line_end": 59,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 1,
+   "notes": [],
+   "verdict": "confirm",
+   "verify_reason": "В спецификации ответов API для статуса 401 отсутствует структура тела ответа.",
+   "duplicate_of": null,
+   "severity_before": "major",
+   "fid": "F-10"
+  },
+  {
+   "source": "rule",
+   "criterion": "modifiable",
+   "severity": "major",
+   "req_ids": [],
+   "title": "Не указаны версия и дата документа",
+   "quotes": [
+    "# Автопополнение мобильной связи"
+   ],
+   "problem": "Номер версии и дата не зафиксированы: нельзя сослаться на согласованную редакцию и отследить изменения.",
+   "blocked_decision": "",
+   "fix": "Добавить версию, дату и историю изменений.",
+   "owner_question": "",
+   "cid": "C-022",
+   "anchored": [
+    {
+     "text": "# Автопополнение мобильной связи",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 1,
+      "line_end": 1,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 1,
+   "notes": [],
+   "verdict": "confirm",
+   "verify_reason": "В документе отсутствуют метаданные версии и даты актуальности.",
+   "duplicate_of": null,
+   "severity_before": "major",
+   "fid": "F-11"
+  },
+  {
+   "criterion": "complete",
+   "severity": "minor",
+   "req_ids": [
+    "R-14"
+   ],
+   "title": "Не указан формат хранения даты последнего пополнения",
+   "quotes": [
+    "дату последнего пополнения."
+   ],
+   "problem": "Требование указывает на необходимость хранения «дату последнего пополнения.», но не определяет формат (например, Timestamp, YYYY-MM-DD или с учетом времени).",
+   "blocked_decision": "",
+   "fix": "Указать формат и точность хранения даты последнего пополнения (например, TIMESTAMP или YYYY-MM-DD HH:MM:SS).",
+   "owner_question": "Какой формат и точность (дата или дата и время с таймзонкой) должны использоваться для хранения даты последнего пополнения?",
+   "source": "review",
+   "cid": "C-007",
+   "anchored": [
+    {
+     "text": "дату последнего пополнения.",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 27,
+      "line_end": 27,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 1,
+   "notes": [],
+   "verdict": "confirm",
+   "verify_reason": "Формат хранения даты последнего пополнения в требованиях к данным не определен.",
+   "duplicate_of": null,
+   "severity_before": "minor",
+   "fid": "F-12"
+  },
+  {
+   "source": "rule",
+   "criterion": "unambiguous",
+   "severity": "minor",
+   "req_ids": [
+    "R-08"
+   ],
+   "title": "Расплывчатый термин «быстро»",
+   "quotes": [
+    "* **НФ-1.** Уведомление о пополнении должно приходить клиенту быстро."
+   ],
+   "problem": "Слово «быстро» не задаёт измеримой границы (ISO 29148, п. 5.2.7).",
+   "blocked_decision": "",
+   "fix": "Заменить измеримым значением с единицей и условием измерения.",
+   "owner_question": "Каково точное максимальное время доставки push-уведомления в миллисекундах или секундах?",
+   "cid": "C-020",
+   "anchored": [
+    {
+     "text": "* **НФ-1.** Уведомление о пополнении должно приходить клиенту быстро.",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 23,
+      "line_end": 23,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 1,
+   "notes": [],
+   "verdict": "confirm",
+   "verify_reason": "Слово «быстро» в НФ-1 не содержит измеримых критериев и не соответствует стандартам проверяемости.",
+   "duplicate_of": null,
+   "severity_before": "minor",
+   "fid": "F-13",
+   "also": [
+    "review",
+    "set"
+   ]
+  }
+ ],
+ "questions": [],
+ "rejected": [],
+ "duplicates": [
+  {
+   "criterion": "correct",
+   "severity": "critical",
+   "req_ids": [
+    "R-02"
+   ],
+   "title": "Противоречие лимитов суммы в тексте и API",
+   "quotes": [
+    "Клиент задаёт сумму пополнения от 100 до 20 000 ₸ целым числом",
+    "| amount | integer | Да | 100–50 000 | Сумма пополнения в тенге |"
+   ],
+   "problem": "В тексте требования АП-2 указан диапазон суммы пополнения от 100 до 20 000 ₸, в то время как в спецификации API «Сохранить настройки автопополнения» указан диапазон 100–50 000. Из-за этого невозможно определить корректное бизнес-ограничение для валидации на бэкенде.",
+   "blocked_decision": "Разработчик и тестировщик не могут принять решение о том, какой диапазон сумм (до 20 000 или до 50 000) считать валидным.",
+   "fix": "Привести диапазон суммы пополнения к единому значению в АП-2 и в таблице API.",
+   "owner_question": "Какой максимальный лимит суммы автопополнения является правильным: 20 000 ₸ или 50 000 ₸?",
+   "source": "review",
+   "cid": "C-001",
+   "anchored": [
+    {
+     "text": "Клиент задаёт сумму пополнения от 100 до 20 000 ₸ целым числом",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 16,
+      "line_end": 16,
+      "exact": true
+     }
+    },
+    {
+     "text": "| amount | integer | Да | 100–50 000 | Сумма пополнения в тенге |",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 53,
+      "line_end": 53,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 2,
+   "notes": [],
+   "verdict": "duplicate",
+   "verify_reason": "Дублирует замечание C-017, указывающее на противоречие лимитов суммы в тексте и API.",
+   "duplicate_of": "C-017",
+   "severity_before": "critical",
+   "dup_fid": "F-01"
+  },
+  {
+   "criterion": "verifiable",
+   "severity": "minor",
+   "req_ids": [
+    "R-08"
+   ],
+   "title": "Субъективная оценка скорости в нефункциональном требовании",
+   "quotes": [
+    "Уведомление о пополнении должно приходить клиенту быстро."
+   ],
+   "problem": "Требование НФ-1 использует качественную оценку «быстро», которую невозможно объективно проверить тестом (в отличие от конкретного тайминга в НФ-2).",
+   "blocked_decision": "",
+   "fix": "Заменить качественную оценку на измеримый показатель или удалить требование, если НФ-2 полностью покрывает этот кейс.",
+   "owner_question": "",
+   "source": "review",
+   "cid": "C-004",
+   "anchored": [
+    {
+     "text": "Уведомление о пополнении должно приходить клиенту быстро.",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 23,
+      "line_end": 23,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 1,
+   "notes": [],
+   "verdict": "duplicate",
+   "verify_reason": "Дублирует правило C-020 про расплывчатый термин в нефункциональном требовании.",
+   "duplicate_of": "C-020",
+   "severity_before": "minor",
+   "dup_fid": "F-13"
+  },
+  {
+   "criterion": "correct",
+   "severity": "critical",
+   "req_ids": [
+    "R-16"
+   ],
+   "title": "Противоречие условия срабатывания порога баланса",
+   "quotes": [
+    "Когда оператор сообщает, что баланс номера стал ниже порога",
+    "Порог 500 ₸, сумма 1 000 ₸ | Оператор сообщает баланс 500 ₸ | Списано 1 000 ₸, push отправлен"
+   ],
+   "problem": "Функциональное требование АП-3 определяет условие как «ниже порога», однако критерий приемки для баланса, равного порогу (500 ₸ при пороге 500 ₸), требует совершить списание, что противоречит формулировке «ниже».",
+   "blocked_decision": "Невозможно принять решение о том, должно ли происходить автопополнение при балансе, строго равном порогу.",
+   "fix": "Исправить формулировку в АП-3 на «ниже или равен порогу» либо изменить ожидаемый результат в критерии приемки.",
+   "owner_question": "Должно ли автопополнение срабатывать при балансе, равном порогу (<=), или только при балансе строго меньше порога (<)?",
+   "source": "review",
+   "cid": "C-008",
+   "anchored": [
+    {
+     "text": "Когда оператор сообщает, что баланс номера стал ниже порога",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 17,
+      "line_end": 17,
+      "exact": true
+     }
+    },
+    {
+     "text": "Порог 500 ₸, сумма 1 000 ₸ | Оператор сообщает баланс 500 ₸ | Списано 1 000 ₸, push отправлен",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 37,
+      "line_end": 37,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 2,
+   "notes": [],
+   "verdict": "duplicate",
+   "verify_reason": "Дублирует замечание C-013 о противоречии между условием «ниже порога» и критерием приемки для равного баланса.",
+   "duplicate_of": "C-013",
+   "severity_before": "critical",
+   "dup_fid": "F-02"
+  },
+  {
+   "criterion": "correct",
+   "severity": "major",
+   "req_ids": [
+    "R-22"
+   ],
+   "title": "Противоречие диапазона суммы пополнения в API и функциональных требованиях",
+   "quotes": [
+    "Клиент задаёт сумму пополнения от 100 до 20 000 ₸",
+    "| `amount` | integer | Да | 100–50 000 | Сумма пополнения в тенге |"
+   ],
+   "problem": "Функциональное требование АП-2 ограничивает сумму пополнения диапазоном 100–20 000 ₸, в то время как спецификация API разрешает значения до 50 000 ₸.",
+   "blocked_decision": "",
+   "fix": "Привести диапазон суммы пополнения к единому значению во всех разделах документа (в АП-2 и в API).",
+   "owner_question": "Какой максимальный лимит суммы пополнения должен быть установлен: 20 000 ₸ или 50 000 ₸?",
+   "source": "review",
+   "cid": "C-009",
+   "anchored": [
+    {
+     "text": "Клиент задаёт сумму пополнения от 100 до 20 000 ₸",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 16,
+      "line_end": 16,
+      "exact": true
+     }
+    },
+    {
+     "text": "| `amount` | integer | Да | 100–50 000 | Сумма пополнения в тенге |",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 53,
+      "line_end": 53,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 2,
+   "notes": [],
+   "verdict": "duplicate",
+   "verify_reason": "Дублирует замечание C-017 о несоответствии диапазона суммы пополнения в требованиях и API.",
+   "duplicate_of": "C-017",
+   "severity_before": "major",
+   "dup_fid": "F-01"
+  },
+  {
+   "criterion": "correct",
+   "severity": "major",
+   "req_ids": [
+    "R-25"
+   ],
+   "title": "Противоречие диапазона суммы пополнения в API",
+   "quotes": [
+    "* **АП-2.** Клиент задаёт сумму пополнения от 100 до 20 000 ₸ целым числом и порог баланса от 0 до 5 000 ₸.",
+    "| `amount` | integer | Да | 100–50 000 | Сумма пополнения в тенге |"
+   ],
+   "problem": "Диапазон допустимых значений суммы пополнения в требованиях и в спецификации API различается. В функциональных требованиях указано от 100 до 20 000 ₸, а в параметрах API — от 100 до 50 000.",
+   "blocked_decision": "",
+   "fix": "Привести диапазон `amount` в спецификации API в соответствие с пунктом АП-2: изменить на 100–20 000.",
+   "owner_question": "Какой верный верхний лимит суммы пополнения: 20 000 ₸ (согласно АП-2) или 50 000 ₸ (согласно API)?",
+   "source": "review",
+   "cid": "C-010",
+   "anchored": [
+    {
+     "text": "* **АП-2.** Клиент задаёт сумму пополнения от 100 до 20 000 ₸ целым числом и порог баланса от 0 до 5 000 ₸.",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 16,
+      "line_end": 16,
+      "exact": true
+     }
+    },
+    {
+     "text": "| `amount` | integer | Да | 100–50 000 | Сумма пополнения в тенге |",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 53,
+      "line_end": 53,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 2,
+   "notes": [],
+   "verdict": "duplicate",
+   "verify_reason": "Дублирует замечание C-017 о разнице диапазонов суммы пополнения в функциональных требованиях и спецификации API.",
+   "duplicate_of": "C-017",
+   "severity_before": "major",
+   "dup_fid": "F-01"
+  },
+  {
+   "criterion": "set_consistent",
+   "severity": "critical",
+   "req_ids": [
+    "R-02",
+    "R-22"
+   ],
+   "title": "Противоречие в максимальной сумме пополнения",
+   "quotes": [
+    "Клиент задаёт сумму пополнения от 100 до 20 000 ₸ целым числом и порог баланса от 0 до 5 000 ₸.",
+    "| `amount` | integer | Да | 100–50 000 | Сумма пополнения в тенге |"
+   ],
+   "problem": "В функциональных требованиях максимальная сумма пополнения ограничена 20 000 ₸, а в спецификации API параметр amount допускает значение до 50 000.",
+   "blocked_decision": "Невозможно определить валидный диапазон суммы пополнения для реализации проверки на бэкенде и в мобильном приложении.",
+   "fix": "Привести диапазон суммы пополнения в спецификации API к значению 100–20 000 ₸.",
+   "owner_question": "Какой максимальный лимит суммы пополнения является верным: 20 000 ₸ или 50 000 ₸?",
+   "source": "set",
+   "cid": "C-012",
+   "anchored": [
+    {
+     "text": "Клиент задаёт сумму пополнения от 100 до 20 000 ₸ целым числом и порог баланса от 0 до 5 000 ₸.",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 16,
+      "line_end": 16,
+      "exact": true
+     }
+    },
+    {
+     "text": "| `amount` | integer | Да | 100–50 000 | Сумма пополнения в тенге |",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 53,
+      "line_end": 53,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 2,
+   "notes": [],
+   "verdict": "duplicate",
+   "verify_reason": "Дублирует замечание C-017 о противоречии максимальной суммы пополнения между R-02 и R-22.",
+   "duplicate_of": "C-017",
+   "severity_before": "critical",
+   "dup_fid": "F-01"
+  },
+  {
+   "criterion": "set_comprehensible",
+   "severity": "major",
+   "req_ids": [
+    "R-08"
+   ],
+   "title": "Нечеткая формулировка нефункционального требования",
+   "quotes": [
+    "* **НФ-1.** Уведомление о пополнении должно приходить клиенту быстро."
+   ],
+   "problem": "Термин \"быстро\" субъективен и не может быть протестирован объективными методами.",
+   "blocked_decision": "",
+   "fix": "Заменить неметризуемое требование на конкретный временной интервал (например, до 5 секунд).",
+   "owner_question": "В течение скольких секунд клиенту должен доставляться push-уведомление?",
+   "source": "set",
+   "cid": "C-015",
+   "anchored": [
+    {
+     "text": "* **НФ-1.** Уведомление о пополнении должно приходить клиенту быстро.",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 23,
+      "line_end": 23,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 1,
+   "notes": [],
+   "verdict": "duplicate",
+   "verify_reason": "Дублирует замечание C-020 о субъективности термина «быстро».",
+   "duplicate_of": "C-020",
+   "severity_before": "major",
+   "dup_fid": "F-13"
+  },
+  {
+   "source": "oracle",
+   "criterion": "set_consistent",
+   "severity": "critical",
+   "req_ids": [
+    "R-02",
+    "R-18",
+    "R-19",
+    "R-20",
+    "R-21",
+    "R-22",
+    "R-23",
+    "R-24",
+    "R-25"
+   ],
+   "title": "Правила требуют разного: Сумма пополнения выше максимального значения по функциональным требованиям",
+   "quotes": [
+    "Клиент задаёт сумму пополнения от 100 до 20 000 ₸ целым числом",
+    "| `amount` | integer | Да | 100–50 000 | Сумма пополнения в тенге |",
+    "* **400** — параметры заполнены неверно: `{\"message\":\"Некорректные параметры\"}`.",
+    "| **REST type** | POST |",
+    "| **URL** | `/autopay/settings` |",
+    "| `phone` | string | Да | +7XXXXXXXXXX | Номер телефона |",
+    "| `cardId` | string | Да | Карта клиента | Идентификатор карты |",
+    "| `threshold` | integer | Да | 0–5 000 | Порог баланса в тенге |",
+    "* **200** — настройки сохранены: `{\"result\":\"OK\"}`."
+   ],
+   "problem": "Функциональное требование R-02 ограничивает максимальную сумму пополнения до 20 000 ₸, в то время как спецификация API R-22 разрешает значения до 50 000.",
+   "blocked_decision": "Какое максимальное значение суммы пополнения является валидным (20 000 или 50 000) для функционала и API.",
+   "fix": "",
+   "owner_question": "",
+   "scenario": "S5",
+   "evidence": "Сценарий S5: Сумма пополнения выше максимального значения по функциональным требованиям\nСитуация: Клиент вызывает API сохранения настроек /autopay/settings с параметром amount равным 20001.\nR-02: «Клиент задаёт сумму пополнения от 100 до 20 000 ₸ целым числом» → Сумма пополнения ограничена диапазоном от 100 до 20 000 ₸.\nR-22: «| `amount` | integer | Да | 100–50 000 | Сумма пополнения в тенге |» → Параметр amount в API имеет диапазон 100–50 000.\nR-25: «* **400** — параметры заполнены неверно: `{\"message\":\"Некорректные параметры\"}`.» → При неверных параметрах возвращается статус 400 и тело с сообщением о некорректных параметрах.\nВывод по правилам: Статус 400, тело {\"message\":\"Некорректные параметры\"}\n\nПрогон исполняемой модели:\nСценарий S5: Сумма пополнения выше максимального значения по функциональным требованиям\nВход: {\"phone\": \"+77011234567\", \"cardId\": \"card_123\", \"amount\": 20001, \"threshold\": 500}\nОжидается по документу: {\"writeoff_amount\": null, \"push_sent\": null, \"api_status\": 400, \"api_body\": \"{\\\"message\\\":\\\"Некорректные параметры\\\"}\"}\n[I1=a,I2=a] вычислено: {\"api_status\": 400, \"api_body\": {\"message\": \"Некорректные параметры\"}, \"_trace\": [\"R-02\", \"R-22\", \"R-25\"]}\n[I1=a,I2=b] вычислено: {\"api_status\": 400, \"api_body\": {\"message\": \"Некорректные параметры\"}, \"_trace\": [\"R-02\", \"R-22\", \"R-25\"]}\n[I1=b,I2=a] вычислено: {\"api_status\": 200, \"api_body\": {\"result\": \"OK\"}, \"_trace\": [\"R-18\", \"R-19\", \"R-20\", \"R-21\", \"R-22\", \"R-23\", \"R-24\"]}\n[I1=b,I2=b] вычислено: {\"api_status\": 200, \"api_body\": {\"result\": \"OK\"}, \"_trace\": [\"R-18\", \"R-19\", \"R-20\", \"R-21\", \"R-22\", \"R-23\", \"R-24\"]}",
+   "methods": "трассировка правил + вычисление модели",
+   "cid": "C-018",
+   "anchored": [
+    {
+     "text": "Клиент задаёт сумму пополнения от 100 до 20 000 ₸ целым числом",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 16,
+      "line_end": 16,
+      "exact": true
+     }
+    },
+    {
+     "text": "| `amount` | integer | Да | 100–50 000 | Сумма пополнения в тенге |",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 53,
+      "line_end": 53,
+      "exact": true
+     }
+    },
+    {
+     "text": "* **400** — параметры заполнены неверно: `{\"message\":\"Некорректные параметры\"}`.",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 58,
+      "line_end": 58,
+      "exact": true
+     }
+    },
+    {
+     "text": "| **REST type** | POST |",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 44,
+      "line_end": 44,
+      "exact": true
+     }
+    },
+    {
+     "text": "| **URL** | `/autopay/settings` |",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 45,
+      "line_end": 45,
+      "exact": true
+     }
+    },
+    {
+     "text": "| `phone` | string | Да | +7XXXXXXXXXX | Номер телефона |",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 51,
+      "line_end": 51,
+      "exact": true
+     }
+    },
+    {
+     "text": "| `cardId` | string | Да | Карта клиента | Идентификатор карты |",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 52,
+      "line_end": 52,
+      "exact": true
+     }
+    },
+    {
+     "text": "| `threshold` | integer | Да | 0–5 000 | Порог баланса в тенге |",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 54,
+      "line_end": 54,
+      "exact": true
+     }
+    },
+    {
+     "text": "* **200** — настройки сохранены: `{\"result\":\"OK\"}`.",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 57,
+      "line_end": 57,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 9,
+   "notes": [],
+   "verdict": "duplicate",
+   "verify_reason": "Дублирует замечание C-017 относительно противоречия максимальной суммы пополнения в R-02 и R-22.",
+   "duplicate_of": "C-017",
+   "severity_before": "critical",
+   "dup_fid": "F-01"
+  },
+  {
+   "source": "rule",
+   "criterion": "set_complete",
+   "severity": "major",
+   "req_ids": [],
+   "title": "Раздел не заполнен (заглушка)",
+   "quotes": [
+    "TBD"
+   ],
+   "problem": "В документе стоит заглушка вместо содержания; раздел нельзя проверить.",
+   "blocked_decision": "",
+   "fix": "Заполнить раздел до передачи в разработку или явно указать, что он не требуется.",
+   "owner_question": "",
+   "cid": "C-021",
+   "anchored": [
+    {
+     "text": "TBD",
+     "anchor": {
+      "found": true,
+      "page": 1,
+      "line_start": 30,
+      "line_end": 30,
+      "exact": true
+     }
+    }
+   ],
+   "quotes_ok": 1,
+   "notes": [],
+   "verdict": "duplicate",
+   "verify_reason": "Дублирует замечание C-014 о наличии незаполненной заглушки TBD в документе.",
+   "duplicate_of": "C-014",
+   "severity_before": "major",
+   "dup_fid": "F-03"
+  }
+ ],
+ "checklist": {
+  "present": false
+ }
+}

@@ -55,12 +55,24 @@ def render(doc, res: Dict[str, Any], passport: Dict[str, str], log: List[Dict] =
         verdict_line = "**Итог: документ готов к разработке и тестированию.**"
     if partial and crit:
         verdict_line += " Документ прочитан не полностью — см. «Входной контроль»."
+    if res.get("resolved"):
+        verdict_line += (f" Ещё {len(res['resolved'])} замечаний сняты решениями владельца (раздел 9): "
+                         "до старта эти решения нужно внести в текст документа.")
     w(verdict_line + "\n")
+    if res.get("resolved"):
+        w(f"Решениями владельца закрыто замечаний: {len(res['resolved'])} (раздел 9).\n")
     if crit:
         w("**Главное (критичные дефекты):**\n")
         for f in crit:
             locs = "; ".join(dict.fromkeys(where(a["anchor"], kind) for a in f["anchored"]))
             w(f"- **{f['fid']}** — {esc(f.get('title'))} ({locs}). Нельзя решить: {esc(f.get('blocked_decision'))}")
+        w("")
+    clar0 = res.get("clarifications") or []
+    if clar0:
+        w(f"**Уточняющие вопросы владельцу ({len(clar0)}, полный список — раздел 8):**\n")
+        for q in clar0[:3]:
+            opts = " / ".join(f"{op['key']}) {esc(op['text'])}" for op in q.get("options") or [])
+            w(f"- **{q['qid']}** {esc(q['question'])}" + (f" — {opts}" if opts else ""))
         w("")
     if delta:
         w(delta)
@@ -201,16 +213,52 @@ def render(doc, res: Dict[str, Any], passport: Dict[str, str], log: List[Dict] =
         w("")
 
     # ------------------------------------------------------------ 8. вопросы
-    w("## 8. Вопросы владельцу продукта\n")
-    w("Это не дефекты формулировок, а решения, которые текст не принимает и которые агент не вправе принять сам.\n")
-    qs = ques + [f for f in conf if f.get("owner_question")]
-    if qs:
-        for f in qs:
+    w("## 8. Уточняющие вопросы владельцу продукта\n")
+    w("Агент-интервьюер свёл блокирующие замечания к вопросам: без ответа на них нельзя начать разработку или "
+      "написать тесты. Варианты ответа взяты из текста документа; агент не выбирает за владельца. Бланк ответов "
+      "сохранён рядом с отчётом (`*.questions.json`); ответить можно в консоли (`--ask`) или в файле, а затем "
+      "перепроверить документ с учётом решений (`--answers`).\n")
+    answered = {x["id"]: x for x in ((res.get("owner_answers") or {}).get("applied") or [])}
+    clar = res.get("clarifications") or []
+    for q in clar:
+        mark = f" — ✔ отвечено: {esc(answered[q['qid']]['answer'])}" if q["qid"] in answered else ""
+        w(f"**{q['qid']} · {SEV_RU[q['severity']]}** — {esc(q['question'])}{mark}  ")
+        w(f"Закрывает замечания: {', '.join(q['finding_ids'])}.  ")
+        if q.get("why"):
+            w(f"После ответа можно: {esc(q['why'])}  ")
+        for a in q["anchored"][:2]:
+            w(f"Основание ({where(a['anchor'], kind)}): «{esc(a['text'])}»  ")
+        for op in q.get("options") or []:
+            w(f"&nbsp;&nbsp;**{op['key']})** {esc(op['text'])}  ")
+        if q.get("check_after"):
+            w(f"Проверка после решения: {esc(q['check_after'])}")
+        w("")
+    covered = {i for q in clar for i in q["finding_ids"]}
+    rest = [f for f in ques + [f for f in conf if f.get("owner_question")] if f["fid"] not in covered]
+    if rest:
+        w("Прочие вопросы, которые остались открытыми:\n")
+        for f in rest:
             locs = "; ".join(f"«{esc(a['text'])}» ({where(a['anchor'], kind)})" for a in f["anchored"][:2])
             w(f"- **{f['fid']}** {esc(f.get('owner_question') or f.get('title'))} — основание: {locs}")
-    else:
-        w("- нет")
-    w("")
+        w("")
+    if not clar and not rest:
+        w("Вопросов нет.\n")
+
+    oa = res.get("owner_answers")
+    if oa:
+        w("## 9. Решения владельца продукта\n")
+        w("Замечания, по которым владелец принял решение, сняты с блокировки и перечислены здесь. Сопоставление "
+          "ответа с замечанием выполняет код по цитатам, а не модель.\n")
+        if oa.get("applied"):
+            w("| Вопрос | Решение | Закрыто замечаний | Проверка после решения |\n|---|---|---|---|")
+            for x in oa["applied"]:
+                w(f"| {esc(x['id'])}: {esc(x['question'])} | {esc(x['answer'])} | {', '.join(x['closed']) or '—'} | "
+                  f"{esc(x.get('check_after'))} |")
+            w("")
+        if oa.get("stale"):
+            w(f"Устарели (процитированный текст в документе изменился, ответ не применён): {', '.join(oa['stale'])}.\n")
+        if oa.get("pending"):
+            w(f"Отложены (без ответа): {', '.join(str(x) for x in oa['pending'])}.\n")
 
     # ------------------------------------------------------------ приложения
     w("## Приложение А. Что агент отбросил и почему\n")

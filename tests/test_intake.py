@@ -10,9 +10,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from reqagent.ingest import IntakeError, load  # noqa: E402
-from reqagent.llm import LLM, LLMError  # noqa: E402
-from reqagent.rules import run_rules  # noqa: E402
+from lsj.ingest import IntakeError, load  # noqa: E402
+from lsj.llm import LLM, LLMError  # noqa: E402
+from lsj.rules import run_rules  # noqa: E402
 
 DMG = ROOT / "eval" / "fixtures" / "damaged"
 
@@ -53,7 +53,7 @@ class Intake(unittest.TestCase):
         with tempfile.TemporaryDirectory() as t:
             out = Path(t) / "r.md"
             env = {**os.environ, "GEMINI_API_KEY": "x"}
-            r = subprocess.run([sys.executable, "-m", "reqagent", str(DMG / "truncated_head.pdf"), str(out)],
+            r = subprocess.run([sys.executable, "-m", "lsj", str(DMG / "truncated_head.pdf"), str(out)],
                                cwd=ROOT, capture_output=True, env=env)
             self.assertEqual(r.returncode, 4)
             self.assertNotIn(b"Traceback", r.stderr)

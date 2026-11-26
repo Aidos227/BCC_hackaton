@@ -26,7 +26,7 @@ def _j(obj: Any) -> str:
 
 # ---------------------------------------------------------------------------- 1. нарезка
 def segment(llm: LLM, doc: Document) -> List[Dict]:
-    data = llm.json(P.SYSTEM, P.segment_prompt(doc.text), "1/7 нарезка требований")
+    data = llm.json(P.SYSTEM, P.segment_prompt(doc.text), "1/8 нарезка требований")
     reqs = data.get("requirements", []) if isinstance(data, dict) else data
     out = []
     for i, r in enumerate(reqs, start=1):
@@ -55,7 +55,7 @@ def review(llm: LLM, doc: Document, reqs: List[Dict], batch: int = 12) -> Dict[s
         n += 1
         try:
             data = llm.json(P.SYSTEM, P.review_prompt(doc.text, _reqs_for_prompt(ch)),
-                            f"2/7 проверка требований ({ch[0]['id']}–{ch[-1]['id']})")
+                            f"2/8 проверка требований ({ch[0]['id']}–{ch[-1]['id']})")
         except ValueError:
             if len(ch) > 3:
                 half = len(ch) // 2
@@ -72,7 +72,7 @@ def review(llm: LLM, doc: Document, reqs: List[Dict], batch: int = 12) -> Dict[s
 
 # ---------------------------------------------------------------------------- 3. набор
 def review_set(llm: LLM, doc: Document, reqs: List[Dict]) -> Dict:
-    data = llm.json(P.SYSTEM, P.set_prompt(doc.text, _reqs_for_prompt(reqs)), "3/7 проверка набора")
+    data = llm.json(P.SYSTEM, P.set_prompt(doc.text, _reqs_for_prompt(reqs)), "3/8 проверка набора")
     return data if isinstance(data, dict) else {"findings": data}
 
 
@@ -82,7 +82,7 @@ def executable_model(llm: LLM, doc: Document, reqs: List[Dict]) -> Dict:
     Код пишется БЕЗ доступа к ожидаемым результатам критериев приёмки: они скрыты от этого запроса."""
     rj = _reqs_for_prompt(reqs)
     try:
-        spec = llm.json(P.SYSTEM, P.scenarios_prompt(doc.text, rj), "4/7 сценарии")
+        spec = llm.json(P.SYSTEM, P.scenarios_prompt(doc.text, rj), "4/8 сценарии")
     except ValueError:
         return {"applicable": False, "error": "модель не вернула JSON сценариев", "summary": ""}
     if not isinstance(spec, dict) or not spec.get("applicable"):
@@ -97,7 +97,7 @@ def executable_model(llm: LLM, doc: Document, reqs: List[Dict]) -> Dict:
     if broken:
         say(f"    сценарии потеряли факты строк критериев: {', '.join(sc['id'] for sc in broken)} — исправление")
         try:
-            fx = llm.json(P.SYSTEM, P.scenario_fix_prompt(_j(broken)), "4/7 исправление сценариев")
+            fx = llm.json(P.SYSTEM, P.scenario_fix_prompt(_j(broken)), "4/8 исправление сценариев")
             for new in (fx.get("scenarios", []) if isinstance(fx, dict) else []):
                 old = next((sc for sc in scenarios if sc["id"] == new.get("id")), None)
                 if old is not None and isinstance(new.get("input"), dict):
@@ -113,7 +113,7 @@ def executable_model(llm: LLM, doc: Document, reqs: List[Dict]) -> Dict:
              "scenarios": [{k: v for k, v in sc.items() if k in ("id", "title", "situation", "input")} for sc in scenarios]}
     code, rules, runs, error = "", [], [], ""
     try:
-        cg = llm.json(P.SYSTEM, P.code_prompt(doc.text, rj, _j(blind)), "4/7 код модели", max_tokens=48000)
+        cg = llm.json(P.SYSTEM, P.code_prompt(doc.text, rj, _j(blind)), "4/8 код модели", max_tokens=48000)
         code = cg.get("code", "") if isinstance(cg, dict) else ""
         rules = cg.get("rules", []) if isinstance(cg, dict) else []
     except ValueError:
@@ -133,7 +133,7 @@ def executable_model(llm: LLM, doc: Document, reqs: List[Dict]) -> Dict:
                     break
             say(f"    модель упала, исправление {attempt + 1}/2: {msg.splitlines()[0][:120]}")
             try:
-                fixed = llm.json(P.SYSTEM, P.model_repair_prompt(code, msg), f"4/7 исправление модели {attempt + 1}")
+                fixed = llm.json(P.SYSTEM, P.model_repair_prompt(code, msg), f"4/8 исправление модели {attempt + 1}")
                 code = fixed.get("code", code) if isinstance(fixed, dict) else code
             except ValueError:
                 pass
@@ -184,7 +184,7 @@ def oracle(llm: LLM, doc: Document, rj: str, scenarios: List[Dict], batch: int =
         part = queue.pop(0)
         try:
             data = llm.json(P.SYSTEM, P.oracle_prompt(doc.text, rj, _j(part)),
-                            f"4/7 трассировка ({part[0]['id']}–{part[-1]['id']})")
+                            f"4/8 трассировка ({part[0]['id']}–{part[-1]['id']})")
         except ValueError:
             if len(part) > 1:
                 queue[:0] = [part[:len(part) // 2], part[len(part) // 2:]]
@@ -205,7 +205,7 @@ def compare(llm: LLM, scenarios: List[Dict], traces: Dict[str, Dict]) -> None:
     if not pairs:
         return
     try:
-        data = llm.json(P.SYSTEM, P.compare_prompt(_j(pairs)), "4/7 сравнение с критериями")
+        data = llm.json(P.SYSTEM, P.compare_prompt(_j(pairs)), "4/8 сравнение с критериями")
     except ValueError:
         return
     for v in (data.get("verdicts", []) if isinstance(data, dict) else data):
@@ -458,7 +458,7 @@ def verify(llm: LLM, doc: Document, cand: List[Dict]) -> List[Dict]:
         part = queue.pop(0)
         try:
             data = llm.json(P.SYSTEM, P.verify_prompt(doc.text, _j(part)),
-                            f"6/7 перепроверка ({part[0]['id']}–{part[-1]['id']})")
+                            f"6/8 перепроверка ({part[0]['id']}–{part[-1]['id']})")
         except ValueError:
             if len(part) > 3:
                 queue[:0] = [part[:len(part) // 2], part[len(part) // 2:]]
@@ -553,7 +553,7 @@ def checklist(llm: LLM, doc: Document, confirmed: List[Dict]) -> Dict:
     short = [{"id": f["fid"], "severity": f["severity"], "criterion": f.get("criterion"), "title": f.get("title")}
              for f in confirmed]
     try:
-        data = llm.json(P.SYSTEM, P.checklist_prompt(doc.text, _j(short)), "7/7 чек-лист банка")
+        data = llm.json(P.SYSTEM, P.checklist_prompt(doc.text, _j(short)), "7/8 чек-лист банка")
     except ValueError:
         return {"present": False, "error": "модель не вернула JSON"}
     if not isinstance(data, dict) or not data.get("present"):
@@ -563,6 +563,44 @@ def checklist(llm: LLM, doc: Document, confirmed: List[Dict]) -> Dict:
         it["refs"] = [r for r in it.get("refs") or [] if r in valid]
         it["anchor"] = doc.locate(it.get("item", ""))
     return data
+
+
+# ---------------------------------------------------------------------------- 8. уточняющие вопросы
+def clarify(llm: LLM, doc: Document, confirmed: List[Dict], questions: List[Dict]) -> List[Dict]:
+    """Агент-интервьюер: превращает блокирующие замечания в короткий список вопросов владельцу с вариантами."""
+    pool = [f for f in confirmed + questions if f["severity"] in ("critical", "major") or f.get("owner_question")]
+    if not pool:
+        return []
+    short = [{"id": f["fid"], "severity": f["severity"], "title": f.get("title"),
+              "quotes": [a["text"] for a in f["anchored"]][:3], "problem": f.get("problem"),
+              "blocked_decision": f.get("blocked_decision"), "owner_question": f.get("owner_question")} for f in pool]
+    try:
+        data = llm.json(P.SYSTEM, P.clarify_prompt(doc.text, _j(short)), "8/8 уточняющие вопросы")
+    except ValueError:
+        data = {}
+    by_id = {f["fid"]: f for f in pool}
+    out: List[Dict] = []
+    for q in (data.get("questions", []) if isinstance(data, dict) else []):
+        if not isinstance(q, dict) or not (q.get("question") or "").strip():
+            continue
+        ids = [i for i in q.get("finding_ids") or [] if i in by_id]
+        if not ids:
+            continue           # вопрос без связи с подтверждённым замечанием не публикуем
+        anchored = [{"text": t, "anchor": doc.locate(t)} for t in q.get("quotes") or [] if isinstance(t, str)]
+        anchored = [a for a in anchored if a["anchor"].found]
+        if not anchored:       # цитаты берём из замечаний, если модель свои не привела или исказила
+            anchored = [a for i in ids for a in by_id[i]["anchored"]][:2]
+        sev = min((by_id[i]["severity"] for i in ids), key=lambda x: SEV_ORDER[x])
+        opts = [o for o in q.get("options") or [] if isinstance(o, dict) and (o.get("text") or "").strip()][:3]
+        for n, o in enumerate(opts):
+            o["key"] = "abc"[n]
+        out.append({"question": q["question"].strip(), "why": q.get("why", ""), "finding_ids": ids,
+                    "severity": sev, "anchored": anchored, "options": opts, "check_after": q.get("check_after", "")})
+    out.sort(key=lambda q: SEV_ORDER[q["severity"]])
+    for n, q in enumerate(out[:10], start=1):
+        q["qid"] = f"U-{n:02d}"
+    say(f"    уточняющих вопросов: {len(out[:10])}")
+    return out[:10]
 
 
 # ---------------------------------------------------------------------------- запуск целиком
@@ -581,7 +619,7 @@ def run(llm: LLM, doc: Document, use_model: bool = True) -> Dict[str, Any]:
     reviews = review(llm, doc, reqs)
     set_rv = review_set(llm, doc, reqs)
     model = executable_model(llm, doc, reqs) if use_model else {"applicable": False, "skipped": True}
-    say("  · 5/7 детерминированные правила и привязка цитат")
+    say("  · 5/8 детерминированные правила и привязка цитат")
     rule_f = run_rules(doc)
     cand = collect(reviews, set_rv, model, rule_f, doc)
     total = len(cand)
@@ -593,7 +631,8 @@ def run(llm: LLM, doc: Document, use_model: bool = True) -> Dict[str, Any]:
     say(f"    подтверждено: {len(fin['confirmed'])}, вопросов владельцу: {len(fin['questions'])}, "
         f"отклонено: {len(fin['rejected'])}, дублей: {len(fin['duplicates'])}")
     chk = checklist(llm, doc, fin["confirmed"])
-    return {"requirements": reqs, "reviews": reviews, "set": set_rv, "model": model,
+    clar = clarify(llm, doc, fin["confirmed"], fin["questions"])
+    return {"clarifications": clar, "requirements": reqs, "reviews": reviews, "set": set_rv, "model": model,
             "candidates_total": total, "no_evidence": no_ev, **fin, "checklist": chk}
 
 

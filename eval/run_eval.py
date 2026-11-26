@@ -28,11 +28,11 @@ def run_one(system: str, doc: Path, out_dir: Path, rep: int, extra):
     stem = out_dir / f"{doc.stem}.{system}.{rep}"
     if system == "agent":
         target = Path(str(stem) + ".md")
-        cmd = [sys.executable, "-m", "reqagent", str(doc), str(target)] + extra
+        cmd = [sys.executable, "-m", "lsj", str(doc), str(target)] + extra
         produced = Path(str(stem) + ".json")
     else:
         produced = Path(str(stem) + ".json")
-        cmd = [sys.executable, "-m", "reqagent", str(doc), str(produced), "--baseline"] + extra
+        cmd = [sys.executable, "-m", "lsj", str(doc), str(produced), "--baseline"] + extra
     if produced.exists():
         return produced
     print(f"\n>>> {system} #{rep}: {doc.name}", flush=True)
@@ -86,7 +86,7 @@ def write_results(table, out_dir, models, reps, failed=()):
     L = ["# Результаты независимой проверки\n",
          f"Дата: {dt.datetime.now():%d.%m.%Y %H:%M}. Модель: {', '.join(sorted(m for m in models if m))}. "
          f"Повторов на систему: {reps}. Сырые ответы: `{out_dir.relative_to(ROOT).as_posix()}`.\n",
-         "Системы: **агент** — полный конвейер ReqAgent; **один запрос** — тот же документ и та же модель, "
+         "Системы: **агент** — полный конвейер LSJ; **один запрос** — тот же документ и та же модель, "
          "один сильный промпт с критериями ISO 29148 и требованием цитат (`--baseline`).\n",
          "Метрики считает `eval/score.py` без LLM: дефект найден, если у замечания есть подлинная "
          "(найденная в документе) цитата из каждого места дефекта. Разметка дефектов — авторская "

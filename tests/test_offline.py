@@ -9,11 +9,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from reqagent.ingest import load  # noqa: E402
-from reqagent.llm import Usage, parse_json  # noqa: E402
-from reqagent.pipeline import run  # noqa: E402
-from reqagent.report import render  # noqa: E402
-from reqagent.sandbox import UnsafeCode, check_code, run_model  # noqa: E402
+from lsj.ingest import load  # noqa: E402
+from lsj.llm import Usage, parse_json  # noqa: E402
+from lsj.pipeline import run  # noqa: E402
+from lsj.report import render  # noqa: E402
+from lsj.sandbox import UnsafeCode, check_code, run_model  # noqa: E402
 
 DOC = ROOT / "docs" / "requirements.pdf"
 
@@ -39,7 +39,7 @@ class FakeLLM:
 
     def json(self, system, user, stage, max_tokens=0):
         self.usage.calls += 1
-        if stage.startswith("1/7"):
+        if stage.startswith("1/8"):
             return {"requirements": [
                 {"doc_id": "Ф-2", "section": "ФТ", "type": "функциональное", "summary": "месяц по дате покупки",
                  "quote": "Месяц определяется по дате совершения покупки в Алматы."},
@@ -47,17 +47,17 @@ class FakeLLM:
                  "quote": "Когда расходы переходят от суммы ниже порога к сумме, равной порогу или выше, клиент получает push."},
                 {"doc_id": None, "section": "Критерии", "type": "критерий приёмки", "summary": "переход месяца",
                  "quote": "Февральский счётчик вырос на 4 000 ₸"}]}
-        if stage.startswith("2/7"):
+        if stage.startswith("2/8"):
             return {"reviews": [{"id": "R-01", "criteria": {"necessary": "ok", "unambiguous": "issue"},
                                  "findings": [{"criterion": "unambiguous", "severity": "major", "title": "Выдумка",
                                                "quotes": ["этой цитаты нет в документе"], "problem": "x"}]}]}
-        if stage.startswith("3/7"):
+        if stage.startswith("3/8"):
             return {"set_criteria": {"set_consistent": {"verdict": "issue", "comment": "см."}}, "findings": [
                 {"criterion": "set_consistent", "severity": "critical", "req_ids": ["R-01", "R-03"],
                  "title": "Месяц покупки против критерия", "quotes": ["Месяц определяется по дате совершения покупки в Алматы",
                                                                       "Февральский счётчик вырос на 4 000 ₸"],
                  "problem": "Январь против февраля", "blocked_decision": "ожидаемый результат теста", "fix": "выбрать"}]}
-        if stage.startswith("4/7 сценарии"):
+        if stage.startswith("4/8 сценарии"):
             return {"applicable": True, "summary": "счётчик", "outputs": {"month": "месяц учёта"},
                     "interpretations": [], "scenarios": [
                         {"id": "S1", "source": "acceptance", "title": "переход месяца",
@@ -68,7 +68,7 @@ class FakeLLM:
                          "expected": {"month": "2026-02"}},
                         {"id": "S2", "source": "boundary", "title": "без порога", "input": {"amount": 1},
                          "situation": "порог не задан", "expected": None, "targets": ["R-02"]}]}
-        if stage.startswith("4/7 трассировка"):
+        if stage.startswith("4/8 трассировка"):
             assert "Февральский" not in user.split("Ситуации:")[1].split("Выделенные требования")[0]
             return {"traces": [
                 {"id": "S1", "rule_outcomes": [{"req_id": "R-01", "quote": "Месяц определяется по дате совершения покупки в Алматы",
@@ -77,18 +77,26 @@ class FakeLLM:
                  "blocked_decision": "ожидаемый результат"},
                 {"id": "S2", "rule_outcomes": [], "derived": "", "acceptance": "n/a", "conflict": False,
                  "undetermined": "порог не задан"}]}
-        if stage.startswith("4/7 сравнение"):
+        if stage.startswith("4/8 сравнение"):
             return {"verdicts": [{"id": "S1", "verdict": "mismatch", "difference": "месяц"}]}
-        if stage.startswith("4/7 код"):
+        if stage.startswith("4/8 код"):
             assert '"expected"' not in user.split("Сценарии и выходы:")[1].split("Выделенные требования")[0]
             return {"rules": [], "code": MODEL_CODE}
-        if stage.startswith("6/7"):
+        if stage.startswith("6/8"):
             data = json.loads(user.split("Черновые замечания:\n", 1)[1].split("\n\nДокумент:", 1)[0])
             return {"verdicts": [{"id": d["id"], "verdict": "confirm", "severity": d["severity"],
                                   "reason": "ok", "blocked_decision": "что ожидать в тесте"} for d in data]}
-        if stage.startswith("7/7"):
+        if stage.startswith("7/8"):
             return {"present": True, "items": [{"item": "Поддерживается версионность документа / зафиксирована",
                                                 "available": "Нет", "passed": "Нет", "refs": ["F-01"], "comment": "нет версии"}]}
+        if stage.startswith("8/8"):
+            return {"questions": [
+                {"question": "Покупку 31.01, проведённую 01.02, относить к январю или к февралю?",
+                 "why": "ожидаемый результат теста", "finding_ids": ["F-01"],
+                 "quotes": ["Февральский счётчик вырос на 4 000 ₸"],
+                 "options": [{"text": "к январю, как в Ф-2"}, {"text": "к февралю, как в критерии"}],
+                 "check_after": "провести покупку на границе месяцев"},
+                {"question": "Вопрос без связи с замечанием", "finding_ids": ["F-99"], "quotes": []}]}
         raise AssertionError(stage)
 
 
@@ -135,7 +143,7 @@ if __name__ == "__main__":
 
 class EmptyLLM(FakeLLM):
     def json(self, system, user, stage, max_tokens=0):
-        if stage.startswith("1/7"):
+        if stage.startswith("1/8"):
             return {"requirements": []}
         raise AssertionError("после пустой нарезки модель вызываться не должна: " + stage)
 
@@ -154,3 +162,30 @@ class NotRequirements(unittest.TestCase):
         d = load(ROOT / "eval" / "fixtures" / "damaged" / "injection.md")
         res = run(EmptyLLM(), d)
         self.assertTrue(any(f["criterion"] == "injection" for f in res["confirmed"]))
+
+
+class OwnerAnswers(unittest.TestCase):
+    def test_answer_closes_matching_finding_in_next_run(self):
+        from lsj import answers as A
+        d = load(DOC)
+        r1 = run(FakeLLM(), d)
+        q = A.questions_file(d, r1, "test")
+        self.assertEqual(q["questions"][0]["id"], "U-01")
+        self.assertEqual([o["key"] for o in q["questions"][0]["options"]], ["a", "b"])
+        q["questions"][0]["answer"] = "a"
+        r2 = run(FakeLLM(), d)
+        sm = A.apply(r2, q, d)
+        self.assertEqual(sm["applied"][0]["closed"], ["F-01"])
+        self.assertNotIn("F-01", [f["fid"] for f in r2["confirmed"]])
+        md = render(d, r2, {"Документ": d.title})
+        self.assertIn("Решения владельца продукта", md)
+        self.assertIn("внести в текст документа", md)
+        self.assertIn("к январю", A.owner_block(q))
+
+    def test_unanswered_is_pending(self):
+        from lsj import answers as A
+        d = load(DOC)
+        r1 = run(FakeLLM(), d)
+        q = A.questions_file(d, r1, "test")
+        sm = A.apply(run(FakeLLM(), d), q, d)
+        self.assertEqual(sm["pending"], ["U-01"])

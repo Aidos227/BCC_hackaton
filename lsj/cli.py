@@ -1,4 +1,4 @@
-"""Точка входа: python -m reqagent <документ> <отчёт.md>"""
+"""Точка входа: python -m lsj <документ> <отчёт.md>"""
 from __future__ import annotations
 
 import argparse
@@ -14,6 +14,7 @@ from . import __version__
 from .ingest import IntakeError, load
 from .llm import LLM, LLMError, load_dotenv
 from .pipeline import run, run_baseline
+from . import answers as A
 from .report import delta_md, render, render_unreadable
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -45,7 +46,7 @@ def agent_version() -> str:
     try:
         sha = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT, capture_output=True,
                              text=True, timeout=5).stdout.strip()
-        dirty = subprocess.run(["git", "status", "--porcelain", "--untracked-files=no", "--", "reqagent"],
+        dirty = subprocess.run(["git", "status", "--porcelain", "--untracked-files=no", "--", "lsj"],
                                cwd=ROOT, capture_output=True, text=True, timeout=5).stdout.strip()
     except Exception:
         pass
@@ -67,7 +68,7 @@ def main(argv=None) -> int:
             stream.reconfigure(encoding="utf-8")
         except Exception:
             pass
-    ap = argparse.ArgumentParser(prog="reqagent", description="Агент статической проверки требований")
+    ap = argparse.ArgumentParser(prog="lsj", description="Агент статической проверки требований")
     ap.add_argument("input", help="путь к документу требований (.pdf, .md, .txt, .docx)")
     ap.add_argument("output", help="путь к файлу отчёта (.md)")
     ap.add_argument("--provider", choices=["gemini", "anthropic", "openai"], help="провайдер LLM (по умолчанию — по ключу в .env)")
@@ -75,6 +76,9 @@ def main(argv=None) -> int:
     ap.add_argument("--no-model", action="store_true", help="не строить исполняемую модель требований")
     ap.add_argument("--baseline", action="store_true", help="сравнительный режим: один запрос, без этапов агента (JSON)")
     ap.add_argument("--compare", help="JSON прошлого прогона (<отчёт>.json): показать закрытые и новые замечания")
+    ap.add_argument("--answers", help="файл ответов владельца (<отчёт>.questions.json с заполненными answer): "
+                                       "агент учтёт решения и перепроверит документ")
+    ap.add_argument("--ask", action="store_true", help="после проверки задать уточняющие вопросы в консоли и сразу учесть ответы")
     ap.add_argument("--cache", help="папка кэша ответов модели (для отладки; в финальном прогоне не использовать)")
     ap.add_argument("--env", default=str(ROOT / ".env"), help="путь к .env")
     a = ap.parse_args(argv)
@@ -98,6 +102,14 @@ def main(argv=None) -> int:
         out.write_text(render_unreadable(src, e.intake, passport), encoding="utf-8")
         print(f"Документ не прочитан: {e}. Отчёт-диагноз: {out}", file=sys.stderr)
         return 4
+    owner = None
+    if a.answers:
+        try:
+            owner = A.load(a.answers)
+        except (OSError, ValueError) as e:
+            print(f"Ошибка: файл ответов не прочитан: {e}", file=sys.stderr)
+            return 2
+        doc.owner_notes = A.owner_block(owner)
     try:
         llm = LLM(a.provider, a.model, cache_dir=a.cache)
     except LLMError as e:
@@ -128,17 +140,37 @@ def main(argv=None) -> int:
         "Дата прогона": now.strftime("%d.%m.%Y %H:%M (UTC+5, Алматы)"),
         "Модель": f"{llm.provider} / {', '.join(llm.models_used) or llm.resolved_model}, temperature={llm.temperature}",
         "Версия агента": agent_version(),
-        "Этапы": "нарезка → проверка требований → проверка набора → исполняемая модель → правила → "
-                  "привязка цитат → скептическая перепроверка → чек-лист",
+        "Этапы": "входной контроль → нарезка → проверка требований → проверка набора → сценарии "
+                  "(«слепая» трассировка + исполняемая модель) → правила → привязка цитат → скептическая "
+                  "перепроверка → чек-лист → уточняющие вопросы",
         "Обращений к модели": f"{llm.usage.calls} (токены: вход {llm.usage.input_tokens}, выход {llm.usage.output_tokens})",
         "Длительность": f"{time.time() - t0:.0f} с",
     }
+    if owner:
+        sm = A.apply(res, owner, doc)
+        print(f"Решения владельца: учтено {len(sm['applied'])}, устарело {len(sm['stale'])}, "
+              f"отложено {len(sm['pending'])}", file=sys.stderr)
     delta = ""
     if a.compare:
         prev = json.loads(Path(a.compare).read_text(encoding="utf-8"))
         delta = delta_md(prev, res["confirmed"], Path(a.compare).name, doc)
-    out.write_text(render(doc, res, passport, llm.usage.log, delta), encoding="utf-8")
     stem = out.with_suffix("")
+    qfile = A.questions_file(doc, res, agent_version())
+    if qfile["questions"]:
+        Path(str(stem) + ".questions.json").write_text(json.dumps(qfile, ensure_ascii=False, indent=1), encoding="utf-8")
+    if a.ask:
+        if sys.stdin.isatty():
+            A.ask(qfile)
+            Path(str(stem) + ".answers.json").write_text(json.dumps(qfile, ensure_ascii=False, indent=1), encoding="utf-8")
+            res["_same_run"] = True
+            sm = A.apply(res, qfile, doc)
+            res.pop("_same_run", None)
+            print(f"Ответы сохранены: {stem}.answers.json. Закрыто замечаний: "
+                  f"{sum(len(x['closed']) for x in sm['applied'])}. Для полной перепроверки с учётом ответов: "
+                  f"python -m lsj {a.input} {a.output} --answers {stem}.answers.json", file=sys.stderr)
+        else:
+            print("--ask: консоль не интерактивна, вопросы сохранены в .questions.json", file=sys.stderr)
+    out.write_text(render(doc, res, passport, llm.usage.log, delta), encoding="utf-8")
     m = res.get("model") or {}
     if m.get("code"):
         Path(str(stem) + ".model.py").write_text(model_file(m), encoding="utf-8")
@@ -155,7 +187,7 @@ def model_file(m) -> str:
     """Самодостаточный файл модели: можно запустить `python report.model.py` и увидеть прогон."""
     sc = json.dumps(m.get("scenarios") or [], ensure_ascii=False, indent=1)
     it = json.dumps(m.get("interpretations") or [], ensure_ascii=False, indent=1)
-    return f'''# Исполняемая модель требований, сгенерированная агентом ReqAgent.
+    return f'''# Исполняемая модель требований, сгенерированная агентом LSJ.
 # Запуск: python <этот файл>  — прогоняет сценарии по всем прочтениям спорных формулировок.
 import itertools, json
 

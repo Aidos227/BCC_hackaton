@@ -19,5 +19,5 @@ if (-not (Test-Path ".env")) {
     Write-Host "Нет файла .env: скопируйте .env.example в .env и впишите ключ (см. README)." -ForegroundColor Yellow
     exit 2
 }
-& $py -m reqagent $InputPath $OutputPath @Rest
+& $py -m lsj $InputPath $OutputPath @Rest
 exit $LASTEXITCODE

@@ -47,6 +47,7 @@ class Document:
     lines: List[Line]
     pages: int
     intake: "Intake" = field(default=None, repr=False)  # type: ignore[assignment]
+    owner_notes: str = field(default="", repr=False)    # решения владельца при повторном прогоне
     _norm: str = field(default="", repr=False)
     _map: List[int] = field(default_factory=list, repr=False)   # индекс символа norm -> индекс строки
 
@@ -59,6 +60,8 @@ class Document:
                 cur = ln.page
                 out.append(f"=== Страница {cur} ===")
             out.append(ln.text)
+        if self.owner_notes:
+            out += ["", self.owner_notes]
         return "\n".join(out)
 
     @property

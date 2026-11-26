@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Dict, List
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from reqagent.ingest import normalize  # noqa: E402
+from lsj.ingest import normalize  # noqa: E402
 
 
 def findings_of(result: Dict) -> List[Dict]:

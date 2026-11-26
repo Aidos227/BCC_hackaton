@@ -189,11 +189,13 @@ class LLM:
                 if "quota" in msg or getattr(e, "fatal", False):
                     # квота и отказ в доступе — свойство ключа: остужаем только этот ключ
                     self.cooldown[self._slot(m, k)] = time.time() + 3600
-                else:
-                    # перегрузка (503) или нет модели (404) — свойство модели: остужаем её на всех ключах
-                    until = time.time() + (86400 if "не найдена" in msg else 300)
+                elif "не найдена" in msg:
+                    # модели нет у провайдера — это свойство модели, остужаем на всех ключах на сутки
                     for kk in range(nkeys):
-                        self.cooldown[self._slot(m, kk)] = until
+                        self.cooldown[self._slot(m, kk)] = time.time() + 86400
+                else:
+                    # перегрузка (503) кратковременна и зависит от запроса: короткая пауза только для этого слота
+                    self.cooldown[self._slot(m, k)] = time.time() + 120
                 self._save_cooldown()
                 self._say(f"    {m}" + (f" (ключ №{k + 1})" if nkeys > 1 else "") + f": {' '.join(str(e).split())[:200]}")
         else:

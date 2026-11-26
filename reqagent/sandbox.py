@@ -125,16 +125,31 @@ def clean(d: Any) -> Any:
     return d
 
 
+def _kind(v: Any) -> str:
+    n = _norm(v)
+    if v is None:
+        return "none"
+    if isinstance(n, bool):
+        return "bool"
+    if isinstance(n, (int, float)):
+        return "num"
+    return type(n).__name__
+
+
 def comparable(expected: Dict[str, Any], actual: Dict[str, Any]) -> bool:
-    return bool(expected) and all(k in (actual or {}) for k in expected)
+    """Сравнивать можно, только если модель вычисляет те же величины того же вида
+    (число с числом, строку со строкой); фраза «счётчик вырос на 4 000» с числом 4000 не сравнивается."""
+    if not expected or not all(k in (actual or {}) for k in expected):
+        return False
+    return all(_kind(expected[k]) == _kind(actual[k]) or expected[k] is None for k in expected)
 
 
 def same(expected: Dict[str, Any], actual: Dict[str, Any]) -> Tuple[bool, List[str]]:
     """Сравнение ожидаемого результата документа с вычисленным: только по ключам expected."""
     diffs = []
     for k, ev in (expected or {}).items():
-        if k not in (actual or {}):
-            continue   # модель не вычисляет эту величину — сравнивать не с чем
+        if k not in (actual or {}) or ev is None:
+            continue   # модель не вычисляет эту величину или критерий её не задаёт — сравнивать не с чем
         av = actual[k]
         if _norm(ev) != _norm(av):
             diffs.append(f"{k}: ожидается {ev!r}, по правилам {av!r}")

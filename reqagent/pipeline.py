@@ -258,8 +258,7 @@ def merge_methods(mf: List[Dict], of: List[Dict]) -> List[Dict]:
     """Одна находка на сценарий и вид дефекта; совпадение двух методов отмечается явно."""
     out = list(of)
     for m in mf:
-        twin = next((o for o in of if o["scenario"] == m["scenario"] and
-                     (o["criterion"] == m["criterion"] or {o["criterion"], m["criterion"]} <= {"set_consistent", "unambiguous"})), None)
+        twin = next((o for o in of if o["scenario"] == m["scenario"]), None)
         if twin:
             twin["evidence"] = twin["evidence"] + "\n\nПрогон исполняемой модели:\n" + m["evidence"]
             twin["methods"] = "трассировка правил + вычисление модели"
